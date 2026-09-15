@@ -1,0 +1,13 @@
+# 基座软链（指向 ../bms/bms文档，仅本地导航用，内容不入库）
+bms文档
+
+# 运行时产物
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+temp/
+
+# 压测与 report 产物（按场景生成，不入库）
+reports/
+*.log

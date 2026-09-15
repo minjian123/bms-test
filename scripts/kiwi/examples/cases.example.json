@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "00-示例：用例标题（平台内按 summary 去重，登记后以回读编号为准）",
+      "text": "<p><strong>前置</strong>：环境已就绪。</p><ol><li>执行步骤一</li><li>执行步骤二</li></ol><p><strong>预期</strong>：结果符合口径。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    }
+  ]
+}
