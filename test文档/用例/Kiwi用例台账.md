@@ -55,7 +55,8 @@
 | 输入文件（本批，可幂等重跑） | `scripts/kiwi/cases/2026-09-16_阶段四03-05_框架与容器.json` |
 | 平台编号（回读） | **739**（主框架壳与宿主编排：区域 / 折叠 / 菜单路由 / keep-alive）、**740**（表单框架壳：列表固定 / 详情多开 / 组件映射 / 刷新）、**741**（页面容器：标题 / 插槽 / 返回与刷新） |
 | 自动化文件 | `bms/frontend/tests/layout-app-shell.spec.ts`、`bms/frontend/tests/layout-form-frame.spec.ts`、`bms/frontend/tests/layout-page-container.spec.ts`（仅 frontend） |
-| 覆盖点 | 宿主装配（占位菜单经动态路由注册 → 已注册组件渲染 / 未注册回退占位视图）；区域渲染与插槽；折叠按钮 + 持久化（`bms:pref:sidebar-collapsed`）；路由变化开签 / 标签激活；keep-alive 缓存（DOM 复用）与 refresh 重挂载（内容 key 版本）；表单框架（列表固定 + 详情多开 / 组件映射 props 透传 / 关闭 / dirty 确认 / saved / deleted 后列表刷新 / 空详情占位）；页面容器（标题 / 描述 / 插槽 / 返回 / 刷新工具栏） |
+| 覆盖点 | 宿主装配（占位菜单经动态路由注册 → 已注册组件渲染 / 未注册回退占位视图）；区域渲染与插槽；折叠按钮 + 持久化（`bms:pref:sidebar-collapsed`）；路由变化开签 / 标签激活；keep-alive `:include` 缓存（DOM 复用）/ refresh 重挂载（内容 key 版本）/ **关闭标签即时释放（重进重挂载）**；表单框架（列表固定 + 详情多开 / 组件映射 props 透传 / 关闭 / dirty 确认 / saved / deleted 后列表刷新 / 空详情占位）；页面容器（标题 / 描述 / 插槽 / 返回 / 刷新工具栏） |
+| 复盘修正 | **Kiwi 739 装置与口径修正（2026-09-16）**：用例改经**根 router-view 挂载**（路由驱动，原直接 mount 路由组件致 keep-alive 缓存错层）；keep-alive 口径由 `:max` LRU 修正为 `:include` 精确缓存 + 关闭标签即时释放（设计对齐记录 6 / 9、计划 §3.1-40 已闭环） |
 | 状态 | 全部 CONFIRMED（分类「平台骨架」、优先级 P2、标签「自动化」、`is_automated = true`） |
 | 执行结果 | frontend 全量 **301 / 301** 全绿（本任务新增 11 条，3 文件）；覆盖率语句 87.49% / 分支 79.33%；构建体积门禁达标 **164.2 / 200 KB**（预算 130 / 90 → 200 / 100 KB，真实装配体积） |
 
