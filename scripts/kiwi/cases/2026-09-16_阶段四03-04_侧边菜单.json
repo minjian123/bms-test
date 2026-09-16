@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-04 侧边菜单：渲染 / 高亮 / 折叠 / 互斥 / 外链 / 徽标",
+      "text": "<p><strong>前置</strong>：<code>src/components/menu/</code>（SideMenu / MenuNode）已落地。</p><ol><li>运行 <code>npx vitest run tests/menu-side-menu.spec.ts</code>。</li><li>断言两级菜单渲染（子菜单 / 叶子项）与 <code>hidden</code> 过滤、<code>sort</code> 排序。</li><li>断言高亮（<code>default-active</code>）与父级自动展开（激活子路由时父菜单展开）。</li><li>断言折叠态透传与 <code>uniqueOpen</code> 映射。</li><li>断言 <code>badge</code> 可选渲染（默认不配）。</li><li>断言叶子点击 emit <code>navigate</code> + 路由 push；<code>external</code> 点击 <code>window.open</code>。</li><li>断言搜索过滤（保留父链 + 命中高亮）与无命中空态。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 侧边菜单》§4 一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-04 菜单数据层与路由守卫：占位加载 / 展开持久化 / 权限跳转",
+      "text": "<p><strong>前置</strong>：<code>src/stores/menu.ts</code>、<code>src/router/guard.ts</code> 与 <code>src/config/placeholder-menu.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/menu-store-guard.spec.ts</code>。</li><li>断言 store 占位语义：未注入 loader 时 <code>load()</code> 空清单（不发请求）；注入 loader 后加载与 <code>visibleMenus</code>（hidden 过滤 / sort）。</li><li>断言展开集：<code>toggleExpanded</code> / <code>expandByPath</code>（父链）与持久化（<code>bms_menu_expanded</code>）。</li><li>断言搜索 <code>filteredMenus</code> 保留父链。</li><li>断言路由守卫：<code>meta.public</code> 放行；无 token → <code>/login?redirect=</code>（登录路由存在时）；未就绪放行占位（登录路由不存在时）；<code>meta.perm</code> 无权 → <code>/403</code>、有权放行。</li></ol><p><strong>预期</strong>：全部断言通过；占位语义与守卫口径与设计一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
