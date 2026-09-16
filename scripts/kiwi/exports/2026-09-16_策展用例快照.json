@@ -1099,5 +1099,49 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 713,
+    "summary": "阶段四 02-05 继承护栏：基类链 / 组件包装 / 片段声明（AST）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 714,
+    "summary": "阶段四 02-05 依赖边界：反向依赖 / UI 库 / 单向与循环",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 715,
+    "summary": "阶段四 02-05 清单对账：漏登记 / 僵尸条目双向",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 716,
+    "summary": "阶段四 02-05 新增流程演练与错误码对齐",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]

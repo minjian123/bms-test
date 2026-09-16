@@ -1,0 +1,45 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-05 继承护栏：基类链 / 组件包装 / 片段声明（AST）",
+      "text": "<p><strong>前置</strong>：<code>tests/helpers/guard/</code>（AST / 继承扫描）与 <code>tests/guard-inheritance.spec.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/guard-inheritance.spec.ts</code>（双端各一次）。</li><li>断言 <code>src/base</code> 机制层类父类链：<code>BaseComponent</code> → <code>BaseFrontend</code>；<code>BaseCapability</code> / <code>BasePlaceholder</code> / <code>BaseAsyncResource</code> / <code>BaseRegistry</code> / <code>BaseSubscription</code> → <code>BaseComponent</code>；<code>BaseError</code> → 标准 <code>Error</code>；<code>BaseFrontend</code> 无父类。</li><li>断言预置片段实现均以 <code>declareFragment('key')</code> 声明（key 属 <code>fragments.ts</code> 表）。</li><li>断言域基类组合式（<code>useXxxBase</code>）组合面齐备（至少一个片段或字段上下文机制）、不声明片段 key。</li><li>断言域基类包装 <code>BaseXxx.vue</code> 调用 <code>useComponentBase</code> 与同域 <code>useXxxBase</code>。</li><li>断言违规继承 fixture（错误父类 / 未声明片段）可被拦截并输出文件与规则信息。</li></ol><p><strong>预期</strong>：全部断言通过；AST 解析用已装依赖（<code>@vue/compiler-sfc</code> + <code>typescript</code>），不新增依赖。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-05 依赖边界：反向依赖 / UI 库 / 单向与循环",
+      "text": "<p><strong>前置</strong>：<code>tests/helpers/guard/dependency.ts</code> 与 <code>tests/guard-dependency.spec.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/guard-dependency.spec.ts</code>（双端各一次）。</li><li>断言 <code>src/base/**</code> 不 import <code>@/components/**</code>（机制层不反向依赖片段层）。</li><li>断言 <code>src/components/base/**</code> 不 import 具体组件与 UI 库（<code>@/views</code> / <code>@/layouts</code> / <code>element-plus</code> / <code>vant</code>）。</li><li>断言片段→片段依赖均在 <code>fragments.ts</code> 的 <code>depends</code> 登记且无环（DFS）。</li><li>断言片段 / 域基类不 import <code>axios</code> / <code>pinia</code> / <code>vue-router</code> / <code>vue-i18n</code>（横切能力经根系出口 / 片段，不重复实现）。</li><li>断言反向依赖 fixture 可被拦截。</li></ol><p><strong>预期</strong>：全部断言通过；违规样例输出文件、规则与 import 说明符。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-05 清单对账：漏登记 / 僵尸条目双向",
+      "text": "<p><strong>前置</strong>：<code>tests/helpers/guard/manifest.ts</code> 与 <code>tests/guard-manifest.spec.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/guard-manifest.spec.ts</code>（双端各一次）。</li><li>断言《前端基类清单》§5 能力片段表与代码 <code>fragments.ts</code> 的 key / depends 逐项一致、条数一致。</li><li>断言片段实现文件 ↔ 清单双向无漏登记、无僵尸条目。</li><li>断言清单 §2 机制基类行与 <code>src/base/</code> 文件存在性一致；§6 域基类 4 件与目录 / <code>BaseXxx.vue</code> / <code>useXxxBase.ts</code> 一致（<code>BaseChart</code> 规则行不要求实现文件）。</li><li>断言对账差异 fixture（清单有代码无 / 代码有清单无）可被拦截。</li></ol><p><strong>预期</strong>：全部断言通过；清单为文档权威、<code>fragments.ts</code> 为代码权威，双向差异均可捕获。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-05 新增流程演练与错误码对齐",
+      "text": "<p><strong>前置</strong>：<code>tests/guard-evolution.spec.ts</code> 已落地；错误码常量已对齐（未实现 <code>19001</code> / 片段违规 <code>10001</code> / 注册表冲突 <code>10003</code>）。</p><ol><li>运行 <code>npx vitest run tests/guard-evolution.spec.ts</code>（双端各一次）。</li><li>断言新增流程步骤文档（清单 §8：候选 → 设计节点 → 评审 → 登记 → 护栏通过 → 消费方回引）齐备可执行。</li><li>断言三类违规 fixture（继承 / 依赖 / 对账）均可被护栏拦截。</li><li>断言正样例（当前仓库扫描）无报错。</li><li>断言错误码常量与段位对齐：<code>19001</code>（前端保留子段）/ <code>10001</code>（PARAM）/ <code>10003</code>（CONFLICT）/ <code>10005</code>（RATE_LIMIT）/ <code>30001</code>（PERMISSION）。</li></ol><p><strong>预期</strong>：全部断言通过；新增流程经文档与 fixture 双口径演练。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
