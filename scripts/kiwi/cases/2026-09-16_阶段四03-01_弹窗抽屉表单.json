@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-01 弹窗容器：三态 / 尺寸阶梯 / 脏数据拦截 / 提交与权限",
+      "text": "<p><strong>前置</strong>：<code>src/components/modal/</code>（FormDrawer / FormDialog / ConfirmDialog）已落地。</p><ol><li>运行 <code>npx vitest run tests/modal-containers.spec.ts</code>。</li><li>断言 FormDrawer / FormDialog 打开渲染与标题（动作词 + 对象名，三态 create / edit / view）。</li><li>断言尺寸阶梯：抽屉 sm / md / lg / xl = 400 / 480 / 640 / 720px；对话框 sm / md / lg = 420 / 480 / 520px（xl 落 lg）。</li><li>断言三态页脚：view 无保存按钮（持权时显示「编辑」入口）、edit / view 态可选删除入口。</li><li>断言 <code>submitPerm</code> 权限显隐：无权限不渲染保存按钮。</li><li>断言提交中（submitLoading）保存按钮 loading、取消 / 关闭请求被拦截（不关闭）。</li><li>断言脏数据拦截链：dirty + 关闭 → 确认框（「继续编辑」不关 / 「放弃修改」关闭）；<code>beforeClose</code> 钩子串联顺序。</li><li>断言 ConfirmDialog：强制禁遮罩 / Esc、danger 确定按钮、confirm / cancel 事件、loading 态。</li></ol><p><strong>预期</strong>：全部断言通过；容器行为与《组件设计 · 弹窗抽屉表单》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-01 组合式：useFormModal 状态机 / 脏数据 / 409 与 useConfirm",
+      "text": "<p><strong>前置</strong>：<code>src/utils/useFormModal.ts</code> 与 <code>useConfirm.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/modal-composables.spec.ts</code>。</li><li>断言 useFormModal：openCreate（默认值 + 脏数据基线 + visible）、openEdit（detail 回填 + version）、openView。</li><li>断言 dirty 计算：改值变真、复位变假。</li><li>断言 submit：校验失败不调 API；create / update 分支与 version 携带；成功 → submitLoading 时序 + visible=false + onSuccess。</li><li>断言 409 冲突：提示后重新 detail 覆盖（不清空）；其余失败保留弹窗。</li><li>断言 useConfirm：确认返回 true / 取消 false（不抛异常）；onConfirm 调用与按钮 loading；禁遮罩 / Esc 选项。</li></ol><p><strong>预期</strong>：全部断言通过；组合式状态机与《组件设计 · 弹窗抽屉表单》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
