@@ -1,0 +1,45 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-04 输入域基类：受控绑定 / 禁用合并 / 字段上下文 / 校验",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/input/</code> 已落地（<code>useInputBase</code> + <code>BaseInput.vue</code>）；<code>src/components/base/field-shell/useFieldContext.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/base-domain-input.spec.ts</code>（双端各一次）。</li><li>断言受控值与归一（空串 → <code>undefined</code>、同值不回调 <code>onChange</code>）、三态 <code>isUnset</code> / <code>isCleared</code> 与 <code>clear</code>。</li><li>断言 <code>disabled</code> 合并（props / loading / 注入上下文 / 字段权限）与 <code>readonly</code> 合并（只读不写）。</li><li>断言校验：<code>required</code>（上下文回落）/ <code>validator</code> / 不可见与只读直通 / <code>onValidateFail</code>。</li><li>断言 <code>useFieldContext</code> provide / inject 与缺失回落 <code>undefined</code>；控件注册 / 注销。</li><li>断言 <code>BaseInput.vue</code> 原生 input 兜底渲染、<code>update:modelValue</code> / <code>change</code> / <code>focus</code> / <code>blur</code> 事件、插槽（<code>default</code> / <code>prefix</code> / <code>suffix</code>）与 attrs 透传、组件根令牌属性（<code>data-size</code> / <code>data-density</code>）与 <code>visible=false</code>。</li></ol><p><strong>预期</strong>：全部断言通过；无上下文时组合式独立可用不报错；域基类不依赖 UI 库（框架无关）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-04 展示域基类：格式化 / 空值占位 / 省略与复制",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/display/</code> 已落地（<code>useDisplayBase</code> + <code>BaseDisplay.vue</code>）。</p><ol><li>运行 <code>npx vitest run tests/base-domain-display.spec.ts</code>（双端各一次）。</li><li>断言格式化：函数格式化器 / 未注册名称回退 <code>String(value)</code>（占位口径，随 <code>02_06</code> 收敛）/ 空值显示 <code>—</code>（i18n <code>common.empty</code> 优先）。</li><li>断言空值判定：<code>null</code> / <code>undefined</code> / 空串为空，<code>0</code> / <code>false</code> 非空。</li><li>断言省略与 <code>tooltipText</code>（<code>true</code> / 数字阈值 / 未超长不省略）。</li><li>断言点击取值（可点击才触发；空值不可点击）。</li><li>断言 <code>copy</code>：clipboard 缺失回退 <code>false</code> 不抛错；可用时写剪贴板并触发回调 / <code>copy</code> 事件。</li><li>断言 <code>BaseDisplay.vue</code> 文本渲染、<code>default</code> / <code>empty</code> 插槽、组件根令牌属性与 <code>visible=false</code>；只读不校验（无 <code>modelValue</code> 面）。</li></ol><p><strong>预期</strong>：全部断言通过；脱敏字段由壳传 <code>copyable=false</code>（不复制明文）的口径在用例中覆盖。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-04 树域基类：归一 / 懒加载 / 选择勾选 / 过滤保留祖先",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/tree/</code> 已落地（<code>useTreeBase</code> + <code>BaseTree.vue</code>）。</p><ol><li>运行 <code>npx vitest run tests/base-domain-tree.spec.ts</code>（双端各一次）。</li><li>断言静态数据归一与占位（无 <code>load</code> 不发请求、<code>isPlaceholder=true</code>）。</li><li>断言 <code>load</code> 根 / 子加载（<code>loading</code> 状态、<code>loaded</code> 事件）与懒加载缓存。</li><li>断言选择（<code>selectable=false</code> 空操作）、勾选级联与 <code>checkStrictly</code> 独立。</li><li>断言过滤保留命中节点及其祖先路径、空关键字返回全量；<code>defaultExpandAll</code> 与手风琴。</li><li>断言 <code>nodeKey</code> / <code>labelKey</code> / <code>childrenKey</code> 自定义键透传。</li><li>断言 <code>BaseTree.vue</code> 递归渲染与 <code>select</code> / <code>check</code> / <code>node-click</code> 事件、<code>default</code> / <code>empty</code> / <code>actions</code> 插槽、组件根令牌属性与 <code>visible=false</code>。</li></ol><p><strong>预期</strong>：全部断言通过；域基类不依赖 UI 库（<code>el-tree</code> / Vant 由子类接入）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-04 编辑器域基类：占位降级 / 去抖上报 / 卸载销毁 / 富文本净化",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/editor/</code> 已落地（<code>useEditorBase</code> + <code>BaseEditor.vue</code>）。</p><ol><li>运行 <code>npx vitest run tests/base-domain-editor.spec.ts</code>（双端各一次）。</li><li>断言占位：无 <code>loader</code> 不加载内核（<code>isPlaceholder=true</code>），<code>BaseEditor.vue</code> 降级 textarea。</li><li>断言变更上报：输入即时 <code>update:modelValue</code>、<code>change</code> 去抖（默认 300ms，可配置）。</li><li>断言 <code>mount</code> / <code>unmount</code> 经 loader 创建 / 销毁（调用计数），组件卸载自动销毁、作用域释放清理定时器。</li><li>断言只读透传（内核与降级 textarea 均禁编辑）。</li><li>断言 <code>setContent</code> / <code>getContent</code> 协议读写与 <code>sanitizeHtml</code> 白名单（<code>script</code> / 事件属性 / <code>javascript:</code> 剔除）。</li><li>断言 <code>BaseEditor.vue</code> 工具栏插槽与 <code>kernel-ready</code> 事件、组件根令牌属性与 <code>visible=false</code>。</li></ol><p><strong>预期</strong>：全部断言通过；内核依赖由 <code>loader</code> 注入（占位先行，真实内核随富文本字段任务接入）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

@@ -1055,5 +1055,49 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 709,
+    "summary": "阶段四 02-04 输入域基类：受控绑定 / 禁用合并 / 字段上下文 / 校验",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 710,
+    "summary": "阶段四 02-04 展示域基类：格式化 / 空值占位 / 省略与复制",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 711,
+    "summary": "阶段四 02-04 树域基类：归一 / 懒加载 / 选择勾选 / 过滤保留祖先",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 712,
+    "summary": "阶段四 02-04 编辑器域基类：占位降级 / 去抖上报 / 卸载销毁 / 富文本净化",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]
