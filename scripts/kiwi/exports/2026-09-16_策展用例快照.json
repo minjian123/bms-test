@@ -1011,5 +1011,49 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 705,
+    "summary": "阶段四 02-03 片段机制：声明 / 依赖校验 / 循环检测 / 开发态告警",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 706,
+    "summary": "阶段四 02-03 注册表基座：唯一性拒重 / 未命中 / 保序 / 只读快照",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 707,
+    "summary": "阶段四 02-03 核心 12 片段：形态 / 值·字段链 / 选项源契约",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 708,
+    "summary": "阶段四 02-03 复用 19 片段：状态 / 上下文 / 占位降级契约",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]

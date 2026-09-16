@@ -1,0 +1,45 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-03 片段机制：声明 / 依赖校验 / 循环检测 / 开发态告警",
+      "text": "<p><strong>前置</strong>：<code>src/base/capability.ts</code> 已落地（<code>BaseCapability</code> + <code>useCapabilityBase</code> + 已知片段 key 登记）。</p><ol><li>运行 <code>npx vitest run tests/base-capability.spec.ts</code>（双端各一次）。</li><li>断言 <code>useCapabilityBase({ key, depends })</code> 返回描述符（<code>key</code> / <code>depends</code> / <code>describe()</code>）。</li><li>断言依赖未登记时开发态告警（含片段、依赖与原因），<code>strict: true</code> 时抛 <code>BaseError</code>。</li><li>断言循环依赖检测（A→B→A）与非法 <code>key</code>（空 / 非 kebab-case）告警。</li><li>断言 <code>enabled: false</code> 跳过校验与登记；<code>onWarn</code> 可覆盖默认告警。</li><li>断言生产态零告警；经组件根 <code>mechanisms</code> 挂接与释放联动，未挂接时开发态一次告警。</li></ol><p><strong>预期</strong>：全部断言通过；校验失败默认不阻断渲染。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-03 注册表基座：唯一性拒重 / 未命中 / 保序 / 只读快照",
+      "text": "<p><strong>前置</strong>：<code>src/base/provider.ts</code> 已落地（<code>BaseRegistry</code> + <code>BaseRegistryItem</code> + <code>useRegistryBase</code>）。</p><ol><li>运行 <code>npx vitest run tests/base-registry.spec.ts</code>（双端各一次）。</li><li>断言同 <code>key</code> 重复登记：非严格模式告警并保留首个；<code>strict</code> 抛 <code>BaseError</code>（码 10002）。</li><li>断言 <code>get</code> 未命中返回 <code>undefined</code>（不抛错）、<code>has</code> 判定正确。</li><li>断言 <code>keys</code> / <code>values</code> / <code>list</code> 按登记顺序保序，<code>size</code> 正确。</li><li>断言 <code>snapshot()</code> 为冻结副本（写入抛错或无效，且不影响内部状态）。</li><li>断言 <code>unregister</code> 命中返回 <code>true</code>、未命中返回 <code>false</code>；<code>useRegistryBase</code> 作用域释放时自动注销本作用域登记的项。</li></ol><p><strong>预期</strong>：全部断言通过；注册项契约由 <code>BaseRegistryItem</code> 子类实现（<code>key</code> + <code>describe</code>）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-03 核心 12 片段：形态 / 值·字段链 / 选项源契约",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/</code> 下形态 7（<code>useInteractive</code> / <code>useInputControl</code> / <code>useDisplayControl</code> / <code>useContainer</code> / <code>useFormContainer</code> / <code>useMedia</code> / <code>useLayout</code>）、值·字段链 4（<code>useValue</code> / <code>useFieldShell</code> / <code>useFieldPerm</code> / <code>useField</code>）与选项源 1（<code>useOptionSource</code>）已落地。</p><ol><li>运行 <code>npx vitest run tests/base-fragments-core.spec.ts</code>（双端各一次）。</li><li>断言受控值契约：<code>normalize</code> / <code>format</code> 调度、<code>isUnset</code> 三态、<code>emptyValue</code>、<code>change</code> 上报。</li><li>断言字段链契约：字段壳（label / 必填 / 错误 / 跨度 / 只读）、字段权限（<code>visible</code> / <code>editable</code> / <code>required</code> 三态）、字段编排（组合三者 + 校验触发）。</li><li>断言选项源：静态选项与占位加载（后端未就绪不请求、空结果）、<code>resolveLabel</code> 回显与 <code>search</code> 过滤。</li><li>断言形态片段：交互（点击 / 键盘 / 危险确认）、输入形态（composition / 清空）、展示形态（省略与空值占位）、容器（折叠）、表单容器（规则汇总与校验）、媒体（加载状态机与过期重取占位）、布局（栅格与断点）。</li></ol><p><strong>预期</strong>：全部断言通过；片段经 <code>useCapabilityBase</code> 声明且依赖登记正确（<code>field</code> → <code>value</code> / <code>field-shell</code> / <code>field-perm</code>；<code>option-source</code> → <code>value</code> / <code>field</code>）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-03 复用 19 片段：状态 / 上下文 / 占位降级契约",
+      "text": "<p><strong>前置</strong>：<code>src/components/base/</code> 下复用类 19 片段已落地（上传引擎 / 异步任务 / 页签 / 偏好持久化 / 编辑器内核 / 树数据 / 用户展示 / 动态路由 / 表单元数据 / 预签名 / 拖拽 / 设计令牌 / 表单页 / 语言上下文 / 权限上下文 / 列配置 / 查询方案 / 水印 / 片段上下文）。</p><ol><li>运行 <code>npx vitest run tests/base-fragments-reuse.spec.ts</code>（双端各一次）。</li><li>断言状态类：页签（开 / 关 / 固定 / 缓存键）、偏好持久化（本地即时生效 + 远端占位）、列配置（显隐 / 顺序 / 宽度 / 重置）、查询方案（保存 / 应用 / 默认）。</li><li>断言上下文类：语言上下文（locale / 时区 / 格式化）、权限上下文（权限码集合 / 菜单过滤 / 版本刷新）、片段上下文（只读约束）。</li><li>断言资源类：上传引擎（占位降级 / 进度清单）、异步任务（提交 / 轮询退避 / 取消）、预签名（占位缓存与失效重取）、表单元数据（版本比对）、用户展示（回退）、树数据（懒加载 / 勾选）、编辑器内核（懒加载 / 销毁）、媒体（过期重取）。</li><li>断言交互类：拖拽（排序 / 跨区）、水印（注入 / 移除 / 防移除）、设计令牌（取用 / 主题变化订阅）、动态路由（注册 / 卸载）、表单页（三态 / 脏数据）。</li></ol><p><strong>预期</strong>：全部断言通过；依赖后端能力的路径均为占位降级且有不请求断言。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
