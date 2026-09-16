@@ -1187,5 +1187,27 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 721,
+    "summary": "阶段四 02-06-03 格式化工具：日期时区 / 数值金额 / 边界",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 722,
+    "summary": "阶段四 02-06-03 格式化器注册与校验器：注册表 / 展示接入 / 规则",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]
