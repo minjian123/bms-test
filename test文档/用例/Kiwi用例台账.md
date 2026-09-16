@@ -45,9 +45,9 @@
 
 | 项 | 值 |
 | --- | --- |
-| 登记日期 | 2026-09-17 |
+| 登记日期 | 2026-09-16 |
 | 来源 | `bms/bms文档/项目/04_前端组件库/任务/03_布局组件类/03_布局组件类_06_基础令牌落地/`（需求 02-2 遗留收口，域 03 执行序第一） |
-| 输入文件（本批，可幂等重跑） | `scripts/kiwi/cases/2026-09-17_阶段四03-06_基础令牌.json` |
+| 输入文件（本批，可幂等重跑） | `scripts/kiwi/cases/2026-09-16_阶段四03-06_基础令牌.json` |
 | 平台编号（回读） | **723**（基础令牌：五组令牌 / 引用映射 / EP·Vant 映射 / 未定义告警）——**双端共用编号** |
 | 自动化文件 | `bms/frontend/tests/tokens.spec.ts`、`bms/frontend/tests/base-fragments-reuse.spec.ts`（design-token 用例增补）；`bms/frontend-mobile/tests/` 同款两份 |
 | 覆盖点 | 基础令牌五组（色彩 10 / 字体 13 / 间距 6〔4px 基准数字步进〕/ 圆角 3 / 阴影 3）；size 字号与 density 间距引用基础令牌（6 条）与属性协议保留；PC = Element Plus 映射（五色 + 30 档色阶 `color-mix()` 派生 + `-rgb` 三元组 + 圆角 + 字体）；移动端 = Vant 四语义色；`useDesignToken` 未定义令牌开发态告警（去重 / 显式回退不告警） |
