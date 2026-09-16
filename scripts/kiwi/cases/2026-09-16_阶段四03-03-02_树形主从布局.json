@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-03-02 主从布局：分割 / 折叠 / 窄屏 / 空态",
+      "text": "<p><strong>前置</strong>：<code>src/components/layout/MasterDetail.vue</code> 与 <code>useMasterDetail.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/layout-master-detail.spec.ts</code>。</li><li>断言主区宽度初始值（px / 百分比）与 <code>resizable</code> 模式（比例驱动）。</li><li>断言拖动分割条更新比例并持久化（localStorage）。</li><li>断言折叠按钮：主区隐藏 + <code>collapse-change</code> 事件。</li><li>断言窄屏（mock matchMedia）主区收进抽屉、抽屉唤起按钮存在。</li><li>断言未选中占位（<code>hasSelection=false</code> + <code>emptyText</code> 显示空态）与插槽渲染。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 树形主从布局》§3 / §4 一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-03-02 主树：搜索 / 选中 / 多选 / 计数 / 维护入口",
+      "text": "<p><strong>前置</strong>：<code>src/components/layout/MasterTree.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/layout-master-tree.spec.ts</code>。</li><li>断言树节点渲染与 <code>defaultExpandAll</code>。</li><li>断言搜索过滤（防抖后命中节点可见、未命中隐藏）。</li><li>断言点击节点 emit <code>select</code>；<code>checkable</code> 渲染复选框并 emit <code>check</code>。</li><li>断言 <code>showCount</code> 渲染计数。</li><li>断言维护入口：工具栏与右键菜单（新增 emit <code>node-create</code>、编辑 / 删除需选中、刷新）与 <code>managePermission</code> 无权限隐藏。</li><li>断言空树渲染 EmptyState（含新增入口）与 <code>loading</code> 渲染骨架。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 树形主从布局》§3.1 一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
