@@ -1,0 +1,31 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-01 根系基类（frontend）：字段 / 配置 / 日志 / 错误上报 / i18n / 生命周期钩子",
+      "text": "覆盖范围（用例清单）：\n1. 类与组合式通用字段等价（ns / identifier / env / config 只读且按 ns 解析）\n2. 构建期配置解析（VITE_APP_ENV 缺省与非法值回退、VITE_* 键名归一、运行期 patch 覆盖）\n3. getConfig 取值与 fallback、命名空间覆盖键优先\n4. log 分级过滤 + sink 记录结构（ns / identifier / level / repeat / timestamp）\n5. 同指纹窗口内折叠、窗口过期后 repeat 汇总\n6. reportError 归一化（Error / string / 非 Error）与去重限流、sink 抛错不影响调用方\n7. t 命中翻译与缺词回退原文\n8. 构造触发 onBaseCreated、dispose 触发 onBaseDisposed 且幂等\n9. 组合式在 effectScope 释放时自动 dispose，作用域外可用\n自动化文件路径：frontend/tests/base-frontend.spec.ts\nkiwi_id 标注方式：Vitest 用例以 describe('<标题>（Kiwi <用例号>）' 标注（前端仓库约定）\n详细设计：bms文档/项目/04_前端组件库/任务/02_基础组件类/02_基础组件类_01_根系基类/设计/01_详细设计_01_根系基类.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": false,
+      "case_id": 698
+    },
+    {
+      "summary": "阶段四 02-01 根系基类（frontend-mobile）：同款双端一致性",
+      "text": "覆盖范围（用例清单）：与 frontend 同款断言集（双端同款基线）——\n1. 类与组合式通用字段等价（ns / identifier / env / config）\n2. 构建期配置解析与运行期 patch 覆盖\n3. getConfig 取值与 fallback、命名空间覆盖键优先\n4. log 分级过滤与 sink 记录结构、同指纹折叠与 repeat 汇总\n5. reportError 归一化与去重限流、sink 抛错不影响调用方\n6. t 命中翻译与缺词回退原文\n7. 生命周期钩子（onBaseCreated / onBaseDisposed 幂等）与组合式作用域释放\n自动化文件路径：frontend-mobile/tests/base-frontend.spec.ts\nkiwi_id 标注方式：Vitest 用例以 describe('<标题>（Kiwi <用例号>）' 标注（前端仓库约定）\n详细设计：bms文档/项目/04_前端组件库/任务/02_基础组件类/02_基础组件类_01_根系基类/设计/01_详细设计_01_根系基类.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": false,
+      "case_id": 699
+    }
+  ]
+}

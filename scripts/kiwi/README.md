@@ -39,6 +39,23 @@ python3 scripts/kiwi/export_cases.py --reconcile --code-root ../bms/backend
 
 输入模板见 `examples/cases.example.json`。
 
+### 2.1 目录约定 <a id="layout"></a>
+
+| 目录 | 内容 | 说明 |
+| --- | --- | --- |
+| `cases/` | 每批登记的**输入文件**（`<日期>_<任务>_<名称>.json`） | 幂等重跑与复核用（平台按 `summary` 去重，重跑只会跳过）；文件内附平台回读的 `case_id` |
+| `exports/` | 平台快照（`<日期>_策展用例快照.json`） | 对账与台账取证，口径见 [exports/README.md](exports/README.md) |
+| `examples/` | 输入模板 | 不含真实数据 |
+
+临时转储写 `test/temp/`（已 gitignore）；入库的只有 `cases/` 与 `exports/`。批次台账与对账结论记在《[Kiwi 用例台账](../../test文档/用例/Kiwi用例台账.md)》，此处不复述。
+
+### 2.2 已知口径缺口（待排期） <a id="gaps"></a>
+
+| # | 缺口 | 现象 |
+| --- | --- | --- |
+| 1 | 对账只认 Python 标记 | `--reconcile` 扫 `**/*.py` 的 `kiwi_id(...)`；前端 Vitest 的 `describe('…（Kiwi N）')` 不在扫描范围，前端引用只能手工核对（实证：19 ~ 26、698 / 699） |
+| 2 | `only_code` 会误报 | 只查策展产品，`BMS 自动化用例（CI）` 中的编号会显示为「平台缺」（实证 533 / 534）；建议加 `--include-ci` 或按产品分别比较 |
+
 ## 3. 字段与编号口径
 
 - 字段可反查：`TestCase._meta.get_field("<f>").related_model`（category / priority / case_status / author / tag）。
