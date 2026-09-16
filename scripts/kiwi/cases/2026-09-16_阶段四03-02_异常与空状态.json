@@ -1,0 +1,55 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-02 错误页：三码文案 / 操作 / 路由接入",
+      "text": "<p><strong>前置</strong>：<code>src/components/feedback/ErrorPage.vue</code> 与 <code>router/routes.ts</code>（/403 /404 /500 + 未知路径兜底）已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-error-page.spec.ts</code>。</li><li>断言 404 / 403 / 500 缺省标题（i18n）与插画（<code>img src</code> 含 <code>empty-404</code> 等）。</li><li>断言缺省操作：404 返回首页；403 返回首页 / 联系管理员；500 刷新重试 / 返回首页。</li><li>断言点击「返回首页」emit <code>home</code> 且跳转 `/`（注入测试 router）。</li><li>断言自定义 <code>actions</code> 完全覆盖、自定义 title / description。</li><li>断言路由：`/403` `/404` `/500` 渲染对应 code、未知路径重定向 `/404`、<code>redirectToForbidden</code> 目标有落点。</li></ol><p><strong>预期</strong>：全部断言通过；错误页不展示技术堆栈。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-02 空状态：场景矩阵 / 权限按钮 / 交互",
+      "text": "<p><strong>前置</strong>：<code>src/components/feedback/EmptyState.vue</code> 与自绘插画 <code>src/assets/images/empty-*.svg</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-empty-state.spec.ts</code>。</li><li>断言四场景缺省文案与插画（list / search / todo / message）；<code>custom</code> 无缺省文案。</li><li>断言 <code>action</code> 渲染与点击：emit <code>action</code> 并调用 <code>handler</code>。</li><li>断言 <code>actionPerm</code> 无权限时不渲染按钮。</li><li>断言 <code>size='small'</code> 紧凑类与自定义 <code>image</code> 覆盖。</li></ol><p><strong>预期</strong>：全部断言通过；空态优先文案引导。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-02 骨架屏：形态 / 行数 / 插槽切换",
+      "text": "<p><strong>前置</strong>：<code>src/components/feedback/SkeletonBlock.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-skeleton.spec.ts</code>。</li><li>断言 <code>variant</code> 四形态结构类（list / table / form / card）。</li><li>断言 <code>rows</code> 控制 list / table 行数。</li><li>断言 <code>animated=false</code> 无动画类。</li><li>断言 <code>loading=false</code> 渲染默认插槽内容。</li></ol><p><strong>预期</strong>：全部断言通过；骨架与内容结构一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-02 内容遮罩：delay 防闪 / fullscreen / 文案",
+      "text": "<p><strong>前置</strong>：<code>src/components/feedback/LoadingMask.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-loading-mask.spec.ts</code>（fake timers）。</li><li>断言 <code>loading=true</code> 后 delay 内不显示、超时显示。</li><li>断言 <code>loading=false</code> 立即隐藏并清理计时器。</li><li>断言 <code>fullscreen</code> 类与 <code>text</code> 缺省 / 自定义。</li><li>断言包裹内容始终渲染。</li></ol><p><strong>预期</strong>：全部断言通过；短请求不闪烁。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-02 反馈状态机：四态 / 空判定 / 重试",
+      "text": "<p><strong>前置</strong>：<code>src/utils/useFeedback.ts</code> 已落地（内部复用 <code>useRequest</code>）。</p><ol><li>运行 <code>npx vitest run tests/feedback-composable.spec.ts</code>。</li><li>断言 loader 成功 → <code>ready</code> 且 data 就位；空数组 / null / 空对象 → <code>empty</code>。</li><li>断言 loader 抛 <code>ApiError</code> → <code>error</code>（code + message 归一，不暴露堆栈）。</li><li>断言 <code>retry</code> 重新加载成功 → <code>ready</code>。</li><li>断言自定义 <code>isEmpty</code> / <code>errorText</code>、<code>immediate</code> 挂载即加载与 <code>loading</code> 计算。</li></ol><p><strong>预期</strong>：全部断言通过；状态机与《组件设计 · 异常与空状态》§7 一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
