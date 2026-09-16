@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-06-01 请求层：拦截器 / 解包 / 401 收敛刷新 / 幂等键",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true,
+      "text": "<p><strong>前置</strong>：<code>src/api/{adapter,error,request,token,http,base}.ts</code> 已落地；<code>configureHttpAdapter()</code> 可注入 <code>notify</code> / <code>redirectToLogin</code> / <code>redirectToForbidden</code> / <code>refreshHandler</code>（均未注入时按占位降级，不发刷新请求）。</p><p><strong>步骤</strong>：① <code>request&lt;T&gt;()</code> 成功返回；② <code>raw: true</code> 取完整响应；③ 业务错误（HTTP 2xx 且 <code>code !== 0</code>）；④ <code>silent: true</code> 不提示；⑤ HTTP 401 未注入 <code>refreshHandler</code>；⑥ 注入 <code>refreshHandler</code> 后并发 3 个 401；⑦ 刷新失败；⑧ <code>errorMessage</code> 取词优先级；⑨ 请求头注入；⑩ <code>BaseApi</code> 幂等键；⑪ 403 / 5xx 分场景；⑫ 结构异常。</p><p><strong>预期</strong>：① 解包 <code>data</code>；② 返回完整 <code>ApiResponse</code>；③ 抛 <code>ApiError</code>（<code>code</code> / <code>userMessage</code> / <code>details</code>）且默认 <code>notify</code> 被调用一次；④ 不调 <code>notify</code> 但错误照常抛出并经根系上报；⑤ 清 token + <code>redirectToLogin(currentPath)</code> + 抛 <code>ApiError(20001 会话失效)</code>，不发刷新请求；⑥ 只刷新一次、三个请求各重放一次（带新 token）、重放上限 1 次；⑦ 清会话 + 跳登录 + 抛会话失效；⑧ i18n <code>error.{code}</code> → 后端 message → <code>error.default</code>；⑨ 带 <code>Authorization</code> / <code>Accept-Language</code> / <code>X-Request-Id</code>；⑩ <code>post</code> / <code>put</code> / <code>delete</code> 自动生成 <code>Idempotency-Key</code>（<code>get</code> 不带、显式键优先）；⑪ 403 调 <code>redirectToForbidden</code>、5xx 提示含 <code>traceId</code> 并映射 <code>10000</code>；⑫ 非 <code>{code,message,data}</code> 归一为 <code>ApiError(-1)</code>。</p>"
+    },
+    {
+      "summary": "阶段四 02-06-01 组合式：useRequest 竞态取消 / useListPage 分页排序选择",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true,
+      "text": "<p><strong>前置</strong>：<code>src/utils/useRequest.ts</code> 扩展 <code>immediate</code> / <code>refresh</code> / <code>cancel</code>（<code>fetcher</code> 收 <code>signal</code>）；<code>src/utils/useListPage.ts</code> 的 <code>query</code> 为 <code>reactive</code>，并补 <code>selection</code> / <code>onSortChange</code> / <code>remove</code> / <code>immediate</code>；阶段一 Kiwi 23 行为（过期请求失败不写 <code>error</code>）保持。</p><p><strong>步骤</strong>：⑬ <code>immediate: true</code> 挂载即发起；⑭ <code>refresh()</code> 用上次参数重发；⑮ <code>cancel()</code> 中止在途；⑯ 连续发起两次（竞态）；⑰ 直接改 <code>query</code> 字段；⑱ <code>search()</code> / <code>reset()</code>；⑲ <code>onPageChange()</code> / <code>onSortChange()</code>；⑳ <code>selection</code> / <code>clearSelection()</code>；㉑ <code>remove(id)</code>（有 / 无 <code>api.remove</code>）；㉒ 切页时旧请求中止。</p><p><strong>预期</strong>：⑬ 挂载自动发起且 <code>loading</code> 正确；⑭ 重发结果一致；⑮ 中止后 <code>loading</code> 复位且不写 <code>error</code>；⑯ 仅最新请求写回状态，过期失败不写 <code>error</code>；⑰ 字段改动直接生效（reactive 身份不变）；⑱ <code>search</code> 回第 1 页、<code>reset</code> 恢复默认且保留 <code>query</code> 对象身份；⑲ 保留筛选并写 <code>sort</code> / <code>order</code>；⑳ 选择与清空正确；㉑ 有 <code>api.remove</code> 时删除后 <code>reload</code>，无则安全拒绝（不抛未处理异常）；㉒ 旧请求经 <code>signal</code> 中止且不写回。</p>"
+    }
+  ]
+}

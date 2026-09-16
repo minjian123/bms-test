@@ -1143,5 +1143,27 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 717,
+    "summary": "阶段四 02-06-01 请求层：拦截器 / 解包 / 401 收敛刷新 / 幂等键",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 718,
+    "summary": "阶段四 02-06-01 组合式：useRequest 竞态取消 / useListPage 分页排序选择",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]
