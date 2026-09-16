@@ -1,0 +1,35 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-05 主框架壳与宿主编排：区域 / 折叠 / 菜单路由 / keep-alive",
+      "text": "<p><strong>前置</strong>：<code>AppLayout.vue</code>、<code>router/{routeComponent,menuRoutes}.ts</code>、<code>BasicLayout.vue</code>（重写）已落地。</p><ol><li>运行 <code>npx vitest run tests/layout-app-shell.spec.ts</code>。</li><li>断言 AppLayout 区域与插槽（侧栏 / 顶栏 / 标签栏 / 内容区）与折叠宽度（220 ↔ 64px）。</li><li>断言窄屏（mock matchMedia）侧栏收进抽屉、<code>toggleSidebar</code> 可用。</li><li>断言宿主编排（memory router）：路由切换开签、切换回缓存实例保留（keep-alive include 生效）、<code>refresh</code> 重挂载。</li><li>断言 <code>registerMenuRoutes</code>：菜单 → 路由注册（<code>hasRoute</code> / push 渲染占位视图）；未注册组件名回退占位 + 开发态告警。</li></ol><p><strong>预期</strong>：全部断言通过；菜单点击可打开占位页面。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-05 表单框架壳：列表固定 / 详情多开 / 组件映射 / 刷新",
+      "text": "<p><strong>前置</strong>：<code>FormFrame.vue</code> 与 <code>useFormFrame.ts</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/layout-form-frame.spec.ts</code>。</li><li>断言列表 Tab 固定 + <code>openDetail</code> 多开 / 已开激活 / 关闭相邻。</li><li>断言列表组件事件 <code>open-detail</code> 开详情；<code>saved</code> / <code>deleted</code> → 关闭详情 + 刷新列表（<code>fetchList</code> 调用 + 事件）。</li><li>断言组件映射：<code>string</code> 经 <code>resolveView</code> 解析；未注册渲染空态 + 告警。</li><li>断言 <code>setDetailDirty</code> → 关闭确认（mock useConfirm）与 <code>cacheLimit</code> 上限释放。</li></ol><p><strong>预期</strong>：全部断言通过；双层 Tab 行为与《组件设计 · 表单框架壳》一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 03-05 页面容器：标题 / 插槽 / 返回与刷新",
+      "text": "<p><strong>前置</strong>：<code>PageContainer.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/layout-page-container.spec.ts</code>。</li><li>断言标题 / 描述 / 面包屑 / <code>title</code> 与 <code>extra</code> 插槽渲染。</li><li>断言 <code>back</code> 按钮渲染与 <code>back</code> 事件；刷新按钮与 <code>refresh</code> 事件。</li><li>断言 <code>sticky</code> 类与底部操作栏（<code>footer</code>）渲染；默认插槽内容。</li></ol><p><strong>预期</strong>：全部断言通过；与《组件设计 · 页面容器》一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
