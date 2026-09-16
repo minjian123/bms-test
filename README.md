@@ -1,5 +1,7 @@
 # test 仓库（测试资产）
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > 测试资产的独立仓库 · 平台机制的测试部分不放在这里
 
 ## 1. 定位
