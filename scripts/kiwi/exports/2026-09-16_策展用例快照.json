@@ -1165,5 +1165,27 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 719,
+    "summary": "阶段四 02-06-02 权限指令：anyOf / .all / .not / 版本重评",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 720,
+    "summary": "阶段四 02-06-02 权限判定：store / hasPerm / canAccess / PermButton",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]

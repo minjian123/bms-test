@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 02-06-02 权限指令：anyOf / .all / .not / 版本重评",
+      "text": "<p><strong>前置</strong>：<code>src/directives/perm.ts</code> 与权限 store（包 <code>useAccess</code>）已落地。</p><ol><li>运行 <code>npx vitest run tests/directive-perm.spec.ts</code>（双端各一次）。</li><li>断言 <code>v-perm=\"'a'\"</code>：有权限保留、无权限移除 DOM（非 <code>display:none</code>）。</li><li>断言数组默认 anyOf（命中保留 / 全不命中移除）；<code>v-perm.all</code> 需全部满足。</li><li>断言 <code>v-perm.not</code> 取反；空值 / 空数组不限制（保留元素）。</li><li>断言权限版本变更触发重评：恢复后按注释锚点原位回插、收回后再移除；<code>updated</code> 值变化重评。</li><li>断言卸载清理（监听停止、无残留报错）。</li></ol><p><strong>预期</strong>：全部断言通过；无权限元素不进入可见 DOM（前端显隐不构成安全边界，后端强校验为准）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 02-06-02 权限判定：store / hasPerm / canAccess / PermButton",
+      "text": "<p><strong>前置</strong>：<code>src/stores/permission.ts</code>（内包 <code>useAccess</code>）、<code>src/utils/perm.ts</code>、<code>src/components/common/PermButton.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/permission.spec.ts</code>（双端各一次）。</li><li>断言 store 占位：未注入 loader 不请求（空集降级、<code>isPlaceholder</code>）。</li><li>断言 <code>configureLoader</code> + <code>load()</code> 装配集合 / 版本 / 菜单 / <code>loaded</code>；<code>reset()</code> 清空。</li><li>断言 <code>permissions</code> Set 与 <code>permVersion</code> 派生。</li><li>断言 <code>hasPerm</code>（anyOf / all）与 <code>canAccess</code>（字符串 / 数组 / meta 对象 / <code>public</code> / <code>null</code>）。</li><li>断言 <code>filterRoutes</code> 保留公开与无 permission 节点、递归过滤子级。</li><li>断言 <code>PermButton</code> <code>fallback='hide'</code> 不渲染；<code>fallback='disable'</code> 渲染禁用 + 提示且点击不 emit。</li></ol><p><strong>预期</strong>：全部断言通过；权限码集合与判定唯一来自 <code>useAccess</code> 片段（store 不重复实现）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
