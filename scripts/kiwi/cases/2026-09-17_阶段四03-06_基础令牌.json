@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 03-06 基础令牌：五组令牌 / 引用映射 / EP·Vant 映射 / 未定义告警",
+      "text": "<p><strong>前置</strong>：<code>src/styles/tokens.scss</code>（双端）与 <code>src/components/base/design-token/useDesignToken.ts</code>（双端，未定义令牌告警）已落地。</p><ol><li>运行 <code>npx vitest run tests/tokens.spec.ts</code>（双端各一次；SCSS 经 <code>sass.compile</code> 编译后断言）。</li><li>断言基础令牌五组齐备：色彩 10（primary / success / warning / danger / info / bg-page / bg / border / text / text-secondary）、字体 13（family / family-mono / size xs~xxl / weight normal~bold / line-height compact~loose）、间距 6（<code>--bms-space-1/2/3/4/6/8</code> = 4 / 8 / 12 / 16 / 24 / 32px）、圆角 3、阴影 3。</li><li>断言 size 字号 / density 间距已引用基础令牌（<code>--bms-size-font-default: var(--bms-font-size-base)</code> 等 6 条）与属性协议选择器保留（<code>[data-size=*]</code> / <code>[data-density=*]</code>）。</li><li>断言 PC 端 Element Plus 映射：五语义色 + 各 6 档色阶（<code>light-3/5/7/8/9</code>、<code>dark-2</code>，<code>color-mix()</code> 派生）+ <code>-rgb</code> 三元组 + 圆角 + 字体族与基础字号。</li><li>断言移动端 Vant 映射：四语义色（<code>--van-*-color</code>）。</li><li>运行既有 <code>tests/base-fragments-reuse.spec.ts</code> 的 design-token 用例（Kiwi 708 增补）：未定义令牌无显式回退 → 告警一次；同名去重不重复；显式 fallback 不告警；<code>spacing(n)</code> 令牌缺失 → 告警并回落计算值。</li></ol><p><strong>预期</strong>：全部断言通过；令牌文件编译无错；双端行为一致（双端共用编号）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
