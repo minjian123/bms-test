@@ -956,5 +956,60 @@
     "tags": [
       "自动化"
     ]
+  },
+  {
+    "case_id": 700,
+    "summary": "阶段四 02-02 组件根（frontend / frontend-mobile）：props / 透传 / 令牌属性 / 可访问性 / 装配点",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 701,
+    "summary": "阶段四 02-02 占位基类：三类原因 / 三类降级 / 不请求 / stub 抛错",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 702,
+    "summary": "阶段四 02-02 异步资源基类：登记 / 逆序释放 / 幂等 / 释放钩子 / 归一化",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 703,
+    "summary": "阶段四 02-02 错误基类：响应解析 / 提示映射 / 段位判定 / 上报委托",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 704,
+    "summary": "阶段四 02-02 订阅基类：订阅 / 取消 / 占位总线 / 来源切换 / 事件名校验",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
   }
 ]
