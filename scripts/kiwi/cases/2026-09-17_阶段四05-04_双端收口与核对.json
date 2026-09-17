@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 05-04 双端收口与核对：八件跨件一致性自检（13 项，双端同一套）/ 8 节点原型逐项对照 / 门禁复核 / 遗留项关闭",
+      "text": "<p><strong>前置</strong>：`05_01` 输入域口径包装与文本三件、`05_02` 数字框与下拉框、`05_03` 选择三件均已交付（Kiwi 756 ~ 758）；本任务新建双端开发核对页（`frontend/apps/{desktop,mobile}/inputs-check.html` + `src/dev/{InputsCheck.vue,inputsCheck.ts}`，`vite build` 不包含）。</p><ol><li>启动双端 dev server，访问 <code>/inputs-check.html?stage=1</code>（静态首屏）与 <code>?stage=2</code>（自动交互：写值 / 失焦 / 点选 / 危险确认取消）。</li><li>跨件一致性自检（双端同一套 13 项，页面运行时断言上屏）：① 受控写入（八件写值 → 值更新）；② 三态（空值 → 只读占位 `—`；`0` / `false` 视为已填；多值 / 单选只读文本按选项顺序）；③ `disabled` 写门禁（八件写值被拒）；④ `change` 上报（文本 / 数字失焦）；⑤ 校验触发（必填空 → `false`；已填 → `true`）；⑥ 字段壳装配（label / 必填 / 错误 / 帮助）；⑦ 只读两种呈现（默认纯文本不渲染输入元素；`readonlyMode=\"disabled\"` 渲染禁用控件）；⑧ 栅格（`span=12` → `is-inline` + `--bms-input-span`）；⑨ 清空入口（`clearable` + 聚焦）；⑩ 危险确认弹窗 + 取消不写值。</li><li>结论：双端 `stage=2` DOM 断言均 <strong>13/13 全通过</strong>（PC 与移动端同一套断言）。</li><li>8 节点原型逐项对照（原型即验收基准）：文本框 / 文本域 / 密码框 / 数字框 / 下拉框 / 单选（三形态）/ 复选（两形态 + 全选 + 数量上下限）/ 开关（三态 + 危险确认），逐项给期望与实测，见《测试/02_收口核对_基础控件类.md》。</li><li>门禁复核：四包 <code>npm run check</code>（core 91 / vue 13 / ui-ep 111 / ui-vant 112）、双宿主 <code>prettier --check</code>（本域文件）/ <code>lint</code> / <code>vue-tsc -b</code> / <code>test:cov</code>（desktop 85.6% / mobile 88.46%，阈值 70）/ <code>build</code> + <code>budget</code>（desktop 214.1 / 240 KB；mobile 131.6 / 140 KB）。</li></ol><p><strong>预期</strong>：双端自检 13/13 全绿；8 节点对照无偏差或偏差已回写；门禁全通过；遗留项逐项关闭或归口（页面 / 移动端任务、字段类 `06_2` / `06_6`）；4 张截图留痕（`测试/资源/收口核对/`）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true,
+      "case_id": 759
+    }
+  ]
+}
