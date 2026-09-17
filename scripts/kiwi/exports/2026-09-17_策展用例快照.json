@@ -1,0 +1,1576 @@
+[
+  {
+    "case_id": 1,
+    "summary": "根路由返回应用名与版本（GET /）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 2,
+    "summary": "健康检查 /healthz 存活（GET /healthz）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 3,
+    "summary": "demo 创建（POST /api/v1/demos）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 4,
+    "summary": "demo 列表（GET /api/v1/demos）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 5,
+    "summary": "demo 按 ID 查询（GET /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 6,
+    "summary": "demo 更新（PUT /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 7,
+    "summary": "demo 删除（DELETE /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 8,
+    "summary": "demo 查询不存在返回 404（GET /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 9,
+    "summary": "demo 更新不存在返回 404（PUT /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 10,
+    "summary": "demo 删除不存在返回 404（DELETE /api/v1/demos/{id}）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 11,
+    "summary": "BaseRepository 通用 CRUD 与派生方法",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 12,
+    "summary": "BaseService 不存在语义",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 13,
+    "summary": "BaseSchema 公共配置与继承链",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 14,
+    "summary": "BaseObject 公共方法",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 15,
+    "summary": "集合基类（有序集合）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 16,
+    "summary": "进程内并发安全集合",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 17,
+    "summary": "Redis 有序封装",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 18,
+    "summary": "Redis 复合操作与并发语义",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 19,
+    "summary": "frontend 默认页与代理链路冒烟",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 20,
+    "summary": "frontend-mobile 默认页与连通冒烟",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 21,
+    "summary": "frontend 基础类（契约类型/BaseApi/Store/稳定序列化）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 22,
+    "summary": "frontend-mobile 基础类（同款基线）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 23,
+    "summary": "frontend 公共组合式与工具基座（useRequest/useListPage/validators/useTabs/状态映射）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 24,
+    "summary": "frontend-mobile 公共组合式与工具基座（同款基线）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 25,
+    "summary": "frontend Axios 基线单元（解包/错误/拦截器）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 26,
+    "summary": "frontend-mobile Axios 基线单元（同款）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 27,
+    "summary": "依赖锁定与 Python 3.14 兼容矩阵",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": []
+  },
+  {
+    "case_id": 28,
+    "summary": "模块注册表（sys_module 声明 / 唯一性校验 / 只读查询）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 29,
+    "summary": "排序契约基座（规格解析 / 白名单 / 内存排序 / DB 占位）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 30,
+    "summary": "ORM 模型基类 BaseModel 与表规范（雪花 ID / 审计 / 软删除 / 乐观锁）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 31,
+    "summary": "异常体系与统一响应（BizError / ApiResponse / 全局处理器）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 32,
+    "summary": "配置基座结构占位（配置模型与读取接口）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 33,
+    "summary": "安全基座结构占位（密码哈希 / 令牌 / 会话原语签名）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 34,
+    "summary": "日志基座接入点（门面 / 初始化 / stdout 约定）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 35,
+    "summary": "跨阶段基座登记与契约骨架（缓存 / 范围 / 分片 / 事件 / 任务 / 审计）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 36,
+    "summary": "数据访问底座（异步引擎 / 会话 / 工作单元 / 分页 / 只读标记）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 37,
+    "summary": "能力域中间层基类（占位 / 空实现 / 未实现 / 能力域 / 异步资源）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 38,
+    "summary": "多租户数据拓扑（租户解析 / EngineRegistry / 迁移骨架）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": []
+  },
+  {
+    "case_id": 39,
+    "summary": "数据脱敏基座（契约 / 注册表 / 占位直通 / 权限联动 / 序列化掩码 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 40,
+    "summary": "分布式锁基座（契约 / key 拼接 / 占位恒定成功 / hold 上下文与冲突语义 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 41,
+    "summary": "验证码与密码策略基座（契约 / 挑战值对象 / key 与常量 / 占位恒定通过与允许 / 违规码 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 42,
+    "summary": "降级与熔断基座（契约 / 依赖清单与动作枚举 / 占位不降级与恒定闭合 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 43,
+    "summary": "限流幂等防重放中间层（契约 / 配额判定 / 幂等三段式 / 防重放编排 / 签名原语 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 44,
+    "summary": "可观测性基座（指标与链路）（两域契约 / 常量命名 / 链路上下文与父链 / 入站 trace 中间件 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 45,
+    "summary": "健康检查项注册表基座（检查项与注册表契约 / 聚合模板 / 占位固定通过 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 46,
+    "summary": "开放接口 OAuth2 服务端与 scope 基座（签发与撤销契约 / scope 校验 / 数据契约与常量 / 占位固定返回与恒定允许 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 47,
+    "summary": "文件存储基座（对象存储契约 / 数据契约与常量 / 占位固定返回 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 48,
+    "summary": "LLM 适配基座（Provider 契约 / 数据契约与常量 / 占位固定返回与零向量 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 49,
+    "summary": "全文检索基座（统一索引契约 / 数据契约与常量 / 占位固定命中 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 50,
+    "summary": "通知渠道基座（统一发送契约 / 渠道枚举 / 数据契约 / 占位固定成功 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 51,
+    "summary": "实时推送基座（统一推送契约 / 事件常量 / 数据契约 / 占位空操作 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 52,
+    "summary": "出站集成基座（HTTP 请求契约 / Webhook 投递契约 / 数据契约与常量 / 占位固定成功 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 53,
+    "summary": "工作流引擎适配基座（部署 / 启动 / 完成任务契约 / 审批动作枚举 / 数据契约与常量 / 占位固定返回 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 54,
+    "summary": "IdP 与会话存储扩展基座（身份源授权 / 换 token / 用户信息契约 + 会话存取契约 / 占位固定返回 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 55,
+    "summary": "数据查询提供者基座（提供者 + 注册表契约 / 结果契约 / 占位空结果 / 注册表模板 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 56,
+    "summary": "导入导出基座（导入解析 / 行校验 / 导出流式契约 / 列与结果契约 / 占位空结果与空流 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 57,
+    "summary": "审计哈希链基座（链计算 / 校验契约 / 链头与算法常量 / 数据契约 / 占位固定返回与恒定通过 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 58,
+    "summary": "归档策略基座（策略 matches / archive + 查询路由 resolve 契约 / 结果契约与常量 / 占位不归档与在线库 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 59,
+    "summary": "表单字段类型注册表基座（字段类型契约 / 注册表聚合模板 / 常量 / 占位恒定通过与固定映射 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 60,
+    "summary": "国际化翻译基座（translate / resolve_locale / load_messages 契约 / 常量 / 占位原样返回与默认 locale / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 61,
+    "summary": "首页工作台卡片提供者基座（卡片提供者契约 / 注册表聚合模板 / 常量 / 占位空卡片集 / 依赖解析）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 62,
+    "summary": "03-1 配置管理：加载 / 环境分层 / BMS_ 覆盖 / 启动校验（四类失败路径）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 63,
+    "summary": "03-2 日志体系：structlog 渲染 / 上下文字段 / 脱敏 / 请求日志中间件 / 慢请求",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 64,
+    "summary": "03-3 健康检查：探针响应契约（/healthz /readyz 200/503 与不泄露）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 65,
+    "summary": "03-3 健康检查：聚合并发/超时与启动完成态",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 66,
+    "summary": "04-1 CI 流水线激活：冒烟层 job 全绿 / 覆盖率门禁 / 模块清单校验 / 开关守卫",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 67,
+    "summary": "04-2 三库集成与流水线收口：计划校验 job / 占位口径 / 用例骨架 / 真库 job 守门",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 68,
+    "summary": "04-3 M1 验收门禁核对：门禁 10 项证据 / 起服务与探针四态 / 状态三处一致 / 脚本硬规则 / 交叉审核留痕",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 69,
+    "summary": "04-4 测试报告与 README（阶段一收口）：报告四章节+复盘+附录 / 治理脚本两项 / 门禁转达标与 54-54 / README 同步",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 528,
+    "summary": "09-重验证层分档激活与 Kiwi 导入接线（P1+P2）：分档开关 / 契约与报告 job 全绿 / 独立产品隔离 / 凭据与降级 / 全量与插件兼容",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 529,
+    "summary": "01-1 中间层与注册表：BasePluggable 契约 / 双轨登记 / 唯一性拒重 / Null 缺省 / 只读快照",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 530,
+    "summary": "01-1-1 解析器与契约版本：resolve 契约 / 实例缓存 / 缺省 null / 未注册拒 / 主版本兼容校验",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 531,
+    "summary": "02-1 能力域基类改继承：40 类继承链 / Null 缺省登记 / 抽象与无名不登记 / 事件基座落点 / 应用可启动",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 532,
+    "summary": "02-3 null.py 拆分迁移：38 类落点 / 旧路径不可用 / 语义与登记不变 / 全量回归",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 565,
+    "summary": "02-2 提供者改经 resolve_plugin：薄封装解析 / 配置切换零改动 / 健康注册表插件化 / 基类语义 / 直连残留护栏",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 566,
+    "summary": "01-3 插件清单接口：分组清单 / 明细契约 / 未登记 404 / 不含密钥 / 只读 405",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 567,
+    "summary": "03-1 契约测试基座：装配快照枚举 / 注册表语义抽查 / 全部类实现遍历 / 工厂只读",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 568,
+    "summary": "03-1-1 域注册表与实现覆盖：变体与聚合模板 / Null 无副作用 / 注册项自动纳入",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 651,
+    "summary": "03-2 BaseProvider 提取：注册项契约（key + describe）与健康键口径",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 652,
+    "summary": "03-2 组合轨边界：提供者非 BasePluggable、插件快照不含提供者条目",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 655,
+    "summary": "03-3 域注册表收敛：4 域唯一性拒重口径对齐与 3 域 Null 真实登记",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 661,
+    "summary": "04-1 对象存储 local：真实读写 / 缺省切换零改动 / 双实现纳管",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 662,
+    "summary": "04-1-1 minio：延迟导入 / 配置拒启 / 密钥分离 / 客户端方法映射",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 663,
+    "summary": "04-2 M3 门禁核对：8 项结论与证据索引齐备、三类文档状态一致",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 664,
+    "summary": "04-2-1 阶段测试报告归档核对：结构齐备、数据一致、链接可解析",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 675,
+    "summary": "05 过渡物清理核验：registry.py 删除、[minio].bucket 键位移除",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 676,
+    "summary": "05 MinIO 真实连通验证（env 门控集成用例）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 677,
+    "summary": "05 四端口 Null 与全量接线：清单 36→40、Null 语义齐备",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 678,
+    "summary": "05 health Null 登记口径对齐：register 真实登记、聚合不探依赖",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 688,
+    "summary": "模块边界护栏：分层依赖方向与跨模块私有引用（批 1）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 689,
+    "summary": "事件基座占位：发布 / 消费 Null 实现契约（阶段十回补）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 697,
+    "summary": "能力域占位：选项源 / 用户展示 / 富文本净化 / 上传编排",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 698,
+    "summary": "阶段四 02-01 根系基类（frontend）：字段 / 配置 / 日志 / 错误上报 / i18n / 生命周期钩子",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 699,
+    "summary": "阶段四 02-01 根系基类（frontend-mobile）：同款双端一致性",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 700,
+    "summary": "阶段四 02-02 组件根（frontend / frontend-mobile）：props / 透传 / 令牌属性 / 可访问性 / 装配点",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 701,
+    "summary": "阶段四 02-02 占位基类：三类原因 / 三类降级 / 不请求 / stub 抛错",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 702,
+    "summary": "阶段四 02-02 异步资源基类：登记 / 逆序释放 / 幂等 / 释放钩子 / 归一化",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 703,
+    "summary": "阶段四 02-02 错误基类：响应解析 / 提示映射 / 段位判定 / 上报委托",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 704,
+    "summary": "阶段四 02-02 订阅基类：订阅 / 取消 / 占位总线 / 来源切换 / 事件名校验",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 705,
+    "summary": "阶段四 02-03 片段机制：声明 / 依赖校验 / 循环检测 / 开发态告警",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 706,
+    "summary": "阶段四 02-03 注册表基座：唯一性拒重 / 未命中 / 保序 / 只读快照",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 707,
+    "summary": "阶段四 02-03 核心 12 片段：形态 / 值·字段链 / 选项源契约",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 708,
+    "summary": "阶段四 02-03 复用 19 片段：状态 / 上下文 / 占位降级契约",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 709,
+    "summary": "阶段四 02-04 输入域基类：受控绑定 / 禁用合并 / 字段上下文 / 校验",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 710,
+    "summary": "阶段四 02-04 展示域基类：格式化 / 空值占位 / 省略与复制",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 711,
+    "summary": "阶段四 02-04 树域基类：归一 / 懒加载 / 选择勾选 / 过滤保留祖先",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 712,
+    "summary": "阶段四 02-04 编辑器域基类：占位降级 / 去抖上报 / 卸载销毁 / 富文本净化",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 713,
+    "summary": "阶段四 02-05 继承护栏：基类链 / 组件包装 / 片段声明（AST）",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 714,
+    "summary": "阶段四 02-05 依赖边界：反向依赖 / UI 库 / 单向与循环",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 715,
+    "summary": "阶段四 02-05 清单对账：漏登记 / 僵尸条目双向",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 716,
+    "summary": "阶段四 02-05 新增流程演练与错误码对齐",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 717,
+    "summary": "阶段四 02-06-01 请求层：拦截器 / 解包 / 401 收敛刷新 / 幂等键",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 718,
+    "summary": "阶段四 02-06-01 组合式：useRequest 竞态取消 / useListPage 分页排序选择",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 719,
+    "summary": "阶段四 02-06-02 权限指令：anyOf / .all / .not / 版本重评",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 720,
+    "summary": "阶段四 02-06-02 权限判定：store / hasPerm / canAccess / PermButton",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 721,
+    "summary": "阶段四 02-06-03 格式化工具：日期时区 / 数值金额 / 边界",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 722,
+    "summary": "阶段四 02-06-03 格式化器注册与校验器：注册表 / 展示接入 / 规则",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 723,
+    "summary": "阶段四 03-06 基础令牌：五组令牌 / 引用映射 / EP·Vant 映射 / 未定义告警",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": false,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 724,
+    "summary": "阶段四 03-01 弹窗容器：三态 / 尺寸阶梯 / 脏数据拦截 / 提交与权限",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 725,
+    "summary": "阶段四 03-01 组合式：useFormModal 状态机 / 脏数据 / 409 与 useConfirm",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 726,
+    "summary": "阶段四 03-02 错误页：三码文案 / 操作 / 路由接入",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 727,
+    "summary": "阶段四 03-02 空状态：场景矩阵 / 权限按钮 / 交互",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 728,
+    "summary": "阶段四 03-02 骨架屏：形态 / 行数 / 插槽切换",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 729,
+    "summary": "阶段四 03-02 内容遮罩：delay 防闪 / fullscreen / 文案",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 730,
+    "summary": "阶段四 03-02 反馈状态机：四态 / 空判定 / 重试",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 731,
+    "summary": "阶段四 03-03-01 多标签导航：固定 / 交互 / 右键 / 上限 / 脏数据",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 732,
+    "summary": "阶段四 03-03-01 双层标签：列表固定 / 详情多开 / 关闭相邻",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 733,
+    "summary": "阶段四 03-03-02 主从布局：分割 / 折叠 / 窄屏 / 空态",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 734,
+    "summary": "阶段四 03-03-02 主树：搜索 / 选中 / 多选 / 计数 / 维护入口",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 735,
+    "summary": "阶段四 03-03-03 基础布局件一：栅格 / 间距分割线 / 分栏",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 736,
+    "summary": "阶段四 03-03-03 基础布局件二：内容页签 / 卡片 / 折叠",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 737,
+    "summary": "阶段四 03-04 侧边菜单：渲染 / 高亮 / 折叠 / 互斥 / 外链 / 徽标",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 738,
+    "summary": "阶段四 03-04 菜单数据层与路由守卫：占位加载 / 展开持久化 / 权限跳转",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 739,
+    "summary": "阶段四 03-05 主框架壳与宿主编排：区域 / 折叠 / 菜单路由 / keep-alive",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 740,
+    "summary": "阶段四 03-05 表单框架壳：列表固定 / 详情多开 / 组件映射 / 刷新",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 741,
+    "summary": "阶段四 03-05 页面容器：标题 / 插槽 / 返回与刷新",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "DISABLED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 742,
+    "summary": "阶段四 04-01 滚动容器：高度 / 滚动条 / 触底触顶 / 暴露方法",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 743,
+    "summary": "阶段四 04-01 滚动位置存储与保持：记录 / 恢复 / 键语义",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 744,
+    "summary": "阶段四 04-02 懒加载容器：视口渲染 / 占位 / 缓存与降级",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 745,
+    "summary": "阶段四 04-02 虚拟列表容器：可视区 / 动态高度 / 触底 / 定位",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 746,
+    "summary": "阶段四 04-03 全屏容器：请求 / 降级 / 状态同步 / 首次提示",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 747,
+    "summary": "阶段四 04-03 自适应高度容器：父剩余空间 / 重算去抖 / 内部滚动",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 748,
+    "summary": "阶段四 04-03 宽高比容器：比例解析 / 填充 / 占位与降级",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 749,
+    "summary": "阶段四 04-04 加载遮罩容器：四态互斥 / 延迟显示 / 重试",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 750,
+    "summary": "阶段四 04-04 分区容器：标题 / 折叠 / 档位与令牌",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 751,
+    "summary": "阶段四 03-02-01 移动端错误页：三码文案 / 操作 / 路由接入",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 752,
+    "summary": "阶段四 03-02-01 移动端空状态：场景矩阵 / 权限按钮 / 交互",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 753,
+    "summary": "阶段四 03-02-01 移动端骨架屏：形态 / 行数 / 插槽切换",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 754,
+    "summary": "阶段四 03-02-01 移动端内容遮罩：delay 防闪 / fullscreen / 文案",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  },
+  {
+    "case_id": 755,
+    "summary": "阶段四 03-02-01 移动端反馈状态机：四态 / 空判定 / 重试",
+    "category": "平台骨架",
+    "priority": "P2",
+    "status": "CONFIRMED",
+    "is_automated": true,
+    "tags": [
+      "自动化"
+    ]
+  }
+]
