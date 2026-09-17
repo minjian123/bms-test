@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 05-01 输入域口径包装与文本三件（ui-ep / ui-vant）：受控与三态 / 归一 / 字段壳 / 只读 / 密码安全",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{core,vue,ui-ep,ui-vant}</code> 已装依赖；输入域口径包装（<code>@bms/core</code> <code>domain/input.ts</code> + <code>@bms/vue</code> <code>useInput</code> + 双插件 <code>BaseInput.vue</code>）与文本三件（<code>TextField</code> / <code>TextareaField</code> / <code>PasswordField</code>）已落地；文案由宿主 <code>input</code> 分组键提供（测试内联最小 messages）。</p><ol><li>运行 <code>npm run -w @bms/core test</code>：域工厂归一（trim / 空串 → <code>null</code> / 自定义钩子）、清空（<code>clearable</code>）、只读与禁用判定（<code>mode()</code>）、写门禁（禁用 / 只读拒写）；密码强度纯函数四类判定与边界（空值 / 仅长度 / 类别不足 / 强密码）。</li><li>运行 <code>npx vitest run tests/input.spec.ts tests/contracts-input.spec.ts</code>（<code>frontend/packages/ui-ep</code> 与 <code>frontend/packages/ui-vant</code> 各一次；契约工厂 <code>describeInputControlsContract</code> 同一套断言）。</li><li>断言三件根类名钩子（<code>bms-text-field</code> / <code>bms-textarea-field</code> / <code>bms-password-field</code>）与 <code>bms-input</code> 字段壳存在。</li><li>断言受控写入触发 <code>update:modelValue</code>；<code>maxlength</code> 截断与 <code>showWordLimit</code> 计数文案渲染。</li><li>断言失焦归一（<code>trim</code> 去首尾空格、空串 → <code>null</code>）与 <code>change</code> 上报值；<code>0</code> / <code>false</code> 不被空值判定吞掉。</li><li>断言文本域多行渲染 + <code>rows</code> + 换行保留（提交前换行符统一 <code>\\n</code>）。</li><li>断言密码件 <code>type=password</code>、明文切换后 <code>type=text</code>、<code>autocomplete=new-password</code>；明文仅组件内内存态、不写 <code>console</code> / 不落 <code>localStorage</code>（<code>console.log</code> 未被调用）。</li><li>断言密码强度提示渲染与 <code>minLength</code> 不满足时 <code>validate(false)</code>。</li><li>断言字段壳：<code>label</code> / 必填星号 / <code>help</code> / <code>error</code> 渲染；<code>readonly</code> 默认 <code>readonlyMode=text</code> 时纯文本回显（不渲染输入元素）、空值占位、<code>readonlyMode=disabled</code> 时输入元素 <code>disabled</code>；<code>disabled</code> 时不触发 <code>update:modelValue</code>。</li><li>断言 <code>span=12</code> 时根元素含 <code>--bms-input-span: 12</code>（24 制栅格语义）。</li></ol><p><strong>预期</strong>：以上断言双端全部通过；新增文件覆盖并入 <code>frontend/apps/{desktop,mobile}</code> 的 <code>test:cov</code> 阈值（≥ 70%）；<code>vue-tsc</code> / ESLint / 构建与体积预算全通过。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true,
+      "case_id": 756
+    }
+  ]
+}
