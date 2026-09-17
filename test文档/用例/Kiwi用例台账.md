@@ -58,9 +58,9 @@
 
 | 范围（apps 侧 = 原 frontend） | 处置 | 承接 |
 | --- | --- | --- |
-| 724 / 725（弹窗抽屉表单）、726 ~ 730（异常与空状态）、731 ~ 736（结构布局）、737（侧边菜单渲染）、740 / 741（表单框架壳 / 页面容器）、742 ~ 750 的 apps 侧执行（容器域 04-01 ~ 04-04） | **DISABLED**（apps 侧用例随旧件删除下线，2026-09-17） | `packages/ui-ep` 用例套件（59 条，`packages/ui-ep/tests/*.spec.ts`）+ 宿主用例 739（保留，切 ui-ep 断言） |
-| 698 / 699（根系）、700 ~ 704（组件根基类）、705 ~ 708（片段机制）、709 ~ 712（域基类）、713 ~ 716（护栏）、717 / 718（请求）、719 / 720（权限）、721 / 722（格式化）、738（菜单数据层与守卫） | **CONFIRMED 不变**（片段层 / 基础设施用例随迁 `apps/desktop/tests/`，断言集不变） | — |
-| `frontend-mobile` 侧（742 ~ 750 等双端同号中 mobile 侧执行） | **CONFIRMED 不变**（S4c 2026-09-17 迁入 `packages/ui-vant/tests/`，Kiwi 原号保持） | `packages/ui-vant/tests/container-*.spec.ts`（9 spec；承接套件含契约用例共 64 条） |
+| 724 / 725（弹窗抽屉表单）、726 ~ 730（异常与空状态）、731 ~ 736（结构布局）、737（侧边菜单渲染）、740 / 741（表单框架壳 / 页面容器）、742 ~ 750 的 apps 侧执行（容器域 04-01 ~ 04-04） | **DISABLED**（apps 侧用例随旧件删除下线，2026-09-17） | `frontend/packages/ui-ep` 用例套件（59 条，`frontend/packages/ui-ep/tests/*.spec.ts`）+ 宿主用例 739（保留，切 ui-ep 断言） |
+| 698 / 699（根系）、700 ~ 704（组件根基类）、705 ~ 708（片段机制）、709 ~ 712（域基类）、713 ~ 716（护栏）、717 / 718（请求）、719 / 720（权限）、721 / 722（格式化）、738（菜单数据层与守卫） | **CONFIRMED 不变**（片段层 / 基础设施用例随迁 `frontend/apps/desktop/tests/`，断言集不变） | — |
+| `frontend-mobile` 侧（742 ~ 750 等双端同号中 mobile 侧执行） | **CONFIRMED 不变**（S4c 2026-09-17 迁入 `frontend/packages/ui-vant/tests/`，Kiwi 原号保持） | `frontend/packages/ui-vant/tests/container-*.spec.ts`（9 spec；承接套件含契约用例共 64 条） |
 | `frontend-mobile` 侧旧层用例（`base-*` / `guard-*` / `format-registry` / `container-*` 等 28 spec） | **随层删除（不影响平台状态）**——对应编号 698 ~ 722 / 738 / 739 由 apps 侧继续执行（CONFIRMED 不变），724 ~ 737 / 740 / 741 已在下方统一停用 | 核心断言转 `@bms/core` / `@bms/vue` / `ui-vant` 套件承接；宿主用例（719 / 720 / 721 / 722 / 723 等）保留并改造（判定经插件注入点） |
 
 - 迁移口径：能力断言不减少——旧件用例的覆盖点已由 `ui-ep` 套件（S3 迁移时逐件移植，累计 59 条）承接；
@@ -80,10 +80,10 @@
 | 来源 | `bms/bms文档/项目/04_前端组件库/任务/03_布局组件类/03_布局组件类_02_异常与空状态_01_移动端反馈件/`（需求 03-2，嵌套子任务） |
 | 输入文件（本批，可幂等重跑） | `scripts/kiwi/cases/2026-09-17_阶段四03-02-01_移动端反馈件.json` |
 | 平台编号（回读） | **751**（移动端错误页）、**752**（移动端空状态）、**753**（移动端骨架屏）、**754**（移动端内容遮罩）、**755**（移动端反馈状态机） |
-| 自动化文件 | `bms/packages/ui-vant/tests/feedback-{error-page,empty-state,skeleton,loading-mask}.spec.ts`（4）与 `bms/apps/mobile/tests/use-feedback.spec.ts`（1）；契约套件 `bms/packages/{ui-ep,ui-vant}/tests/contracts-feedback.spec.ts`（不另登记编号） |
+| 自动化文件 | `bms/frontend/packages/ui-vant/tests/feedback-{error-page,empty-state,skeleton,loading-mask}.spec.ts`（4）与 `bms/frontend/apps/mobile/tests/use-feedback.spec.ts`（1）；契约套件 `bms/frontend/packages/{ui-ep,ui-vant}/tests/contracts-feedback.spec.ts`（不另登记编号） |
 | 覆盖点 | 错误页：三码标题与插画 / 缺省操作集 / `home` emit 与跳转 / `contact` 仅 emit / 自定义 `actions` 覆盖 / 不含堆栈；空状态：四场景文案 + `van-empty` 映射 / `small` / `actionPerm` 拦截与放行 / 自定义覆盖；骨架：`list`（`van-skeleton`）与 `table / form / card`（自绘）行数结构 / `loading=false` 插槽；遮罩：`delay` 防闪（假时钟）/ `role="status"` / 自定义文案 / `fullscreen` / 卸载清理；状态机：四态 / `[]`·`null`·`{}` 空判定 / `ApiError` 归一不暴露堆栈 / `retry` / `immediate` |
 | 状态 | 全部 CONFIRMED（分类「平台骨架」、优先级 P2、标签「自动化」、`is_automated = true`）；**编号新取，不复用停用编号 726 ~ 730** |
-| 执行结果 | `packages/ui-vant` **16 / 82**、`packages/ui-ep` **13 / 82**（含同套契约）、`apps/mobile` **11 / 63** 全绿；移动端构建体积合计 128.9 / 140 KB |
+| 执行结果 | `frontend/packages/ui-vant` **16 / 82**、`frontend/packages/ui-ep` **13 / 82**（含同套契约）、`frontend/apps/mobile` **11 / 63** 全绿；移动端构建体积合计 128.9 / 140 KB |
 | 备注 | 契约口径：`@bms/core/testing` 反馈件契约套件（双实现同一套断言）；PC 侧 `ErrorPage` 增 `data-action`（additive，供契约定位） |
 
 > 上一批次（阶段四 04-04 状态与分区，749 / 750）见 §2 第 32 行；04-04 批次明细见 git 历史。
