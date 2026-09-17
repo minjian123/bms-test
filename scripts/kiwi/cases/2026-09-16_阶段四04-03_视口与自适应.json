@@ -3,7 +3,7 @@
   "cases": [
     {
       "summary": "阶段四 04-03 全屏容器：请求 / 降级 / 状态同步 / 首次提示",
-      "text": "<p><strong>前置</strong>：<code>FullscreenContainer.vue</code> 已落地（双端同款交付；本批自动化仅 frontend，移动端同号人工核对）。</p><ol><li>运行 <code>npx vitest run tests/container-fullscreen.spec.ts</code>。</li><li>断言 <code>enter</code> / <code>exit</code> / <code>toggle</code> 与 <code>requestFullscreen</code> 调用目标（<code>self</code> / <code>document</code>）。</li><li>断言 <code>fullscreenchange</code> 状态同步与 <code>update:modelValue</code> / <code>fullscreen-change</code> 事件（含浏览器 Esc 退出路径）。</li><li>断言失败降级：<code>fullscreen-error</code> + 固定铺满类 + 降级态监听 Esc 退出。</li><li>断言首次提示：进入显示 i18n 提示条、3 秒后隐藏、二次进入不再显示、<code>showTip=false</code> 关闭。</li><li>断言卸载清理（监听移除、全屏中退出）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 全屏容器》契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{ui-ep,ui-vant}/src/components/container/FullscreenContainer.vue</code> 已落地（同接口多实现交付）。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-vant/tests/container-fullscreen.spec.ts</code>（仅 ui-vant 实现）。</li><li>断言 <code>enter</code> / <code>exit</code> / <code>toggle</code> 与 <code>requestFullscreen</code> 调用目标（<code>self</code> / <code>document</code>）。</li><li>断言 <code>fullscreenchange</code> 状态同步与 <code>update:modelValue</code> / <code>fullscreen-change</code> 事件（含浏览器 Esc 退出路径）。</li><li>断言失败降级：<code>fullscreen-error</code> + 固定铺满类 + 降级态监听 Esc 退出。</li><li>断言首次提示：进入显示 i18n 提示条、3 秒后隐藏、二次进入不再显示、<code>showTip=false</code> 关闭。</li><li>断言卸载清理（监听移除、全屏中退出）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 全屏容器》契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -13,7 +13,7 @@
     },
     {
       "summary": "阶段四 04-03 自适应高度容器：父剩余空间 / 重算去抖 / 内部滚动",
-      "text": "<p><strong>前置</strong>：<code>AutoHeight.vue</code> 已落地（双端同款）。</p><ol><li>运行 <code>npx vitest run tests/container-auto-height.spec.ts</code>。</li><li>断言高度 = 父元素 <code>clientHeight</code> − <code>offset</code>，<code>minHeight</code> / <code>maxHeight</code> 裁剪。</li><li>断言父高不可测时回退窗口视口高（<code>innerHeight</code>）。</li><li>断言 <code>ResizeObserver</code> 观察父元素：手动触发后（去抖）重算；同值不重写（防循环）。</li><li>断言 <code>scroll=true</code> 滚动类（消费滚动条令牌）与 <code>scroll=false</code> 无该类。</li><li>断言 <code>recalculate</code> / <code>height</code> / <code>el</code> 暴露；<code>offset</code> 变更即时重算。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 自适应高度容器》契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{ui-ep,ui-vant}/src/components/container/AutoHeight.vue</code> 已落地（同接口多实现）。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-vant/tests/container-auto-height.spec.ts</code>（仅 ui-vant 实现）。</li><li>断言高度 = 父元素 <code>clientHeight</code> − <code>offset</code>，<code>minHeight</code> / <code>maxHeight</code> 裁剪。</li><li>断言父高不可测时回退窗口视口高（<code>innerHeight</code>）。</li><li>断言 <code>ResizeObserver</code> 观察父元素：手动触发后（去抖）重算；同值不重写（防循环）。</li><li>断言 <code>scroll=true</code> 滚动类（消费滚动条令牌）与 <code>scroll=false</code> 无该类。</li><li>断言 <code>recalculate</code> / <code>height</code> / <code>el</code> 暴露；<code>offset</code> 变更即时重算。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 自适应高度容器》契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -23,7 +23,7 @@
     },
     {
       "summary": "阶段四 04-03 宽高比容器：比例解析 / 填充 / 占位与降级",
-      "text": "<p><strong>前置</strong>：<code>AspectRatio.vue</code> 已落地（双端同款）。</p><ol><li>运行 <code>npx vitest run tests/container-aspect-ratio.spec.ts</code>。</li><li>断言比例解析：数字 / <code>'16/9'</code> / <code>'4:3'</code> / 非法值回退 <code>16/9</code> + 开发态告警。</li><li>断言 style 输出：<code>aspect-ratio</code> 与 <code>--bms-aspect-ratio-number</code> / <code>--bms-aspect-ratio-fit</code>。</li><li>断言 <code>fit</code> 映射类与媒体元素 <code>object-fit</code> 规则存在；占位块与 <code>#placeholder</code> 插槽。</li><li>断言 <code>maxWidth</code> / <code>minHeight</code> 解析输出；<code>@supports not</code> 降级样式片段存在（构建产物样式断言）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 宽高比容器》契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{ui-ep,ui-vant}/src/components/container/AspectRatio.vue</code> 已落地（同接口多实现）。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-vant/tests/container-aspect-ratio.spec.ts</code>（仅 ui-vant 实现）。</li><li>断言比例解析：数字 / <code>'16/9'</code> / <code>'4:3'</code> / 非法值回退 <code>16/9</code> + 开发态告警。</li><li>断言 style 输出：<code>aspect-ratio</code> 与 <code>--bms-aspect-ratio-number</code> / <code>--bms-aspect-ratio-fit</code>。</li><li>断言 <code>fit</code> 映射类与媒体元素 <code>object-fit</code> 规则存在；占位块与 <code>#placeholder</code> 插槽。</li><li>断言 <code>maxWidth</code> / <code>minHeight</code> 解析输出；<code>@supports not</code> 降级样式片段存在（构建产物样式断言）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 宽高比容器》契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",

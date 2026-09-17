@@ -4,7 +4,7 @@
     {
       "summary": "阶段四 03-02-01 移动端错误页：三码文案 / 操作 / 路由接入",
       "case_id": 751,
-      "text": "<p><strong>前置</strong>：<code>packages/ui-vant/src/components/feedback/ErrorPage.vue</code> 与插画 <code>src/assets/images/empty-{403,404,500}.svg</code> 已落地（与 <code>ui-ep</code> 同契约）。</p><ol><li>运行 <code>npx vitest run tests/feedback-error-page.spec.ts</code>（<code>packages/ui-vant</code>）。</li><li>断言 404 / 403 / 500 缺省标题（i18n <code>feedback.error{code}Title</code>）与缺省操作集（404 → 1；403 / 500 → 2）。</li><li>断言点击操作 emit <code>home</code> / <code>retry</code> / <code>contact</code>；自定义 <code>actions</code> 完全覆盖。</li><li>断言自定义 title / description；错误页不展示技术堆栈。</li><li>契约套件：<code>describeFeedbackComponentsContract</code> 对 <code>ui-ep</code> / <code>ui-vant</code> 跑同一套断言全绿。</li></ol><p><strong>预期</strong>：全部断言通过；类名钩子（<code>bms-error-page*</code>）与 props / emits 契约与 PC 一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-vant/src/components/feedback/ErrorPage.vue</code> 与插画 <code>src/assets/images/empty-{403,404,500}.svg</code> 已落地（与 <code>ui-ep</code> 同契约）。</p><ol><li>运行 <code>npx vitest run tests/feedback-error-page.spec.ts</code>（<code>frontend/packages/ui-vant</code>）。</li><li>断言 404 / 403 / 500 缺省标题（i18n <code>feedback.error{code}Title</code>）与缺省操作集（404 → 1；403 / 500 → 2）。</li><li>断言点击操作 emit <code>home</code> / <code>retry</code> / <code>contact</code>；自定义 <code>actions</code> 完全覆盖。</li><li>断言自定义 title / description；错误页不展示技术堆栈。</li><li>契约套件：<code>describeFeedbackComponentsContract</code> 对 <code>ui-ep</code> / <code>ui-vant</code> 跑同一套断言全绿。</li></ol><p><strong>预期</strong>：全部断言通过；类名钩子（<code>bms-error-page*</code>）与 props / emits 契约与 PC 一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -17,7 +17,7 @@
     {
       "summary": "阶段四 03-02-01 移动端空状态：场景矩阵 / 权限按钮 / 交互",
       "case_id": 752,
-      "text": "<p><strong>前置</strong>：<code>packages/ui-vant/src/components/feedback/EmptyState.vue</code>（<code>van-empty</code> 映射）与 7 个 <code>empty-*.svg</code> 资产已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-empty-state.spec.ts</code>（<code>packages/ui-vant</code>）。</li><li>断言场景缺省标题（list / search / todo / message，i18n）与 <code>size='small'</code> 修饰类。</li><li>断言引导按钮：<code>actionPerm</code> 未注入（空集）不渲染；放行后渲染并可点击 emit <code>action</code>（同时调 handler）。</li><li>断言自定义 <code>title</code> / <code>description</code> / <code>image</code>。</li></ol><p><strong>预期</strong>：全部断言通过；类名钩子 <code>bms-empty-state*</code> 与 PC 契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-vant/src/components/feedback/EmptyState.vue</code>（<code>van-empty</code> 映射）与 7 个 <code>empty-*.svg</code> 资产已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-empty-state.spec.ts</code>（<code>frontend/packages/ui-vant</code>）。</li><li>断言场景缺省标题（list / search / todo / message，i18n）与 <code>size='small'</code> 修饰类。</li><li>断言引导按钮：<code>actionPerm</code> 未注入（空集）不渲染；放行后渲染并可点击 emit <code>action</code>（同时调 handler）。</li><li>断言自定义 <code>title</code> / <code>description</code> / <code>image</code>。</li></ol><p><strong>预期</strong>：全部断言通过；类名钩子 <code>bms-empty-state*</code> 与 PC 契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -30,7 +30,7 @@
     {
       "summary": "阶段四 03-02-01 移动端骨架屏：形态 / 行数 / 插槽切换",
       "case_id": 753,
-      "text": "<p><strong>前置</strong>：<code>packages/ui-vant/src/components/feedback/SkeletonBlock.vue</code>（<code>list</code> 走 <code>van-skeleton</code>，<code>table / form / card</code> 自绘）已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-skeleton.spec.ts</code>（<code>packages/ui-vant</code>）。</li><li>断言四形态修饰类（<code>bms-skeleton--{variant}</code>）与 <code>rows</code> 行数（table = rows + 1 行含表头）。</li><li>断言 <code>loading=false</code> 渲染默认插槽内容；<code>animated=false</code> 关闭动画。</li><li>断言 <code>card</code> 形态含封面 / 标题 / 段落结构类。</li></ol><p><strong>预期</strong>：全部断言通过；骨架与内容结构一致口径在移动端成立。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-vant/src/components/feedback/SkeletonBlock.vue</code>（<code>list</code> 走 <code>van-skeleton</code>，<code>table / form / card</code> 自绘）已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-skeleton.spec.ts</code>（<code>frontend/packages/ui-vant</code>）。</li><li>断言四形态修饰类（<code>bms-skeleton--{variant}</code>）与 <code>rows</code> 行数（table = rows + 1 行含表头）。</li><li>断言 <code>loading=false</code> 渲染默认插槽内容；<code>animated=false</code> 关闭动画。</li><li>断言 <code>card</code> 形态含封面 / 标题 / 段落结构类。</li></ol><p><strong>预期</strong>：全部断言通过；骨架与内容结构一致口径在移动端成立。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -43,7 +43,7 @@
     {
       "summary": "阶段四 03-02-01 移动端内容遮罩：delay 防闪 / fullscreen / 文案",
       "case_id": 754,
-      "text": "<p><strong>前置</strong>：<code>packages/ui-vant/src/components/feedback/LoadingMask.vue</code>（<code>van-loading</code> + 自绘遮罩）已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-loading-mask.spec.ts</code>（<code>packages/ui-vant</code>）。</li><li>断言 <code>delay</code> 防闪烁（假时钟：短请求不显示、慢请求显示、<code>loading=false</code> 即时隐藏）。</li><li>断言遮罩 <code>role=\"status\"</code> / <code>aria-busy</code>、缺省文案 i18n <code>feedback.loading</code> 与自定义 <code>text</code>。</li><li>断言 <code>fullscreen</code> 根修饰类（<code>--fullscreen</code>）与包裹内容默认插槽渲染。</li></ol><p><strong>预期</strong>：全部断言通过；遮罩覆盖语义与 PC 契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-vant/src/components/feedback/LoadingMask.vue</code>（<code>van-loading</code> + 自绘遮罩）已落地。</p><ol><li>运行 <code>npx vitest run tests/feedback-loading-mask.spec.ts</code>（<code>frontend/packages/ui-vant</code>）。</li><li>断言 <code>delay</code> 防闪烁（假时钟：短请求不显示、慢请求显示、<code>loading=false</code> 即时隐藏）。</li><li>断言遮罩 <code>role=\"status\"</code> / <code>aria-busy</code>、缺省文案 i18n <code>feedback.loading</code> 与自定义 <code>text</code>。</li><li>断言 <code>fullscreen</code> 根修饰类（<code>--fullscreen</code>）与包裹内容默认插槽渲染。</li></ol><p><strong>预期</strong>：全部断言通过；遮罩覆盖语义与 PC 契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -56,7 +56,7 @@
     {
       "summary": "阶段四 03-02-01 移动端反馈状态机：四态 / 空判定 / 重试",
       "case_id": 755,
-      "text": "<p><strong>前置</strong>：<code>apps/mobile/src/utils/useFeedback.ts</code>（宿主级，与 <code>apps/desktop/src/utils/useFeedback.ts</code> 同契约）已落地。</p><ol><li>运行 <code>npx vitest run tests/use-feedback.spec.ts</code>（<code>apps/mobile</code>）。</li><li>断言四态：<code>loading → ready / empty / error</code>；<code>retry</code> 回 <code>loading</code> 重试。</li><li>断言空判定缺省（<code>[]</code> / <code>null</code> / <code>{}</code>）与自定义 <code>isEmpty</code>（区分无数据与筛选无结果）。</li><li>断言错误归一：<code>ApiError</code> 取 <code>userMessage</code>（<code>error.{code}</code> 映射）、不暴露堆栈；<code>onError</code> 回调触发。</li><li>断言 <code>immediate</code> 挂载即加载。</li></ol><p><strong>预期</strong>：全部断言通过；移动端页面可据 <code>state</code> 编排四件反馈件。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/apps/mobile/src/utils/useFeedback.ts</code>（宿主级，与 <code>frontend/apps/desktop/src/utils/useFeedback.ts</code> 同契约）已落地。</p><ol><li>运行 <code>npx vitest run tests/use-feedback.spec.ts</code>（<code>frontend/apps/mobile</code>）。</li><li>断言四态：<code>loading → ready / empty / error</code>；<code>retry</code> 回 <code>loading</code> 重试。</li><li>断言空判定缺省（<code>[]</code> / <code>null</code> / <code>{}</code>）与自定义 <code>isEmpty</code>（区分无数据与筛选无结果）。</li><li>断言错误归一：<code>ApiError</code> 取 <code>userMessage</code>（<code>error.{code}</code> 映射）、不暴露堆栈；<code>onError</code> 回调触发。</li><li>断言 <code>immediate</code> 挂载即加载。</li></ol><p><strong>预期</strong>：全部断言通过；移动端页面可据 <code>state</code> 编排四件反馈件。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",

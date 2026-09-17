@@ -3,7 +3,7 @@
   "cases": [
     {
       "summary": "阶段四 03-03-01 多标签导航：固定 / 交互 / 右键 / 上限 / 脏数据",
-      "text": "<p><strong>前置</strong>：<code>src/components/tabs/TabsNav.vue</code>（组合片段 <code>base/tabs/useTabs</code>，受控 / 非受控）已落地。</p><ol><li>运行 <code>npx vitest run tests/tabs-nav.spec.ts</code>。</li><li>断言固定首签不可关与排序（片段保证）。</li><li>断言点击标签 emit <code>select</code> 且注入 router 时 <code>push(path)</code>。</li><li>断言关闭激活项激活右邻（无右取左）。</li><li>断言右键菜单五项与行为（关闭当前 / 其他 / 右侧 / 全部，固定签保留）。</li><li>断言非受控 <code>maxOpen</code> 超限自动关闭最久未激活并 emit <code>exceed</code>。</li><li>断言 <code>dirty</code> 关闭经 <code>useConfirm</code>（继续编辑不关 / 放弃修改关）。</li><li>断言 <code>transform</code> 刷新 emit、<code>cachedNames</code> 与溢出滚动容器。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 多标签导航》§4 一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-ep/src/components/tabs/TabsNav.vue</code>（组合能力 <code>frontend/packages/core/src/capabilities/tabs.ts</code>，受控 / 非受控）已落地。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-ep/tests/tabs-nav.spec.ts</code>。</li><li>断言固定首签不可关与排序（能力保证）。</li><li>断言点击标签 emit <code>select</code> 且注入 router 时 <code>push(path)</code>。</li><li>断言关闭激活项激活右邻（无右取左）。</li><li>断言右键菜单五项与行为（关闭当前 / 其他 / 右侧 / 全部，固定签保留）。</li><li>断言非受控 <code>maxOpen</code> 超限自动关闭最久未激活并 emit <code>exceed</code>。</li><li>断言 <code>dirty</code> 关闭经 <code>useConfirm</code>（继续编辑不关 / 放弃修改关）。</li><li>断言 <code>transform</code> 刷新 emit、<code>cachedNames</code> 与溢出滚动容器。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 多标签导航》§4 一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -13,7 +13,7 @@
     },
     {
       "summary": "阶段四 03-03-01 双层标签：列表固定 / 详情多开 / 关闭相邻",
-      "text": "<p><strong>前置</strong>：<code>src/components/tabs/FormFrameTabs.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/tabs-form-frame.spec.ts</code>。</li><li>断言列表 Tab 固定（无关闭按钮）与激活态。</li><li>断言详情 Tab 多开渲染与点击 emit <code>select</code> + <code>update:activeKey</code>。</li><li>断言关闭详情 Tab：激活相邻（右 → 左 → 回列表 Tab）并 emit <code>close</code>。</li><li>断言 <code>dirty</code> 详情关闭确认（复用 useConfirm）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 多标签导航》§5 一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/ui-ep/src/components/tabs/FormFrameTabs.vue</code> 已落地。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-ep/tests/tabs-form-frame.spec.ts</code>。</li><li>断言列表 Tab 固定（无关闭按钮）与激活态。</li><li>断言详情 Tab 多开渲染与点击 emit <code>select</code> + <code>update:activeKey</code>。</li><li>断言关闭详情 Tab：激活相邻（右 → 左 → 回列表 Tab）并 emit <code>close</code>。</li><li>断言 <code>dirty</code> 详情关闭确认（复用 useConfirm）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 多标签导航》§5 一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",

@@ -1,0 +1,64 @@
+{
+  "renames": [
+    {
+      "id": 20,
+      "summary": "frontend/apps/mobile 默认页与连通冒烟"
+    },
+    {
+      "id": 22,
+      "summary": "frontend/apps/mobile 基础类（同接口多实现基线）"
+    },
+    {
+      "id": 24,
+      "summary": "frontend/apps/mobile 公共组合式与工具基座（同接口多实现基线）"
+    },
+    {
+      "id": 26,
+      "summary": "frontend/apps/mobile Axios 基线单元（同接口多实现）"
+    },
+    {
+      "id": 699,
+      "summary": "阶段四 02-01 根系基类（frontend/apps/mobile）：同接口多实现一致性"
+    },
+    {
+      "id": 700,
+      "summary": "阶段四 02-02 组件根（frontend/apps/desktop / frontend/apps/mobile）：props / 透传 / 令牌属性 / 可访问性 / 装配点"
+    },
+    {
+      "id": 705,
+      "summary": "阶段四 02-03 能力机制：声明 / 依赖校验 / 循环检测 / 开发态告警"
+    },
+    {
+      "id": 707,
+      "summary": "阶段四 02-03 核心 12 能力：形态 / 值·字段链 / 选项源契约"
+    },
+    {
+      "id": 708,
+      "summary": "阶段四 02-03 复用 19 能力：状态 / 上下文 / 占位降级契约"
+    },
+    {
+      "id": 713,
+      "summary": "阶段四 02-05 继承护栏：基类链 / 组件包装 / 能力声明（AST）"
+    },
+    {
+      "id": 19,
+      "summary": "frontend/apps/desktop 默认页与代理链路冒烟"
+    },
+    {
+      "id": 21,
+      "summary": "frontend/apps/desktop 基础类（契约类型/BaseApi/Store/稳定序列化）"
+    },
+    {
+      "id": 23,
+      "summary": "frontend/apps/desktop 公共组合式与工具基座（useRequest/useListPage/validators/useTabs/状态映射）"
+    },
+    {
+      "id": 25,
+      "summary": "frontend/apps/desktop Axios 基线单元（解包/错误/拦截器）"
+    },
+    {
+      "id": 698,
+      "summary": "阶段四 02-01 根系基类（frontend/apps/desktop）：字段 / 配置 / 日志 / 错误上报 / i18n / 生命周期钩子"
+    }
+  ]
+}

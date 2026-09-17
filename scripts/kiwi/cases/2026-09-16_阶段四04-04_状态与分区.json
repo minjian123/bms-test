@@ -3,7 +3,7 @@
   "cases": [
     {
       "summary": "阶段四 04-04 加载遮罩容器：四态互斥 / 延迟显示 / 重试",
-      "text": "<p><strong>前置</strong>：<code>LoadingContainer.vue</code> 已落地（双端同款交付；本批自动化仅 frontend，移动端同号人工核对）。</p><ol><li>运行 <code>npx vitest run tests/container-loading.spec.ts</code>。</li><li>断言四态互斥优先级：<code>loading</code>（延迟后）> <code>error</code> > <code>empty</code> > <code>content</code>，仅当前态渲染。</li><li>断言 <code>delay</code> 防闪烁（假时钟：快请求不显示加载态、慢请求显示、显示后 <code>loading=false</code> 即时隐藏）。</li><li>断言 <code>mode</code> 三形态（<code>mask</code> / <code>skeleton</code> / <code>spin</code>）与 <code>#loading</code> 插槽优先。</li><li>断言 <code>#empty</code> / <code>#error</code> 插槽优先；缺省错误文本（i18n）与重试按钮、点击自锁（disabled）与 <code>loading</code> 复位。</li><li>断言 <code>minHeight</code> 注入与状态区 <code>role</code>（status / alert）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 加载遮罩容器》契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{ui-ep,ui-vant}/src/components/container/LoadingContainer.vue</code> 已落地（同接口多实现交付）。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-vant/tests/container-loading.spec.ts</code>（仅 ui-vant 实现）。</li><li>断言四态互斥优先级：<code>loading</code>（延迟后）> <code>error</code> > <code>empty</code> > <code>content</code>，仅当前态渲染。</li><li>断言 <code>delay</code> 防闪烁（假时钟：快请求不显示加载态、慢请求显示、显示后 <code>loading=false</code> 即时隐藏）。</li><li>断言 <code>mode</code> 三形态（<code>mask</code> / <code>skeleton</code> / <code>spin</code>）与 <code>#loading</code> 插槽优先。</li><li>断言 <code>#empty</code> / <code>#error</code> 插槽优先；缺省错误文本（i18n）与重试按钮、点击自锁（disabled）与 <code>loading</code> 复位。</li><li>断言 <code>minHeight</code> 注入与状态区 <code>role</code>（status / alert）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 加载遮罩容器》契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
@@ -13,7 +13,7 @@
     },
     {
       "summary": "阶段四 04-04 分区容器：标题 / 折叠 / 档位与令牌",
-      "text": "<p><strong>前置</strong>：<code>SectionContainer.vue</code> 已落地（双端同款）。</p><ol><li>运行 <code>npx vitest run tests/container-section.spec.ts</code>。</li><li>断言标题 / 描述 / <code>#title</code> / <code>#extra</code> / <code>#footer</code> 插槽渲染。</li><li>断言 <code>divider</code> 分隔线开关与 <code>padding</code> 档位类（<code>none</code> / <code>small</code> / <code>default</code> / <code>large</code>）。</li><li>断言折叠：非受控 <code>toggle</code>（内容 <code>v-if</code> 移除、标题保留）、受控 <code>v-model:collapsed</code> 回写与 <code>collapse-change</code> 事件、<code>collapsible=false</code> 无开关。</li><li>断言区域属性透传（<code>data-padding</code> / <code>data-collapsed</code>）与轻量外观（无卡片边框类）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 分区容器》契约一致。</p>",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{ui-ep,ui-vant}/src/components/container/SectionContainer.vue</code> 已落地（同接口多实现）。</p><ol><li>运行 <code>npx vitest run frontend/packages/ui-vant/tests/container-section.spec.ts</code>（仅 ui-vant 实现）。</li><li>断言标题 / 描述 / <code>#title</code> / <code>#extra</code> / <code>#footer</code> 插槽渲染。</li><li>断言 <code>divider</code> 分隔线开关与 <code>padding</code> 档位类（<code>none</code> / <code>small</code> / <code>default</code> / <code>large</code>）。</li><li>断言折叠：非受控 <code>toggle</code>（内容 <code>v-if</code> 移除、标题保留）、受控 <code>v-model:collapsed</code> 回写与 <code>collapse-change</code> 事件、<code>collapsible=false</code> 无开关。</li><li>断言区域属性透传（<code>data-padding</code> / <code>data-collapsed</code>）与轻量外观（无卡片边框类）。</li></ol><p><strong>预期</strong>：全部断言通过；行为与《组件设计 · 分区容器》契约一致。</p>",
       "category": "平台骨架",
       "priority": "P2",
       "status": "CONFIRMED",
