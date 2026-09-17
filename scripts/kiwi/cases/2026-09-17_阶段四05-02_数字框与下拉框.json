@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 05-02 数字框与下拉框（ui-ep / ui-vant）：精度与钳制 / 千分位 / 空值与三态 / 静态选项归一 / 多选上限",
+      "text": "<p><strong>前置</strong>：<code>frontend/packages/{core,vue,ui-ep,ui-vant}</code> 已装依赖；05-01 输入域口径包装（<code>createInputContext</code> / <code>useInput</code> / 双插件 <code>BaseInput.vue</code>）已交付；本任务新增 <code>core/contracts/option.ts</code>（<code>OptionItem</code>）、<code>core/domain/{number,option}.ts</code>、双端 <code>NumberInput</code> / <code>SelectInput</code>。</p><ol><li>运行 <code>npm run -w @bms/core test</code>：数字域纯函数（解析 / 中间态 / 非法输入 / 精度四舍五入 / 越界钳制与 <code>inNumberRange</code> / 千分位格式化与解析）与选项域纯函数（无效值剔除 / 去重保序 / label 解析 / 分组 / 上限判定与可选性）。</li><li>运行 <code>npx vitest run tests/number-select.spec.ts tests/contracts-input.spec.ts</code>（<code>frontend/packages/ui-ep</code> 与 <code>frontend/packages/ui-vant</code> 各一次；契约工厂 <code>describeInputControlsContract</code> 扩展后同一套断言）。</li><li>数字框契约：根类名 <code>bms-number-input</code> + <code>bms-input</code> 壳；输入 <code>12</code> → <code>update:modelValue</code> 为数值 <code>12</code>；空输入 + 失焦 → <code>null</code>；<code>precision=1</code> 输入 <code>1.25</code> 失焦 → <code>1.3</code>；<code>min=0,max=10</code> 输入 <code>20</code> 失焦 → <code>10</code>；<code>clamp=false</code> 输入 <code>20</code> 失焦 → <code>validate(false)</code>；<code>modelValue=0</code> 只读态显示 <code>0</code>（不显示占位）。</li><li>下拉框契约：根类名 <code>bms-select-input</code> + 壳；单选只读文本为已选 <code>label</code>；多选值 <code>['b','a']</code> 只读文本按选项顺序显示 <code>A、B</code>；无效值 <code>ghost</code> 被剔除（只读文本为空占位）；<code>maxCount=1</code> 且已选 1 项时未选项不可选（点击不改变值）。</li><li>端内细节（Kiwi 756 同号用例集）：PC <code>el-input-number</code> 箭头步进与 <code>thousands</code> formatter、<code>el-select</code> 弹出点选 / <code>el-option-group</code> 分组 / 禁用项；移动端 <code>van-field type=\"digit\"</code> 数字键盘、<code>stepControls</code> 加减按钮、<code>van-popup</code> 打开与确认、分组标题、上限灰显。</li></ol><p><strong>预期</strong>：以上断言双端全部通过；新增文件覆盖并入 <code>frontend/apps/{desktop,mobile}</code> 的 <code>test:cov</code> 阈值（≥ 70%）；<code>vue-tsc</code> / ESLint / 构建与体积预算全通过。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true,
+      "case_id": 757
+    }
+  ]
+}
