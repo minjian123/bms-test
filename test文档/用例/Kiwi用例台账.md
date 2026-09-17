@@ -59,11 +59,13 @@
 | --- | --- | --- |
 | 724 / 725（弹窗抽屉表单）、726 ~ 730（异常与空状态）、731 ~ 736（结构布局）、737（侧边菜单渲染）、740 / 741（表单框架壳 / 页面容器）、742 ~ 750 的 apps 侧执行（容器域 04-01 ~ 04-04） | **DISABLED**（apps 侧用例随旧件删除下线，2026-09-17） | `packages/ui-ep` 用例套件（59 条，`packages/ui-ep/tests/*.spec.ts`）+ 宿主用例 739（保留，切 ui-ep 断言） |
 | 698 / 699（根系）、700 ~ 704（组件根基类）、705 ~ 708（片段机制）、709 ~ 712（域基类）、713 ~ 716（护栏）、717 / 718（请求）、719 / 720（权限）、721 / 722（格式化）、738（菜单数据层与守卫） | **CONFIRMED 不变**（片段层 / 基础设施用例随迁 `apps/desktop/tests/`，断言集不变） | — |
-| `frontend-mobile` 侧（742 ~ 750 等双端同号中 mobile 侧执行） | CONFIRMED（**待 S4 `ui-vant` 时按同口径迁移**） | 届时同步本台账 |
+| `frontend-mobile` 侧（742 ~ 750 等双端同号中 mobile 侧执行） | **CONFIRMED 不变**（S4c 2026-09-17 迁入 `packages/ui-vant/tests/`，Kiwi 原号保持） | `packages/ui-vant/tests/container-*.spec.ts`（9 spec；承接套件含契约用例共 64 条） |
+| `frontend-mobile` 侧旧层用例（698 ~ 722 与 724 ~ 741 中 mobile 侧执行部分：`base-*` 14 / `guard-*` 4 / `format-registry` 1 / `container-*` 9 等 28 spec） | **DISABLED**（mobile 侧旧基座 / 片段层随 S4c 删除下线，2026-09-17） | 核心断言转 `@bms/core` / `@bms/vue` / `ui-vant` 套件承接；宿主用例（719 / 720 / 721 / 722 / 723 等）保留并改造（判定经 `@bms/ui-vant` 注入点） |
 
 - 迁移口径：能力断言不减少——旧件用例的覆盖点已由 `ui-ep` 套件（S3 迁移时逐件移植，累计 59 条）承接；
   双端同号语义继续（mobile 侧迁移后进行两端对账）。
-- 平台侧操作：上述 apps 侧用例在 Kiwi TCMS 置为 `DISABLED`（保留编号与历史，不复用）。
+- 平台侧操作：上述 apps 侧用例与 mobile 侧旧层用例在 Kiwi TCMS 置为 `DISABLED`（保留编号与历史，不复用）；
+  mobile 侧容器件用例（742 ~ 750 等）保持 CONFIRMED（已迁 `ui-vant` 套件执行）。
 
 ## 3. 最新批次明细：阶段四 04-04 状态与分区 <a id="latest"></a>
 
@@ -73,7 +75,7 @@
 | 来源 | `bms/bms文档/项目/04_前端组件库/任务/04_容器组件类/04_容器组件类_04_状态与分区/`（需求 04-1，**域 04 收官批次**） |
 | 输入文件（本批，可幂等重跑） | `scripts/kiwi/cases/2026-09-16_阶段四04-04_状态与分区.json` |
 | 平台编号（回读） | **749**（加载遮罩容器：四态互斥 / 延迟显示 / 重试）、**750**（分区容器：标题 / 折叠 / 档位与令牌） |
-| 自动化文件 | `bms/apps/desktop/tests/{container-loading,container-section}.spec.ts`（S5c 已随旧件删除，apps 侧转 `ui-ep` 套件承接）与 `bms/frontend-mobile/tests/` 同两件（双端同号；mobile 侧待 S4） |
+| 自动化文件 | `bms/apps/desktop/tests/{container-loading,container-section}.spec.ts`（S5c 已随旧件删除，apps 侧转 `ui-ep` 套件承接）与 `bms/apps/mobile/tests/` 同两件（双端同号；S4c 已迁 `packages/ui-vant/tests/`） |
 | 覆盖点 | 加载遮罩：四态互斥优先级 / `delay` 防闪烁（快 / 慢请求与即时隐藏，假时钟）/ `mode` 三形态与插槽优先 / `role`（status / alert）/ 缺省 i18n 文案与重试自锁复位 / `minHeight`；分区：标题 / 描述 / 四插槽 / `divider` 开关 / `padding` 档位类与区域属性透传 / 折叠非受控与受控 / `collapsible=false` |
 | 状态 | 全部 CONFIRMED（分类「平台骨架」、优先级 P2、标签「自动化」、`is_automated = true`） |
 | 执行结果 | frontend **56 / 346** 全绿（本任务新增 9 条），覆盖率语句 87.86% / 分支 79.1%，体积 164.4 / 200 KB；frontend-mobile **38 / 259** 全绿（本任务新增 9 条），覆盖率语句 89.17% / 分支 79.88%，体积 78.1 / 83 KB |
