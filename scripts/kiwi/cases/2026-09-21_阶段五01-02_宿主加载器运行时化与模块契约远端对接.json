@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 977,
+      "summary": "阶段五 01_02 宿主加载器运行时化与模块契约远端对接：清单驱动加载（缺字段/版本不匹配/加载失败一律拒绝）+ 上下文冻结与类型收敛 + 八类声明通道补齐 + 区域渲染/令牌注入/文案并入挂载生效卸载还原 + 菜单注册表派生",
+      "text": "<p><strong>前置</strong>：<code>core/src/module/</code> 已具备模块清单契约（<code>parseModuleManifest</code>）与清单驱动加载器（<code>ManifestModuleLoader</code>）；宿主模块清单外置为 <code>apps/desktop/public/modules.json</code>，入口懒加载表经 <code>import.meta.glob</code> 生成。</p><ol><li>运行 <code>npx vitest run tests/module-manifest.spec.ts tests/module-loader.spec.ts tests/theme-tokens.spec.ts tests/i18n-packs.spec.ts tests/assemble.spec.ts</code>（core 包）。</li><li>断言清单解析：三字段齐全按清单序返回；缺字段 / 名非法逐项拒绝且互不影响；重名保留先通过项；整份非数组抛 <code>CAPABILITY_VIOLATION</code>。</li><li>断言清单驱动加载：未登记名与入口未登记抛 <code>PROVIDER_NOT_REGISTERED</code>；缺默认导出 / 非模块定义形状 / 模块自报名称或版本与清单不一致抛 <code>CAPABILITY_VIOLATION</code>（拒绝加载）；模块 <code>setup</code> 收到的上下文已冻结；挂载 / 卸载幂等与重复挂载拒重；与 <code>LocalModuleLoader</code> 同接口同结果。</li><li>断言令牌机制与文案承载：令牌按登记序汇聚（后者覆盖同名）、应用返回写入名、还原按名逆序幂等；文案包语言标识小写归一、缺省语言命中、未命中返回 <code>undefined</code>、并入序合并、还原幂等。</li><li>断言八类声明通道补齐：字段渲染器声明的键前缀校验与登记（越权拒绝零登记）、登记键可逆序清理；路由菜单图标随 <code>meta.icon</code> 下发。</li><li>运行 <code>npx vitest run tests/module-area-outlet.spec.ts</code>（ui-ep 包）：区域插槽件按区域标识渲染（顺序提示升序、同值保持登记序）、空区域与未知区域渲染为空、异步挂接组件按需解析、装配版本号变化后重算。</li><li>运行 <code>npx vitest run tests/module-manifest.spec.ts tests/module-hosting.spec.ts tests/module-registration.spec.ts</code>（desktop 包）：清单获取失败按空清单与错误状态处理（不阻塞启动）；按清单挂载后动态路由生效、菜单取注册表快照；令牌写入根元素并在卸载后移除、模块文案并入并在卸载后还原、区域项随挂载出现且卸载后消失；版本不匹配 / 入口未登记 / 清单缺字段项拒绝加载并记错误状态；装配冲突回滚本次接线（无残留）；清单未装载时挂载拒绝。</li></ol><p><strong>预期</strong>：全部断言通过；宿主按模块清单加载模块、动态路由与菜单联动、挂载与卸载无残留，注册项消费接线成对生效与还原。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
