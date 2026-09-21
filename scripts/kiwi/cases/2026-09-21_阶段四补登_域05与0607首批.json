@@ -1,0 +1,75 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 05_01 基础控件：八件（文本/文本域/密码/数字/下拉/单选/复选/开关）+ 受控与三态与禁用合并与校验触发统一口径",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/src/components/input/</code> 八件与投影 <code>useBaseInput</code> / <code>useBaseField</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/input-text.spec.ts tests/input-select.spec.ts</code>（ui-ep 包）。</li><li>断言输入投影：受控值 / 三态 / 禁用合并 / 同值短路；不可清空时 <code>clear</code> 无操作；字段标识与校验触发切换。</li><li>断言文本三件：值回传与同值不重复；清空与 <code>clear</code>；文本域 <code>rows</code> / <code>autosize</code> 透传；密码框明文切换 / 不回填属性 / 强度档随值变化。</li><li>断言数字框：值回传 / 千分位格式化 / 范围与精度透传。</li><li>断言选择四件：下拉单选与多选归一 / 分组渲染 / 空态插槽 / 清空；单选三形态；复选多选回传 / 全选跳过禁用项 / 上下限越界 <code>invalid</code> 且不改值 / tag 形态；开关直接切换与危险确认取消不改值。</li></ol><p><strong>预期</strong>：全部断言通过；八件行为与《组件设计 · 基础控件》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 06_01 字段类占位版交付：四件占位契约（字典/组织/文件/验证码）+ 就绪驱动与占位零请求",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/tests/field-placeholder.spec.ts</code> 与占位契约套件 <code>describePlaceholderFieldContract</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/field-placeholder.spec.ts</code>（ui-ep 包）。</li><li>断言未就绪 → 降级 / 禁用 / 零请求（含调用 <code>load()</code> 亦不请求）；就绪 → 不再降级。</li><li>断言占位组合式：就绪前 <code>markLoaded</code> 不计数、就绪后计数。</li><li>断言字典 / 组织 / 文件 / 验证码四件：占位禁用与降级文案；就绪后渲染真实控件并透传选项；<code>degrade</code> 插槽替换。</li></ol><p><strong>预期</strong>：全部断言通过；对外契约冻结可供后续真实实现（只换数据通路）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 06_02 基础与数据源字段：日期时间 / 数值与金额 / 开关与枚举 / 树选择 / 级联（5 嵌套）",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/src/components/field/</code> 五族字段件与核心领域纯函数已落地。</p><ol><li>运行 <code>npx vitest run tests/field-datetime.spec.ts tests/field-amount.spec.ts tests/field-switch-enum.spec.ts tests/field-tree-select.spec.ts tests/field-cascade.spec.ts</code>（ui-ep 包）。</li><li>断言日期时间：<code>Date</code> 值口径 / 范围与格式透传 / 空值与非法值占位。</li><li>断言数值与金额：定点纯函数与十进制字符串 / 千分位 / 精度与钳制 / 越界处理。</li><li>断言开关与枚举：内联回滚 / 危险确认 / 枚举映射与回显。</li><li>断言树选择：懒加载 / 路径回显 / 搜索过滤 / 勾选级联。</li><li>断言级联：路径值口径 / 回显 / 懒加载。</li></ol><p><strong>预期</strong>：全部断言通过；与《组件设计 · 字段类》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 06_03 富文本与高级交互字段：富文本（TipTap + DOMPurify）/ 穿梭框（异步与上限）/ 标签输入（建议与粘贴批量）",
+      "text": "<p><strong>前置</strong>：<code>useRichTextEditor</code>、<code>utils/sanitizeHtml</code> 与三件字段已落地，富文本内核独立分包。</p><ol><li>运行 <code>npx vitest run tests/field-richtext.spec.ts tests/field-transfer.spec.ts tests/field-tag-input.spec.ts</code>（ui-ep 包）。</li><li>断言富文本：内容协议与值回传 / HTML 清洗白名单 / 只读态 / 内核懒加载与销毁释放。</li><li>断言穿梭框：异步选项加载 / 选中上限 / 搜索 / 全选 / 值口径。</li><li>断言标签输入：建议下拉 / 粘贴批量拆分 / 去重 / 上限 / 删除与回传。</li></ol><p><strong>预期</strong>：全部断言通过；与《组件设计 · 字段类》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 07_01 展示类占位版交付：六件占位契约（通用表格/通知列表/文件预览/审计差异/图表卡/全局搜索）+ 占位零请求",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/tests/display-placeholder.spec.ts</code> 与占位契约套件 <code>describePlaceholderDisplayContract</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/display-placeholder.spec.ts</code>（ui-ep 包）。</li><li>断言六件占位：未就绪 → 占位降级 / 禁用 / 零请求（调用加载亦不请求）；就绪 → 渲染真实件。</li><li>断言占位计数口径与降级插槽。</li></ol><p><strong>预期</strong>：全部断言通过；对外契约冻结，后续真实实现只换数据通路。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 07_02 轻量展示件：快捷入口 / 头像与用户信息 / 二维码 / 水印（防篡改恢复）",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/src/components/display/</code> 四件与投影 <code>useBaseUserDisplay</code> / <code>useBaseWatermark</code> 已落地。</p><ol><li>运行 <code>npx vitest run tests/display-light.spec.ts</code>（ui-ep 包）。</li><li>断言头像：首字母回退 / 图片失败回退 / 头像组 <code>+N</code> / 状态点与角标。</li><li>断言用户胶囊：空用户 <code>—</code> / 已删除 / 姓名 + 部门 / 纯文字 / <code>open</code> 事件。</li><li>断言快捷入口：权限过滤 / 去重排序 / 图标解析与降级 / 空态 / <code>open</code> 与 <code>navigate</code>。</li><li>断言二维码：生成 / 空内容提示 / 下载与复制事件 / 过期遮罩与刷新。</li><li>断言水印：平铺层 + 用户与租户文本 / 禁用 / 防篡改自动恢复（经 <code>utils/observe</code> 单一落点）。</li></ol><p><strong>预期</strong>：全部断言通过；与《组件设计 · 展示类》契约一致。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 07_03 文件预览与审计差异：类型分发 / 预签名失效重取 / 降级下载 / 字段级差异类型感知与脱敏",
+      "text": "<p><strong>前置</strong>：<code>ui-ep/src/components/display/FilePreview.vue</code> 与 <code>AuditDiff.vue</code>、投影 <code>useBasePresignedUrl</code> 已落地，数据通路为 mock。</p><ol><li>运行 <code>npx vitest run tests/display-preview-audit.spec.ts</code>（ui-ep 包）。</li><li>断言文件预览：图片直开 / 缩放旋转 / 预签名失效重取一次 / 重取仍失败置错误态 / 文本拉取 / 不支持类型降级下载。</li><li>断言审计差异：字段级类型感知（金额 / 布尔 / JSON）/ 脱敏原样 / 变更高亮 / 链字段缩写与校验结果 / 定位事件。</li><li>断言预签名投影：获取 / 失效重取 / 降级。</li></ol><p><strong>预期</strong>：全部断言通过；真实接口联调归阶段八（文件存储）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

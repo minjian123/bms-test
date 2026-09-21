@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段四 08-8-1 审批流展示：归一与会签聚合 / 进度摘要与当前节点 / 时间线正倒序与折叠 / 意见码点计数与校验 / 动作前置校验与可用矩阵 / 幂等键 / 错误码处置 / 只读图三级形态",
+      "text": "<p><strong>前置</strong>：<code>core/src/domain/approval.ts</code> 与 <code>core/src/capabilities/approval-flow.ts</code>、<code>ui-ep/src/components/approval/</code> 已落地（<code>bpmn-js</code> Viewer 独立分包）。</p><ol><li>运行 <code>npx vitest run tests/interaction-approval-flow.spec.ts</code>（ui-ep 包；核心侧 <code>domain-approval</code> / <code>approval-flow</code> 用例同批执行）。</li><li>断言审批领域：装载输入归一（运行态不出现 undefined）/ 会签聚合（n 与 m 及总数回落）/ 进度摘要与当前节点定位 / 分支降级（紧凑省略 · 非紧凑置 skipped）/ 只读判定 / 时间线正倒序（同时间稳定序）与按节点分组 / 意见折叠与 <strong>Unicode 码点</strong>计数与必填超长校验（上限 4000）/ 动作前置校验与可用矩阵 / 内容派生幂等键 / 只读图三级形态判定 / 错误码处置映射（60003 无权限 · 60004 状态不允许 · 60005 重复提交 · 60008 会签未完成 · 60009 引擎异常置只读）。</li><li>断言编排能力基类 <code>BaseApprovalFlow</code>：占位零请求 / 就绪未注入零请求 / 实例与记录<strong>并行取数</strong>（分部结算 · 单失败不整体报错）/ 提交（幂等键 · 防重复提交 · 成功后刷新实例）/ 60005 按成功不置只读 / 60003 失败并刷新与重试 / 60009 置只读 / 校验不通过不请求 / 无权不可提交 / 只读图图片通路（注入优先 · 否则预签名 · 皆无不请求）/ 实例切换与重置。</li><li>断言件层：契约套件 <code>describeApprovalFlowContract</code> + 投影薄适配 + 专题族 <code>components/approval/</code> 五件（容器 / 进度三形态与会签展开 / 时间线 / 操作面板 / 只读图）+ 宿主核对页 12 项。</li></ol><p><strong>预期</strong>：全部断言通过；真实接口联调归阶段九（工作流引擎）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "阶段四 08-8-2 流程建模器：BPMN 子集结构提取与往返等价 / 结构校验五项与元素定位 / 属性 schema 与 bms: 扩展属性 / 版本推进 / 幂等键 / 错误码定位 / 两段确认与防并发穿透",
+      "text": "<p><strong>前置</strong>：<code>core/src/domain/process-modeler.ts</code>（零依赖）与 <code>core/src/capabilities/process-modeler.ts</code>、<code>ui-ep/src/components/approval/</code>（Modeler 画布）已落地（共用 <code>bpmn</code> 分包）。</p><ol><li>运行 <code>npx vitest run tests/interaction-process-modeler.spec.ts</code>（ui-ep 包；核心侧 <code>domain-process-modeler</code> / <code>process-modeler</code> 用例同批执行）。</li><li>断言建模领域（<strong>零依赖</strong>纯字符串）：BPMN 子集结构提取（忽略命名空间前缀 · 容忍属性顺序与空白）/ 结构键与往返等价 / 结构校验五项（子集外元素 · 起止事件 · id 唯一 · 引用完整 · 孤立节点）与元素定位 / 属性 schema 与读取（含 <code>bms:*</code> 扩展属性）与校验 / 校验结论合并（结构 + 引擎）/ 版本推进与定义归一 / 幂等键 / 错误码定位（60006 元素级 · 60007 定义级）。</li><li>断言编排能力基类 <code>BaseProcessModeler</code>：占位与就绪未注入零请求 / 定义装载（空 XML 回落模板 · 初始不脏）/ 取定义 / 更新置脏与撤销 / 导入非法不生效与两段确认（取消不覆盖）/ 校验来源切换与合并 / 保存草稿与发布（幂等键 · 版本推进 · <strong>先占位再校验防并发穿透</strong>）/ 校验不通过阻断且不请求 / 只读与无权 / 重试 / 重置。</li><li>断言件层：契约套件 <code>describeProcessModelerContract</code> + 投影 + 专题族四件（容器 / 调板 / 画布 / 属性面板）+ <code>bpmn-moddle</code> 强比对（忽略前缀与属性顺序）+ 宿主核对页 12 项。</li></ol><p><strong>预期</strong>：全部断言通过；真实接口联调归阶段九（工作流引擎）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
