@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 976,
+      "summary": "阶段五 01_01 扩展点注册表补齐与统一装配：八类注册表契约（注册/解析/拒重/未命中/保序/快照）+ 统一装配与来源打标 + 「不注册不可用」护栏",
+      "text": "<p><strong>前置</strong>：<code>core/src/registries/</code> 已补齐八类扩展点注册表（路由·菜单 / 页面区域 / 通用组件 / 字段渲染器 / 图标 / 工作台卡片 / 主题令牌 / i18n 文案包）与统一装配器 <code>assemble.ts</code>；宿主装配已收敛为调用核心装配器。</p><ol><li>运行 <code>npx vitest run tests/registries.spec.ts tests/registry.spec.ts tests/assemble.spec.ts tests/guard-unregistered-provider.spec.ts</code>（core 包）。</li><li>断言八类注册表同一套契约：登记 / 按键解析 / 同键拒重（<code>REGISTRY_CONFLICT</code>）/ 未命中返回 <code>undefined</code>（区域与语言返回空数组）/ 遍历保序 / 只读快照。</li><li>断言键与标识校验：键须为命名空间键（<code>CAPABILITY_VIOLATION</code>）；页面区域标识须为点分标识；i18n 文案包语言标识须小写归一；路由路径须以 <code>/</code> 开头。</li><li>断言统一装配：平台自身注册与模块注册共用同一入口；模块注册项须以 <code>&lt;模块名&gt;:</code> 开头（越权拒绝）；登记项 <code>registrationSource</code> 打标可查；登记键清单可逆序清理且幂等。</li><li>断言装配两段式：校验失败不产生任何登记；倒入途中同键冲突回滚本次已登记项（无残留）。</li><li>断言「不注册不可用」：未登记项 <code>get</code> / <code>resolveByArea</code> / <code>resolve</code> / <code>byLocale</code> 不命；fixture 探针注册项「引入但未登记」不可用、登记后可用。</li><li>运行 <code>npx vitest run tests/module-registration.spec.ts</code>（desktop 包）：演示模块声明的路由 / 组件 / 图标 / 卡片 / 区域 / 主题令牌 / 文案包在装配前不可解析、装配后可用、卸载后回到不可解析。</li></ol><p><strong>预期</strong>：全部断言通过；八类注册表可用、平台与模块经同一通道注册且来源可查、未登记项不生效。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
