@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 978,
+      "summary": "阶段五 02_01 Module Federation 接入与模块独立构建：清单 mode 分形态 + 远端入口解析器（运行期注册与加载）+ 模块独立构建与入口闭包预算 + 页面独立分包 + 两形态共存",
+      "text": "<p><strong>前置</strong>：Module Federation 插件与运行时（<code>@module-federation/vite</code> / <code>@module-federation/runtime</code>）已接入；宿主仅作纯 host（<code>name</code> + <code>shared</code>，无静态 <code>remotes</code>）；模块工程 <code>frontend/modules/demo</code> 独立安装与独立构建（MF remote）。</p><ol><li>运行 <code>npx vitest run tests/module-manifest.spec.ts tests/module-loader.spec.ts tests/module.spec.ts</code>（core 包）。</li><li>断言清单形态判据：<code>mode</code> 缺省归一为 <code>local</code>；取值非 <code>local</code>/<code>remote</code> 该项拒绝；<code>mode: remote</code> 而入口非绝对 URL（相对路径 / 源码标识）该项拒绝且不影响其余项；重名保留先通过项。</li><li>断言入口解析器注入：同一 <code>ManifestModuleLoader</code> 承接本地与远端两类解析器（调用序列同结果）；本地入口标识未登记抛 <code>PROVIDER_NOT_REGISTERED</code>；解析器抛错（远端不可达）原样上抛、不自造错误；校验链不因解析器而变（缺默认导出 / 名称或版本不一致拒绝加载）。</li><li>运行 <code>npx vitest run tests/module-federation.spec.ts tests/module-hosting.spec.ts tests/module-registration.spec.ts tests/module-manifest.spec.ts</code>（desktop 包，MF 运行时以替身覆盖：插件在测试环境空转）。</li><li>断言远端入口解析器：按清单条目登记容器（<code>name</code> / <code>entry</code> / <code>type: module</code>，<code>force</code> 幂等）并按 <code>&lt;模块名&gt;/module</code> 暴露键加载；远端不可达错误原样上抛；容器返回空时返回空模块对象（形状校验交由加载器）。</li><li>断言宿主按 <code>mode</code> 分派：<code>remote</code> 走 MF 运行时、<code>local</code> 走宿主本地入口表（当前无存量模块，未登记即拒绝）；远端挂载后动态路由生效、菜单取注册表快照、区域 / 令牌 / 文案随挂载生效且卸载全部还原；版本不匹配 / 远端不可达 / 装配冲突各分支拒绝加载并回滚本次接线。</li><li>运行 <code>npm run build &amp;&amp; npm run budget</code>（<code>frontend/modules/demo</code>）：产出 <code>dist/remoteEntry.js</code>；容器入口闭包（从 remoteEntry 解析静态引用 + 暴露键动态引用）gzip 合计与单块不超阈值、入口块数不超上限；入口闭包不含页面块（<code>DemoHome</code> / <code>DemoToolbox</code>），入口外异步块数不少于声明路由数。</li><li>运行 <code>npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run test</code>（模块工程）。</li><li>端到端（构建产物）：模块 <code>vite preview</code>（5002）提供独立产物，宿主构建产物 <code>vite preview</code>（4173）经清单 <code>http://localhost:5002/remoteEntry.js</code> 运行期加载——直连 <code>/demo</code> 渲染远端模块页面、页头区域插槽渲染远端区域项，且宿主产物内不含模块页面代码（非构建期合并）。</li></ol><p><strong>预期</strong>：全部断言通过；宿主首屏体积预算通过（模块产物单独计量）；模块独立构建产物可被宿主运行期加载，动态路由与区域渲染生效、卸载无残留，构建期合并与运行时加载两形态由清单 <code>mode</code> 显式区分。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

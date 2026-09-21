@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 978,
+    "summary": "阶段五 02_01 Module Federation 接入与模块独立构建：清单 mode 分形态 + 远端入口解析器（运行期注册与加载）+ 模块独立构建与入口闭包预算 + 页面独立分包 + 两形态共存"
+  }
+]
