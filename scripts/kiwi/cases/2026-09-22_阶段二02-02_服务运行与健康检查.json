@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "02-02 服务运行与健康检查（服务身份 / 配置驱动启动入口 / 探针追加身份与摘流 / SIGTERM 优雅停机 / 脚手架同构接入）",
+      "text": "<p><strong>覆盖范围（任务 02_02：服务运行与健康检查）</strong></p><ol><li><strong>服务身份解析</strong>：服务包声明默认名（<code>bms_&lt;名&gt; → &lt;名&gt;</code>）+ <code>[app].service</code> 可覆盖；配置默认置空、启动期回写解析结果（连接池 / 租户库模板取到正确服务名）；版本取服务包 <code>__version__</code>。</li><li><strong>日志服务标识</strong>：<code>service</code> / <code>service_version</code> 经 structlog 全局上下文进程级绑定，业务日志与第三方 stdlib 日志每条自动携带（处理器链加 <code>merge_contextvars</code>）。</li><li><strong>配置驱动启动入口</strong>：<code>python -m bms_&lt;服务名&gt;</code> 读 <code>[server]</code> 的 host / port 程序化启动 uvicorn（单进程），平台服务与脚手架生成件同构可用。</li><li><strong>探针与依赖就绪聚合</strong>：<code>/healthz</code> 与 <code>/readyz</code> 响应追加 <code>service</code> / <code>version</code>；<code>/readyz</code> 经注册表聚合 <code>redis</code> / <code>database</code> 检查项，依赖失败或启动未完成 / 停机中返回 503、<code>error</code> 仅异常类名不泄露连接串。</li><li><strong>优雅停机（SIGTERM 摘流）</strong>：自定义 uvicorn <code>Server</code> 覆写 <code>handle_exit</code>——信号到达即置 <code>app.state.draining</code>（<code>/readyz</code> 立即 503 摘流），再链式调用默认优雅收尾（停止接收新连接 → 等待在途完成 → lifespan shutdown 释放资源）；<code>start_drain</code> 幂等。</li><li><strong>脚手架同构接入</strong>：<code>new_service.py</code> 模板生成件含服务身份声明、统一运行时接入与 <code>__main__</code> 启动入口；最小服务就绪回退 null 注册表（空检查项、恒定通过），生成即开箱 <code>/healthz</code> <code>/readyz</code> 200 且携带身份，接入依赖后按配置切换实现并登记检查项。</li></ol><p><strong>自动化文件</strong>：<code>backend/libs/bms_core/tests/core/test_service_runtime.py</code>（身份 / 日志绑定 / drain）、<code>backend/libs/bms_core/tests/core/test_run.py</code>（启动配置 / handle_exit 顺序）、<code>backend/services/platform/tests/api/test_health.py</code>（探针身份与 503）、<code>backend/services/platform/tests/core/test_service_lifecycle.py</code>（运行时生命周期与摘流）、<code>backend/libs/bms_core/tests/ops/test_new_service.py</code>（脚手架）；全量 <code>pytest</code> / <code>ruff</code> / <code>pyright</code> / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
