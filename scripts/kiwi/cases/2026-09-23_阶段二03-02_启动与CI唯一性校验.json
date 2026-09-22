@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "03-02 启动与 CI 唯一性校验（接库启动校验 / 契约版本主版本双端 / CI 迁移后查重 / 只读边界护栏）",
+      "text": "<p><strong>覆盖范围（任务 03_02：启动与 CI 唯一性校验）</strong></p><ol><li><strong>启动接库校验</strong>：应用启动先离线校验 SERVICE_CATALOG（四要素唯一与格式），再读平台库 sys_module（未软删行）——库内查重与格式、与清单双向对账（缺行 / 清单外行 / 字段不符）、运行服务登记行与契约版本主版本兼容；空目录仅告警放行（未播种的开发 / 测试环境可启动），库不可读、表缺失或冲突一律 CatalogError（40003）拒启并列出冲突项，进程退出码非 0。</li><li><strong>契约版本双端校验</strong>：各服务包自报 CONTRACT_VERSION（经 ServiceIdentity.contract_version 带入运行期）；启动比「自报 vs 库登记」主版本，CI 比「服务包常量 vs 清单登记」主版本；主版本不符拒启并 critical 告警，minor/patch 差异按兼容放行；契约版本解析收敛 core/version.py（插件机制同源复用）。</li><li><strong>CI 离线校验</strong>：ops/check_modules.py 双模式——默认离线（清单自校验 + 服务工程与清单双向：服务包未声明 / 主版本不符 / 工程未登记逐项检出）；--url 接库（读库查重 + 与清单双向对账，只读不写、空库判失败）；CI backend-modules 冒烟 job 增「SQLite 临时库 → Alembic 迁移 → 种子 → 接库校验」，随冒烟层执行。</li><li><strong>运行时只读边界</strong>：三条护栏用例——仓储自有方法无写动词且无会话写调用、/api/v1/modules 路由仅 GET（含后续明细路由）、启动校验前后 sys_module 行快照一致。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/core/test_service_catalog_startup.py（接库校验 / lifespan 拒启 / 只读快照 / 错误码）、libs/bms_core/tests/services/test_module_registry.py（from_row / validate_catalog / 主版本兼容）、libs/bms_core/tests/ops/test_check_modules.py（双模式 CLI / 服务包声明）、libs/bms_core/tests/repositories/test_module_repository.py（仓储只读护栏）、services/platform/tests/api/test_modules.py（启动冲突断言 CatalogError + 路由仅 GET）；全量 pytest / ruff / pyright / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
