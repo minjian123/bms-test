@@ -82,6 +82,7 @@
 | 59 | 979 | 1 | **阶段五 02_02 依赖共享与版本偏斜治理**（共享声明单一来源（共享面白名单 + 版本要求 + 受控非共享项）；宿主提供方 / 模块消费方语义（`import:false` 无本地回退副本 + `strictVersion` 版本不满足即拒绝）；**构建期**产物级断言（两侧声明一致 / 模块无副本 / 依赖实例数 = 1）与白名单 · 体积护栏；**运行期**实例数断言（真实 MF 运行时：共享域内每依赖版本条目数恒为 1、版本满足要求、major 不一致被拒）；受控实测结论（UI 组件库与基座包锁定为受控非共享项）；升级契约成文；2026-09-21 登记） | CONFIRMED |
 | 60 | 1019 | 1 | **阶段二 01_02 多租户数据拓扑落库与实测**（解析链全局中间件（子域名 / `X-Tenant-ID` / token 位 + 豁免）与就地拒绝；租户源查库 + 缓存基座短 TTL 与失效；停用租户 80002 + 强制回收；租户库 `url_template` 解析；引擎注册表懒加载 / LRU / 闲置清扫 / 跨实例锁；会话按租户路由；查询强制 tenant 过滤钩子；双租户物理隔离；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 | 61 | 1050 | 1 | **阶段二 01_03 BaseRepository 异步与 BaseModel 落库**（`BaseDbRepository` 真实异步 CRUD（软删 / 硬删出口、写入白名单、租户 write 注入与禁改、乐观锁转 409）；作用域条件 SQL 翻译（11 操作符）；分页 LIMIT/OFFSET 与基础 ORDER BY；四库类型映射与软删除复合唯一索引；索引命名 `idx_*`；统一会话入口 `session_scope`；`sys_module` 平台域种子；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
+| 62 | 1078 | 1 | **阶段二 01_04 Alembic 迁移与排序 DB 侧**（迁移链按数据源分链（platform / tenant / archive）+ 达梦同步迁移分支 + SQLite 开发库自动建表 + ops 批量迁移与新租户初始化（含库级建删）+ 排序 NULL 恒末位 + 分页限深 100 页 + keyset 游标键 + 迁移与模型零漂移校验；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -104,7 +105,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段二 01_03 / 01_02（2026-09-22）与阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_04 / 01_03 / 01_02（2026-09-22）与阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -178,9 +179,20 @@
 | 自动化文件 | `bms/backend/tests/repositories/test_db_repository.py`、`test_base_repository.py`；`bms/backend/tests/models/test_type_mapping.py`；`bms/backend/tests/db/test_session_scope.py`；`bms/backend/tests/ops/test_module_ops.py`——用例函数以 `@pytest.mark.kiwi_id(1050)` 标注 |
 | 备注 | 阶段二域 01 第三个子任务用例；前一批为阶段二 `01_02`（1019），见 §3.5；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-03_BaseRepository异步与BaseModel落库.json`（含回读 `case_id`） |
 
+### 3.7 阶段二 01_04 Alembic 迁移与排序 DB 侧（1078） <a id="batch-01-04-alembic"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **1078** |
+| 任务 | 阶段二 `01_04` Alembic 迁移与排序 DB 侧（需求 `01-4`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 迁移链注册（数据源 → 版本目录 / 表集 / 分支标签 / URL）与未知链 `ConfigError`；② `alembic/env.py` 按 `-x target=` 选链（缺省 `tenant`）、元数据子集、URL 解析优先序、租户链 `-x db_key=` 模板解析；③ 达梦同步迁移分支与 `-x schema=` 模式切换、归档空链提示；④ 迁移链完整性（每链单 head / 无断链 / revision 唯一 / 分支标签与目录一致）；⑤ 迁移与模型零漂移（每条链 autogenerate 对比 + 反例）；⑥ SQLite 开发库自动建表（开关 / 方言 / 幂等 / 链表子集）；⑦ ops 批量迁移幂等与失败汇总、新租户初始化三步、库级建删能力（含三方言 SQL）；⑧ 排序 NULL 恒末位（四方言编译断言 + SQLite 真库 + 内存基线）；⑨ 分页限深（`[pagination].max_page`）；⑩ keyset 游标（DB / 内存逐页不漏不重、非法游标 `ParamError`、服务层 `next_cursor`）；⑪ 排序字段索引配合断言工具；⑫ 三库真库迁移演练（建库 / 模式 → 迁移 → 校验 → 清理） |
+| 自动化文件 | `bms/backend/tests/alembic/test_alembic_chains.py`、`test_alembic_drift.py`、`test_auto_create_tables.py`；`bms/backend/tests/db/test_db_admin.py`；`bms/backend/tests/ops/test_migration_ops.py`；`bms/backend/tests/repositories/test_ordering.py`、`test_db_repository.py`、`test_base_repository.py`；`bms/backend/tests/schemas/test_cursor.py`、`test_pagination.py`；`bms/backend/tests/services/test_base_service.py`——用例函数以 `@pytest.mark.kiwi_id(1078)` 标注 |
+| 备注 | 阶段二域 01 第四个子任务用例；前一批为阶段二 `01_03`（1050），见 §3.6；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-04_Alembic迁移与排序DB侧.json`（含回读 `case_id`） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）与 `01_03`（1050，登记回读）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）与 `01_04`（1078，均登记回读）。
 
 | 侧 | 结果 |
 | --- | --- |
@@ -201,6 +213,7 @@
 | 前端（2026-09-21，阶段五 `02_02`） | **979** —— 新文件头注释标注 Kiwi 用例 `979`（宿主 `tests/shared-dependencies.spec.ts`）；构建期断言脚本（`frontend/scripts/check-shared-deps.mjs` / `check-shared-whitelist.mjs`）经 CI job `shared-deps-check` 执行，归属同一用例；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用 |
 | 后端（2026-09-22，阶段二 `01_02`） | **1019** —— 八个自动化文件（`tests/db/` 五份、`tests/ops/`、`tests/core/`、`tests/integration/`）以 `@pytest.mark.kiwi_id(1019)` 标注；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-02_多租户数据拓扑落库与实测.json`（含回读 `case_id`） |
 | 后端（2026-09-22，阶段二 `01_03`） | **1050** —— 五个自动化文件（`tests/repositories/test_db_repository.py`、`test_base_repository.py`、`tests/models/test_type_mapping.py`、`tests/db/test_session_scope.py`、`tests/ops/test_module_ops.py`）以 `@pytest.mark.kiwi_id(1050)` 标注；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-03_BaseRepository异步与BaseModel落库.json`（含回读 `case_id`） |
+| 后端（2026-09-22，阶段二 `01_04`） | **1078** —— 自动化文件（`tests/alembic/` 三份、`tests/db/test_db_admin.py`、`tests/ops/test_migration_ops.py`、`tests/repositories/test_ordering.py` 与适配的 `test_db_repository.py` / `test_base_repository.py`、`tests/schemas/test_cursor.py` / `test_pagination.py`、`tests/services/test_base_service.py`）以 `@pytest.mark.kiwi_id(1078)` 标注；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-04_Alembic迁移与排序DB侧.json`（含回读 `case_id`） |
 
 ## 5. 新增批次维护流程 <a id="flow"></a>
 

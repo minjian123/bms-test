@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 1078,
+    "summary": "阶段二 01_04 Alembic 迁移与排序 DB 侧：迁移链按数据源分链（platform/tenant/archive）+ 达梦同步迁移分支 + SQLite 开发库自动建表 + ops 批量迁移与新租户初始化（含库级建删）+ 排序 NULL 恒末位 + 分页限深 100 页 + keyset 游标键 + 迁移与模型零漂移校验"
+  }
+]
