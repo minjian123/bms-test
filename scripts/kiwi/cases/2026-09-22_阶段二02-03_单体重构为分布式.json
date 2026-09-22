@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "02-03 单体重构为分布式（9 服务拆分 / 共享应用装配基座 / 路由与骨架表模型迁移 / 测试随边界迁移 / 边界护栏）",
+      "text": "<p><strong>覆盖范围（任务 02_03：单体重构为分布式）</strong></p><ol><li><strong>服务拆分</strong>：bms_platform 单服务按限界上下文拆为 9 个服务工程（platform 平台地基 / 配置、identity 认证与身份、tenant 租户与配置、org 组织主数据、file 文件、notification 通知、search 检索、ai AI、report 报表打印），各含独立 pyproject（依赖 bms-core）/ 入口 / 五层 / 路由聚合。</li><li><strong>共享应用装配基座</strong>：bms_core/application.py 提供 service_lifespan + BaseServiceApplicationFactory（服务身份 / 中间件 / 异常处理 / 引擎与租户源 / 插件装配 / 探针 / 生命周期），各服务只声明身份与业务路由；探针由基座统一挂载。</li><li><strong>路由与模型迁移</strong>：16 个业务路由按服务归属迁移（跨路由复用的 current_code_of 沉淀进 bms_core）；ai_chat_log → ai、sys_notification → notification，其余骨架表模型随 platform；不改路由前缀 / 响应体 / 错误码。</li><li><strong>测试随边界迁移</strong>：services/platform/tests 68 个测试文件按域整目录迁移（路由 / 能力域随服务，无路由共享能力域随实现入 libs/bms_core/tests），基座侧提供测试应用夹具；既有 Kiwi 用例号不重编号。</li><li><strong>边界硬校验接线</strong>：check-service-boundaries.py 四项规则接入 CI base-integrity，新增第 5 规则（表名 / 非 sys_ 表前缀跨服务唯一）与自检；共享库反向依赖 / 服务互相依赖 / 分层反向 / 跨包私有引用 / 表前缀冲突均被拦截。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/core/test_application_factory.py（装配基座）、libs/bms_core/tests/core/test_workspace_layout.py（9 服务骨架）、libs/bms_core/tests/crosscut/test_module_boundary.py（边界与分层）、各服务 tests/test_service_boot.py（服务启动与探针）、迁移后的域测试（platform / identity / tenant / org / file / notification / search / ai / report）与基座共享能力域测试；scripts/tools/base-check/check-service-boundaries.py（含 --self-test）；全量 pytest / ruff / pyright / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
