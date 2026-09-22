@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "03-01 服务目录与注册要素登记（sys_module 升格 / 服务清单与注册要素 / 归属分组与批次 / 契约版本 / 种子落库 / 只读仓储 / 模块简称整改）",
+      "text": "<p><strong>覆盖范围（任务 03_01：服务目录与注册要素登记）</strong></p><ol><li><strong>表结构升格</strong>：sys_module 新增 service_key / business_code / service_group / build_batch / service_version / contract_version / product_key；errcode_segment 改可空并去 DB 复合唯一（含 service_key 不建 DB 唯一），规避达梦多 NULL 差异，唯一性交启动 / CI 校验；平台链新增 0002 revision，模型与迁移零漂移。</li><li><strong>服务清单与注册要素</strong>：bms_core/services/module_registry.py 收敛为 SERVICE_CATALOG（16 行：平台服务 10 + 业务模块 6），登记表前缀 / 业务码 / 错误码段 / 事件域、归属分组（foundation/capability/product）与建设批次（0~3）、服务版本与契约版本（semver 0.1.0）；ModuleRegistry 校验四要素唯一与格式、产品维度、简称与前缀一一对应。</li><li><strong>种子落库</strong>：ops/seed_module.py 升级为按 module_key 幂等 upsert 全量清单（既有平台域 4 行补齐服务维度与版本字段）；ops/check_modules.py 复用离线校验。</li><li><strong>只读仓储</strong>：ModuleRepository（BaseDbRepository[SysModule]）支持按分组 / 状态 / 服务维度的只读查询，不提供写接口；ModuleResponse 增字段供 03_03 只读接口。</li><li><strong>命名口径</strong>：服务行沿用微服务工程名作登记标识与表前缀（identity/identity_、tenant/tenant_、notification/notification_ 等；platform 服务沿用既有平台域简称 sys、workflow→wf、report→rpt），业务模块沿用《英文简称规范》既有简称（pur/pay/…/cw），不改动既有模块简称与表前缀。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/services/test_module_registry.py（清单 / 分组 / 校验）、libs/bms_core/tests/repositories/test_module_repository.py（分组 / 状态 / 服务查询）、libs/bms_core/tests/ops/test_module_ops.py（种子 upsert 幂等）、libs/bms_core/tests/alembic/test_alembic_drift.py（0002 零漂移回归）；ops/seed_module.py 与 ops/check_modules.py 开发平台库实测；全量 pytest / ruff / pyright / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
