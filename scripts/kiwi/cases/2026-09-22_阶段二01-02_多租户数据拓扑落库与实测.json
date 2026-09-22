@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 1019,
+      "summary": "阶段二 01_02 多租户数据拓扑落库与实测：解析链全局中间件（子域名/请求头/token 位 + 豁免）+ 租户源查库与缓存基座短 TTL + 停用租户拒 80002 与强制回收 + 租户库模板解析 + 引擎注册表懒加载/LRU/闲置清扫/跨实例锁 + 会话按租户路由 + 查询强制 tenant 过滤钩子 + 双租户物理隔离",
+      "text": "<p><strong>前置</strong>：平台库已落 <code>sys_tenant</code>（<code>ops/seed_tenant.py</code> 幂等种子：demo / acme）；租户库连接串经 <code>[database.tenants].url_template</code> 按 <code>tenant_{code}</code> 解析；缓存基座 <code>[cache]</code> 与分布式锁基座 <code>[distributed_lock]</code> 按各自 provider 装配（缺省 null 不影响正确性）。</p><ol><li>运行 <code>cd backend && uv run pytest -q tests/db/test_tenant.py tests/db/test_tenant_source.py tests/db/test_tenant_middleware.py tests/db/test_tenant_routing.py tests/db/test_engine_registry.py tests/ops/test_tenant_ops.py tests/core/test_config.py</code>。</li><li>断言租户上下文与数据源键助手：<code>tenant_{code}</code> 键往返一致、非法键抛 <code>ConfigError</code>；子域名 → <code>X-Tenant-ID</code> → token 租户位三级优先级；豁免路径精确匹配。</li><li>断言租户源：按 code / domain 查平台库命中；未知租户 404 / 80001；缓存基座命中减少平台库查询、<code>invalidate</code> 后重查；<code>status=suspended</code> → 403 / 80002 且该租户引擎被 <code>EngineRegistry.release</code> 强制回收。</li><li>断言租户中间件：链优先级与命中放行、请求态 <code>tenant</code> 与 <code>current_tenant</code> 上下文注入并在请求结束复位；dev/test 无来源回落 demo、prod（<code>allow_demo_fallback=false</code>）无来源 404 / 80001；未知租户与停用租户就地返回统一错误响应；豁免路径与非 HTTP 作用域直通。</li><li>断言租户库模板解析与会话路由：<code>url_template</code> 的 <code>{service}</code> / <code>{tenant}</code> / <code>{database}</code> 占位格式化、空模板回落 <code>database.tenants.url</code>；<code>get_db</code> / <code>get_read_db</code> / <code>get_write_db</code> / <code>get_uow</code> 按上下文租户 <code>db_key</code> 取引擎，无租户回落平台库。</li><li>断言引擎注册表生命周期：平台常驻、租户懒加载、活跃上限 LRU 逐出最久未用、闲置超阈值访问清扫回收、强制回收（平台键不回收）、跨实例锁经分布式锁基座 <code>hold</code> 调用（锁键 <code>bms:global:lock:engine:{db_key}</code>）、按活跃引擎数的连接预算告警（<code>max_connections=0</code> 跳过）。</li><li>断言查询强制 tenant 过滤钩子：条件次序软删除 → 数据范围 → 租户；模型 <code>tenant_scoped=False</code> 或上下文无 <code>tenant_id</code> 时不注入。</li><li>断言双租户物理隔离（SQLite 真库）：租户 A / B 各自库表写入互不可见，跨租户按 ID 访问拒绝；<code>tests/integration/test_tenant_routing_integration.py</code> 真实路由断言通过（三库用例仍 env 守卫，归 01_05）。</li><li>运行 <code>uv run ruff check . && uv run ruff format --check . && uv run pyright && uv run pytest -q --cov=app --cov-branch</code> 与 <code>uv run python -m ops.seed_tenant</code>（幂等）。</li></ol><p><strong>预期</strong>：全部断言通过；租户解析链、引擎注册表生命周期、跨租户拒绝与 tenant 强制过滤均按详细设计生效；门禁全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

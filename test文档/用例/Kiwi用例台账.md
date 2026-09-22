@@ -80,6 +80,7 @@
 | 57 | 977 | 1 | **阶段五 01_02 宿主加载器运行时化与模块契约远端对接**（模块清单契约与严格解析（三字段齐全 / 逐项拒绝 / 非数组抛错）；清单驱动加载器（入口懒加载表、名称与版本严格一致、上下文冻结、拒绝口径）；上下文契约收敛（单一类型 + 只读快照）；八类声明通道补齐字段渲染器与路由菜单图标；令牌机制（汇聚 / 应用 / 还原）与模块文案承载（并入 / 还原 / 未命中不兜底）；宿主清单获取与逐条挂载、失败归集、卸载逆序清理、菜单取注册表快照；区域插槽件；2026-09-21 登记） | CONFIRMED |
 | 58 | 978 | 1 | **阶段五 02_01 Module Federation 接入与模块独立构建**（清单新增 `mode` 形态判据（缺省 `local`；`remote` 须绝对入口 URL，非法值与相对路径逐项拒绝）；加载器入口解析器注入（本地表解析器落 core、远端 MF 解析器落宿主，同一加载器同一校验链，`LocalModuleLoader` 删除）；远端入口解析器（`registerRemotes` 带 `type: module` 与 `force` 幂等 + `loadRemote('<模块名>/module')`，错误原样上抛）；宿主按 `mode` 分派与两形态共存；模块独立工程（`frontend/modules/demo`：MF remote / 独立安装 / 独立构建 / 独立预览壳）；模块产物单独计量（入口闭包阈值 + 入口块数上限 + 页面块不进入口）；2026-09-21 登记） | CONFIRMED |
 | 59 | 979 | 1 | **阶段五 02_02 依赖共享与版本偏斜治理**（共享声明单一来源（共享面白名单 + 版本要求 + 受控非共享项）；宿主提供方 / 模块消费方语义（`import:false` 无本地回退副本 + `strictVersion` 版本不满足即拒绝）；**构建期**产物级断言（两侧声明一致 / 模块无副本 / 依赖实例数 = 1）与白名单 · 体积护栏；**运行期**实例数断言（真实 MF 运行时：共享域内每依赖版本条目数恒为 1、版本满足要求、major 不一致被拒）；受控实测结论（UI 组件库与基座包锁定为受控非共享项）；升级契约成文；2026-09-21 登记） | CONFIRMED |
+| 60 | 1019 | 1 | **阶段二 01_02 多租户数据拓扑落库与实测**（解析链全局中间件（子域名 / `X-Tenant-ID` / token 位 + 豁免）与就地拒绝；租户源查库 + 缓存基座短 TTL 与失效；停用租户 80002 + 强制回收；租户库 `url_template` 解析；引擎注册表懒加载 / LRU / 闲置清扫 / 跨实例锁；会话按租户路由；查询强制 tenant 过滤钩子；双租户物理隔离；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -102,7 +103,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_02（2026-09-22）与阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -152,11 +153,22 @@
 | 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
 | 覆盖范围 | ① 共享声明单一来源与角色差异（宿主提供方 / 模块消费方 `import:false` + `strictVersion`）；② 构建期产物级断言（两侧声明一致、模块无副本、依赖实例数 = 1）；③ 白名单与实装版本、非共享项体积护栏；④ 运行期共享域实例数断言（版本条目数恒为 1）；⑤ 受控实测结论（UI 组件库 / 基座包锁定为受控非共享项）与升级契约成文 |
 | 自动化文件 | `frontend/apps/desktop/tests/shared-dependencies.spec.ts`（Kiwi 用例标注于文件头注释）；构建期断言 `frontend/scripts/check-shared-deps.mjs` / `check-shared-whitelist.mjs`（CI job `shared-deps-check`） |
-| 备注 | 阶段五域 02 收口用例；前批（`02_01`）为 978，见 §3.3；**下次登记从 980 起** |
+| 备注 | 阶段五域 02 收口用例；前批（`02_01`）为 978，见 §3.3；其后批（阶段二 `01_02`）取 1019，见 §3.5；**下次登记以平台回读为准（1019 之后）** |
+
+### 3.5 阶段二 01_02 多租户数据拓扑落库与实测（1019） <a id="batch-01-02-mt"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **1019** |
+| 任务 | 阶段二 `01_02` 多租户数据拓扑落库与实测（需求 `01-2`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 租户上下文与数据源键助手（`tenant_{code}` 往返 / 非法键 `ConfigError` / 子域名 → 请求头 → token 位优先级 / 豁免路径）；② 租户源真库取数（按 code / domain）+ 缓存基座命中与 `invalidate`；③ 未知租户 404 / 80001、停用租户 403 / 80002 + 强制回收；④ 租户中间件全局解析与请求态 / 上下文注入复位、dev 回落与 prod 拒绝、非 HTTP 直通；⑤ 租户库 `url_template` 解析（`{service}` / `{tenant}` / `{database}`）与会话按租户路由；⑥ 引擎注册表平台常驻 / 懒加载 / 上限 LRU / 闲置清扫 / 强制回收 / 跨实例锁 / 活跃数连接预算告警；⑦ 查询强制 tenant 过滤钩子（条件次序与不注入分支）；⑧ 双租户 SQLite 真库物理隔离与跨租户拒绝 |
+| 自动化文件 | `bms/backend/tests/db/test_tenant.py`、`test_tenant_source.py`、`test_tenant_middleware.py`、`test_tenant_routing.py`、`test_engine_registry.py`；`bms/backend/tests/ops/test_tenant_ops.py`；`bms/backend/tests/core/test_config.py`；`bms/backend/tests/integration/test_tenant_routing_integration.py`——用例函数以 `@pytest.mark.kiwi_id(1019)` 标注 |
+| 备注 | 阶段二域 01 第二个子任务用例；前一批为阶段五 `02_02`（979），见 §3.4；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-02_多租户数据拓扑落库与实测.json`（含回读 `case_id`） |
 
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019，登记回读）。
 
 | 侧 | 结果 |
 | --- | --- |
@@ -175,6 +187,7 @@
 | 前端（2026-09-21，阶段五 `01_02`） | **977** —— 九个自动化文件按「首行 / 新增分组处」标注 `// kiwi_id: 977`（`assemble.spec.ts` 与承接 976 的 `module-registration.spec.ts` 为分组 / 行内标注），任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-21_阶段五01-02_宿主加载器运行时化与模块契约远端对接.json`（含回读 `case_id`） |
 | 前端（2026-09-21，阶段五 `02_01`） | **978** —— 新文件首行标注 `// kiwi_id: 978`（宿主 `module-federation.spec.ts`、模块工程 `module-definition.spec.ts`），既有文件（core `module-manifest` / `module-loader` / `module.spec.ts`、宿主 `module-hosting` / `module-registration` / `module-manifest.spec.ts`）在新增断言处加注 `978`（文件首行承接原任务编号），任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-21_阶段五02-01_ModuleFederation接入与模块独立构建.json`（含回读 `case_id`） |
 | 前端（2026-09-21，阶段五 `02_02`） | **979** —— 新文件头注释标注 Kiwi 用例 `979`（宿主 `tests/shared-dependencies.spec.ts`）；构建期断言脚本（`frontend/scripts/check-shared-deps.mjs` / `check-shared-whitelist.mjs`）经 CI job `shared-deps-check` 执行，归属同一用例；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用 |
+| 后端（2026-09-22，阶段二 `01_02`） | **1019** —— 八个自动化文件（`tests/db/` 五份、`tests/ops/`、`tests/core/`、`tests/integration/`）以 `@pytest.mark.kiwi_id(1019)` 标注；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-02_多租户数据拓扑落库与实测.json`（含回读 `case_id`） |
 
 ## 5. 新增批次维护流程 <a id="flow"></a>
 
