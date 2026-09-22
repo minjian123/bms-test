@@ -83,6 +83,7 @@
 | 60 | 1019 | 1 | **阶段二 01_02 多租户数据拓扑落库与实测**（解析链全局中间件（子域名 / `X-Tenant-ID` / token 位 + 豁免）与就地拒绝；租户源查库 + 缓存基座短 TTL 与失效；停用租户 80002 + 强制回收；租户库 `url_template` 解析；引擎注册表懒加载 / LRU / 闲置清扫 / 跨实例锁；会话按租户路由；查询强制 tenant 过滤钩子；双租户物理隔离；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 | 61 | 1050 | 1 | **阶段二 01_03 BaseRepository 异步与 BaseModel 落库**（`BaseDbRepository` 真实异步 CRUD（软删 / 硬删出口、写入白名单、租户 write 注入与禁改、乐观锁转 409）；作用域条件 SQL 翻译（11 操作符）；分页 LIMIT/OFFSET 与基础 ORDER BY；四库类型映射与软删除复合唯一索引；索引命名 `idx_*`；统一会话入口 `session_scope`；`sys_module` 平台域种子；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 | 62 | 1078 | 1 | **阶段二 01_04 Alembic 迁移与排序 DB 侧**（迁移链按数据源分链（platform / tenant / archive）+ 达梦同步迁移分支 + SQLite 开发库自动建表 + ops 批量迁移与新租户初始化（含库级建删）+ 排序 NULL 恒末位 + 分页限深 100 页 + keyset 游标键 + 迁移与模型零漂移校验；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
+| 63 | 1156 | 1 | **阶段二 01_05 三库真库集成与达梦实测**（测试库流程真实执行：每方言平台 / 租户两对象 + 幂等建号与授权 + 分链迁移 + 幂等清理；三库真库集成 8 关注点（多数据源 / 迁移与表集 / 租户隔离 / 副本路由 / 分片键 / 类型往返 / NULL 位次 / 复合唯一语义）；达梦方言四项实测（schema 与大小写 / 复合唯一多 NULL 差异 / 布尔与 JSON 读回字符串 / `VARCHAR2` 字符计长）；达梦运行期同步门面与会话入口分流；CI `verify/db` 档激活；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -105,7 +106,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段二 01_04 / 01_03 / 01_02（2026-09-22）与阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）与阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -190,9 +191,20 @@
 | 自动化文件 | `bms/backend/tests/alembic/test_alembic_chains.py`、`test_alembic_drift.py`、`test_auto_create_tables.py`；`bms/backend/tests/db/test_db_admin.py`；`bms/backend/tests/ops/test_migration_ops.py`；`bms/backend/tests/repositories/test_ordering.py`、`test_db_repository.py`、`test_base_repository.py`；`bms/backend/tests/schemas/test_cursor.py`、`test_pagination.py`；`bms/backend/tests/services/test_base_service.py`——用例函数以 `@pytest.mark.kiwi_id(1078)` 标注 |
 | 备注 | 阶段二域 01 第四个子任务用例；前一批为阶段二 `01_03`（1050），见 §3.6；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-04_Alembic迁移与排序DB侧.json`（含回读 `case_id`） |
 
+### 3.8 阶段二 01_05 三库真库集成与达梦实测（1156） <a id="batch-01-05-threedb"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **1156** |
+| 任务 | 阶段二 `01_05` 三库真库集成与达梦实测（需求 `01-5`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 测试库流程真实执行（每方言平台 / 租户两对象：MySQL `bms_test_mysql(_t1)` / PostgreSQL `bms_test_pg(_t1)` / 达梦模式 `BMS_TEST_DM(_T1)`；幂等建号与最小授权、PostgreSQL 建库转属主、分链迁移（platform / tenant）、幂等清理、未配置连接串显式失败）；② 三库真库集成 8 关注点（多数据源路由 / 迁移 head 与表集 / 租户物理隔离 / 读写分离副本路由 / 分片键查询 / 类型落库往返 / 排序 NULL 末位 / 软删除复合唯一多 NULL 语义）；③ 达梦方言四项实测（URL 模式段即 `schema` 参数与标识符大小写双口径 / 复合唯一视 NULL 相等（**差异**）/ 布尔 `SMALLINT` 与 JSON 读回字符串（**差异**）/ `VARCHAR2(n CHAR)` 按字符计长）；④ 达梦运行期同步门面（`SyncSession` + `asyncio.to_thread`）与会话入口按方言分流、注册表 `get_sync` / `is_sync_only`；⑤ CI `verify/db` 档激活（`deploy/ci/verify/db` + 三个 masked 变量 + 失败先 dump 再清理脚本链） |
+| 自动化文件 | `bms/backend/tests/integration/test_three_db_integration.py`、`test_dm8_dialect_measure.py`、`test_db_connectivity_integration.py`（方言标记）、`bms/backend/tests/db/test_sync_facade.py`、`bms/backend/tests/ops/test_test_db.py`——用例函数以 `@pytest.mark.kiwi_id(1156)` 标注；集成用例另挂 `dialect_mysql` / `dialect_postgres` / `dialect_dm8` 标记 |
+| 备注 | 阶段二域 01 第五个子任务（域收尾）用例；前一批为阶段二 `01_04`（1078），见 §3.7；达梦差异（复合唯一多 NULL、JSON 读回字符串）与兜底归口见任务测试记录 §3.3 / §6 与《数据库设计 · 方言特性 · 达梦 DM8》；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-05_三库真库集成与达梦实测.json`（含回读 `case_id`） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）与 `01_04`（1078，均登记回读）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）。
 
 | 侧 | 结果 |
 | --- | --- |

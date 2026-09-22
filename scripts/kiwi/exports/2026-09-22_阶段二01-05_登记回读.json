@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 1156,
+    "summary": "01-05 三库真库集成与达梦实测（真库对象 / 分链迁移 / 隔离 / 副本路由 / 分片键 / 类型与 NULL 位次 / 达梦方言四项实测 / CI verify/db 档）"
+  }
+]
