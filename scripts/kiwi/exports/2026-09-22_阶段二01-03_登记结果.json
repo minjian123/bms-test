@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 1050,
+    "summary": "阶段二 01_03 BaseRepository 异步与 BaseModel 落库：BaseDbRepository 真实异步 CRUD（软删/硬删出口、写入白名单、租户写入口径、乐观锁转 409）+ 作用域条件 SQL 翻译 + 分页排序（LIMIT/OFFSET、默认 id 升序）+ 四库类型映射与软删除复合唯一索引 + 索引命名 idx_* + 统一会话入口 session_scope + sys_module 平台域种子"
+  }
+]

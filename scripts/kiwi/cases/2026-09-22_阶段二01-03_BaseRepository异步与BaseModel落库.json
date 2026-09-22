@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 1050,
+      "summary": "阶段二 01_03 BaseRepository 异步与 BaseModel 落库：BaseDbRepository 真实异步 CRUD（软删/硬删出口、写入白名单、租户写入口径、乐观锁转 409）+ 作用域条件 SQL 翻译 + 分页排序（LIMIT/OFFSET、默认 id 升序）+ 四库类型映射与软删除复合唯一索引 + 索引命名 idx_* + 统一会话入口 session_scope + sys_module 平台域种子",
+      "text": "<p><strong>前置</strong>：平台库 <code>sys_module</code> 由 <code>ops/seed_module.py</code> 幂等建表并写入平台域 sys / wf / rpt / ai 四行（复用 <code>PLATFORM_MODULES</code>）；仓储经请求级会话（<code>get_db</code> / <code>get_write_db</code> / <code>get_uow</code> 同请求同会话）构造注入；SQLite 真库经 <code>sqlite+aiosqlite</code>，四方言 DDL 经 sqlite / mysql / postgresql / 达梦 <code>dmSQLAlchemy</code> 方言离线编译。</p><ol><li>运行 <code>cd backend &amp;&amp; uv run pytest -q tests/repositories/test_db_repository.py tests/repositories/test_base_repository.py tests/models/test_type_mapping.py tests/db/test_session_scope.py tests/ops/test_module_ops.py tests/dict tests/listing</code>。</li><li>断言 DB 仓储真实 CRUD 与作用域：create / get / list / count / exists（<code>SELECT EXISTS</code>）/ update 落库；软删除后 get / list / exists 不可见；数据范围条件与软删除、租户条件同链翻译；<code>like</code> / <code>in</code> / <code>between</code> / <code>is_null</code> 等操作符翻译正确；条件字段非映射列抛 <code>ConfigError</code>。</li><li>断言写入口径：未知键与 <code>id</code> / 审计字段 / <code>version</code> / <code>deleted_at</code> 抛 <code>ConfigError</code>；<code>tenant_scoped</code> 仓储 create 注入上下文 <code>tenant_id</code>、显式不一致拒绝；update 携带 <code>tenant_id</code> 拒绝。</li><li>断言删除出口：<code>delete</code> 在 <code>soft_delete_enabled=True</code> 时置 <code>deleted_at</code>、<code>False</code> 时物理删除；<code>soft_delete</code> / <code>hard_delete</code> 显式出口；<code>restore</code> 后恢复可见、复合唯一键释放与复用。</li><li>断言乐观锁：并发会话旧版本 <code>flush</code> 触发 <code>StaleDataError</code> 并在仓储内经 <code>_guard_version</code> 转 <code>ConcurrentConflictError</code>（409）；版本号自增；雪花 ID 与审计字段（created_at / created_by / updated_at / updated_by）在异步会话下自动填充。</li><li>断言分页与排序：<code>list_page</code> LIMIT/OFFSET 切片正确；<code>list_cursor</code> 偏移口径；无 sort 默认 <code>id ASC</code>；白名单排序生效、白名单外字段忽略。</li><li>断言四库类型映射与复合唯一：sqlite / mysql / postgresql / 达梦方言离线编译 DDL，BIGINT / DATETIME / VARCHAR / 布尔（BOOLEAN / BOOL / BOOLEAN / SMALLINT）/ JSON 映射符合登记表；<code>UNIQUE (唯一字段, deleted_at)</code> 四库均在；SQLite 真库多 NULL 共存、删除后同键复用；<code>index=True</code> 生成 <code>idx_{表}_{列}</code> 命名（显式 uq_* / idx_* 不变）。</li><li>断言统一会话入口：<code>session_scope</code> 按库键 / 当前租户上下文取引擎、读写角色透传、自定义 <code>SessionFactory</code> 生效；dict / listing 共 6 处 <code>_session</code> 迁移后既有字典与查询方案用例全绿。</li><li>断言 <code>sys_module</code> 种子：幂等建表 + 平台域四行正确；重复执行新增 0 行；<code>--dry-run</code> 输出目标库与种子清单。</li><li>运行 <code>uv run ruff check . &amp;&amp; uv run ruff format --check . &amp;&amp; uv run pyright &amp;&amp; uv run pytest -q --cov=app --cov-branch</code> 与 <code>uv run python -m ops.seed_module</code>（幂等）。</li></ol><p><strong>预期</strong>：全部断言通过；DB 仓储、类型映射、会话入口与种子均按详细设计生效；门禁全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
