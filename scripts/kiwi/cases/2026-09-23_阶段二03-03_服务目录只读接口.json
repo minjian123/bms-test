@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "03-03 服务目录只读接口（清单分页与筛选 / 明细键解析与 404 / 平台库只读会话 / 字段护栏）",
+      "text": "<p><strong>覆盖范围（任务 03_03：服务目录只读接口）</strong></p><ol><li><strong>清单接口</strong>：GET /api/v1/modules 读平台库 sys_module——分页结构 {list, total, page, size}（默认 16 行、size 分页生效、页码超上限按 10001 拒绝）；status / group 筛选与组合；排序白名单（非法字段忽略、缺省 id 升序）；响应字段集严格等于 ModuleResponse（13 个目录字段，不含密钥 / 敏感项）；POST/PUT/DELETE 405。</li><li><strong>明细接口</strong>：GET /api/v1/modules/{service_key}——service_key 优先命中（如 platform）、未命中回退 module_key（pur 等产品模块行）；未登记键与软删行返回 404 + code=10002 + 统一响应体 {code,message,data:null}。</li><li><strong>平台库只读会话</strong>：get_platform_read_db 在请求带租户上下文时仍强制平台库只读引擎（与 get_read_db 的租户键行为对照）；未播种空库清单返回空数组 + total=0、明细 404。</li><li><strong>只读边界</strong>：服务目录路由仅 GET（OpenAPI 契约护栏，含新增明细路由）；仓储只读护栏覆盖新方法（自有方法无写动词、无会话写调用）。</li></ol><p><strong>自动化文件</strong>：services/platform/tests/api/test_modules.py（清单分页 / 筛选 / 明细键解析 / 404 / 字段护栏 / 空库）、libs/bms_core/tests/db/test_engine_routing.py（平台库读会话依赖）、libs/bms_core/tests/repositories/test_module_repository.py（page_catalog / get_by_service_key / 只读护栏）；全量 pytest / ruff / pyright / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

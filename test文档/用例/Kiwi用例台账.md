@@ -84,6 +84,9 @@
 | 61 | 1050 | 1 | **阶段二 01_03 BaseRepository 异步与 BaseModel 落库**（`BaseDbRepository` 真实异步 CRUD（软删 / 硬删出口、写入白名单、租户 write 注入与禁改、乐观锁转 409）；作用域条件 SQL 翻译（11 操作符）；分页 LIMIT/OFFSET 与基础 ORDER BY；四库类型映射与软删除复合唯一索引；索引命名 `idx_*`；统一会话入口 `session_scope`；`sys_module` 平台域种子；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 | 62 | 1078 | 1 | **阶段二 01_04 Alembic 迁移与排序 DB 侧**（迁移链按数据源分链（platform / tenant / archive）+ 达梦同步迁移分支 + SQLite 开发库自动建表 + ops 批量迁移与新租户初始化（含库级建删）+ 排序 NULL 恒末位 + 分页限深 100 页 + keyset 游标键 + 迁移与模型零漂移校验；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
 | 63 | 1156 | 1 | **阶段二 01_05 三库真库集成与达梦实测**（测试库流程真实执行：每方言平台 / 租户两对象 + 幂等建号与授权 + 分链迁移 + 幂等清理；三库真库集成 8 关注点（多数据源 / 迁移与表集 / 租户隔离 / 副本路由 / 分片键 / 类型往返 / NULL 位次 / 复合唯一语义）；达梦方言四项实测（schema 与大小写 / 复合唯一多 NULL 差异 / 布尔与 JSON 读回字符串 / `VARCHAR2` 字符计长）；达梦运行期同步门面与会话入口分流；CI `verify/db` 档激活；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
+| 64 | 2162 | 1 | **阶段二 03_01 服务目录与注册要素登记**（`SERVICE_CATALOG` 16 行（平台服务 10 + 业务模块 6）；`ModuleRecord` 服务维度与契约版本字段 + 校验（四要素唯一与格式 / 分组 / 批次 / semver / 产品维度）；`sys_module` 升格与 `0002` 迁移零漂移；种子 upsert 幂等；只读仓储（分组 / 状态 / 服务维度查询、软删过滤）；2026-09-22 登记） | CONFIRMED（2026-09-22 登记） |
+| 65 | 2163 | 1 | **阶段二 03_02 启动与 CI 唯一性校验**（启动接库校验（库内查重 / 双向对账 / 运行服务契约版本主版本 / 空库容错 / `CatalogError` 40003 拒启）；契约版本解析 `core/version.py`；CI `check_modules` 双模式 + 冒烟 job 迁移种子接库；只读边界三条护栏；2026-09-23 登记） | CONFIRMED（2026-09-23 登记） |
+| 66 | 2164 | 1 | **阶段二 03_03 服务目录只读接口**（清单分页 + `status` / `group` 筛选（`page_catalog` 筛选后总数）；明细 `service_key` 优先回退 `module_key` + 未登记 404 / 10002；响应字段护栏（`ModuleResponse` 13 字段）；空库空数组；`get_platform_read_db` 平台库只读会话；依赖工厂契约校验转 10001；2026-09-23 登记） | CONFIRMED（2026-09-23 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -202,15 +205,48 @@
 | 自动化文件 | `bms/backend/tests/integration/test_three_db_integration.py`、`test_dm8_dialect_measure.py`、`test_db_connectivity_integration.py`（方言标记）、`bms/backend/tests/db/test_sync_facade.py`、`bms/backend/tests/ops/test_test_db.py`——用例函数以 `@pytest.mark.kiwi_id(1156)` 标注；集成用例另挂 `dialect_mysql` / `dialect_postgres` / `dialect_dm8` 标记 |
 | 备注 | 阶段二域 01 第五个子任务（域收尾）用例；前一批为阶段二 `01_04`（1078），见 §3.7；达梦差异（复合唯一多 NULL、JSON 读回字符串）与兜底归口见任务测试记录 §3.3 / §6 与《数据库设计 · 方言特性 · 达梦 DM8》；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二01-05_三库真库集成与达梦实测.json`（含回读 `case_id`） |
 
+### 3.9 阶段二 03_01 服务目录与注册要素登记（2162） <a id="batch-03-01-catalog"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2162** |
+| 任务 | 阶段二 `03_01` 服务目录与注册要素登记（需求 `03-1`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① `SERVICE_CATALOG` 16 行登记清单（平台服务 10 + 业务模块 6）与 `PLATFORM_MODULES` 视图；② `ModuleRecord` 服务维度 / 契约版本字段与校验（四要素唯一与格式、`service_group` / `build_batch` / semver / 产品维度一致、`table_prefix` 首段与 `module_key` 一致）；③ `SysModule` 模型升格与平台链 `0002` 迁移零漂移（`errcode_segment` 可空、去段位唯一）；④ 种子 upsert 幂等（首建 16 行 / 重复 0 / 0、既有行补齐新字段）；⑤ 只读仓储（按分组 / 状态 / 服务维度查询、`get_by_key`、软删过滤、只读护栏） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/services/test_module_registry.py`、`tests/ops/test_module_ops.py`、`tests/repositories/test_module_repository.py`、`tests/alembic/test_alembic_drift.py`（回归）——用例函数以 `@pytest.mark.kiwi_id(2162)` 标注 |
+| 备注 | 阶段二域 03 第一个子任务用例；前一批为阶段二 `01_05`（1156），见 §3.8；登记输入见 `scripts/kiwi/cases/2026-09-22_阶段二03-01_服务目录与注册要素登记.json`（含回读 `case_id`） |
+
+### 3.10 阶段二 03_02 启动与 CI 唯一性校验（2163） <a id="batch-03-02-startup"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2163** |
+| 任务 | 阶段二 `03_02` 启动与 CI 唯一性校验（需求 `03-2`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 启动接库校验（库内查重与格式、与清单双向对账（缺行 / 清单外 / 字段不符）、运行服务登记行与契约版本主版本兼容；空目录告警放行；库不可读 / 表缺失 / 冲突 `CatalogError`（40003）拒启 + critical 事件）；② 契约版本解析 `core/version.py` 与插件同源；③ 服务包自报 `CONTRACT_VERSION` 经 `ServiceIdentity` 带入（启动 vs 登记、CI vs 清单双端）；④ CI `ops/check_modules.py` 双模式（离线：清单 + 服务包声明；`--url` 接库：查重 + 对账、空库判失败）与 `backend-modules` 冒烟 job 迁移 / 种子 / 接库；⑤ 只读边界三条护栏（仓储只读、路由仅 GET、启动校验前后行快照一致） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/core/test_service_catalog_startup.py`、`tests/core/test_version.py`、`tests/services/test_module_registry.py`、`tests/ops/test_check_modules.py`、`tests/repositories/test_module_repository.py`、`bms/backend/services/platform/tests/api/test_modules.py`——用例函数以 `@pytest.mark.kiwi_id(2163)` 标注 |
+| 备注 | 阶段二域 03 第二个子任务用例；前一批为 `03_01`（2162），见 §3.9；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二03-02_启动与CI唯一性校验.json`（含回读 `case_id`） |
+
+### 3.11 阶段二 03_03 服务目录只读接口（2164） <a id="batch-03-03-readonly"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2164** |
+| 任务 | 阶段二 `03_03` 服务目录只读接口（需求 `03-3`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 清单 `GET /api/v1/modules` 读平台库（分页 `{list,total,page,size}`、`status` / `group` 筛选、筛选后总数、排序白名单（`id` 命中 / 非法忽略）、`page=101` → 200 + 10001）；② 明细 `GET /api/v1/modules/{service_key}`（`service_key` 优先、未命中回退 `module_key`；未登记 404 + 10002 + 统一响应体）；③ 响应字段护栏（字段集严格等于 `ModuleResponse` 13 字段、不含密钥 / 敏感项）；④ 空库行为（清单空数组 + `total=0`、明细 404）；⑤ `get_platform_read_db` 平台库只读会话（带租户上下文仍取平台库，与 `get_read_db` 租户键对照）；⑥ 仓储 `page_catalog` / `get_by_service_key` 与只读护栏扩展；⑦ 依赖工厂契约校验统一转 10001（`page_query` / `cursor_query`） |
+| 自动化文件 | `bms/backend/services/platform/tests/api/test_modules.py`、`test_router_base.py`；`bms/backend/libs/bms_core/tests/db/test_engine_routing.py`、`tests/repositories/test_module_repository.py`——用例函数以 `@pytest.mark.kiwi_id(2164)` 标注（8 处） |
+| 备注 | 阶段二域 03 第三个子任务用例（域收尾）；前一批为 `03_02`（2163），见 §3.10；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二03-03_服务目录只读接口.json`（含回读 `case_id`） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）。
 
 | 侧 | 结果 |
 | --- | --- |
-| 后端（`--reconcile --code-root ../bms/backend`） | 平台 103 条 / 代码引用 80 个 / **matched 78** |
+| 后端（`--reconcile --code-root ../bms/backend`） | 2026-09-23 对账：平台 224 条 / 代码引用 104 个 / **matched 102**（旧值 2026-09-16：平台 103 条 / 引用 80 个 / matched 78） |
 | 后端 `only_code`（代码引用了但本产品查不到） | 533、534 —— **口径假阳性**：两条实际存在于 `BMS 自动化用例（CI）` 产品（`tests/core/test_plugin.py` 的两个函数），`--reconcile` 只查策展产品所致 |
-| 后端 `only_platform` | 25 条（`BMS 自动化用例（CI）` 导入记录，属预期） |
+| 后端 `only_platform` | 122 条（`BMS 自动化用例（CI）` 导入记录，属预期；旧值 25 条） |
 | 前端（手工核对，脚本未覆盖） | `frontend/apps/desktop` / `frontend/apps/mobile`：19 / 21 / 23 / 25 / 698、20 / 22 / 24 / 26 / 699；02-02 的 **700 ~ 704**、02-03 的 **705 ~ 708**、02-04 的 **709 ~ 712**、02-05 的 **713 ~ 716**、02-06-01 的 **717 / 718**、02-06-02 的 **719 / 720**、02-06-03 的 **721 / 722**、03-06 的 **723**（双端同号）与 03-01 的 **724 / 725**、03-02 的 **726 ~ 730**、03-03 的 **731 ~ 736**、03-04 的 **737 / 738**（仅 frontend）、03-05 的 **739 ~ 741**（仅 frontend）、04-01 的 **742 / 743**、04-02 的 **744 / 745**、04-03 的 **746 ~ 748** 与 04-04 的 **749 / 750**（双端同号）—— **全部命中平台**，无孤儿引用；**阶段四域 02（698 ~ 722）/ 域 03（723 ~ 741）/ 域 04（742 ~ 750，收官）用例全部登记完成** |
 | 前端（2026-09-19 补记，域 08 批次） | `08_01` 的 **760 ~ 762**（占位版交付三嵌套）、`08_02` 的 **763**（图标与代码编辑器）、`08_03_01` 的 **764**（向导与偏好设置）、`08_03_02` 的 **765**（批量操作与主题租户）、`08_03_03` 的 **766**（打印与导出 PDF）—— 平台回读一致、代码标注一致，无孤儿引用 |
 | 前端（2026-09-19 再补记，域 08 权限配置与导入导出） | `08_04_01` 的 **767** / `08_04_02` 的 **768**（授权编排基类与领域 / 授权组件与宿主核对页）—— 平台回读一致、代码标注一致（实施记录与测试记录均已含 767 / 768）；`08_05_01` 的 **769**（导入导出编排基类与领域）与 `08_05_02` 的 **770**（导入导出组件与宿主核对页）同上——两子任务均已完成（2026-09-19）、代码首行标注 `// kiwi_id: 769` / `// kiwi_id: 770`、无孤儿引用 |
