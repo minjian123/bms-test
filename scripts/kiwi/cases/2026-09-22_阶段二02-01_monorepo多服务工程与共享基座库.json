@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "02-01 monorepo 多服务工程与共享基座库（uv 工作区 / 共享基座库抽取 / 平台服务 / 全量包重命名 / 测试随工程 / 服务边界护栏 / 服务脚手架）",
+      "text": "<p><strong>覆盖范围（任务 02_01：monorepo 多服务工程与共享基座库）</strong></p><ol><li><strong>uv 工作区与工程骨架</strong>：<code>backend/</code> 为 uv 工作区（虚拟根）——<code>libs/bms_core/</code> 共享基座库 + <code>services/platform/</code> 平台服务，各自独立 <code>pyproject.toml</code>（src 布局）并可分别构建；工作区成员解析出 <code>bms_core</code> / <code>bms_platform</code> 两包且可导入。</li><li><strong>共享基座库抽取</strong>：现单体的基座内核迁入 <code>bms_core</code>（core 横切 / 数据访问底座 / 模块基类 / 全部横切能力域契约与实现 / 接口层基座 / 平台基础模型）；应用入口、接口路由与平台业务模块迁入 <code>bms_platform</code>（api 全量 + main/asgi + demo 五层示例 + 平台业务模型）。</li><li><strong>全量包重命名</strong>：源码 / 测试 / <code>alembic</code> / <code>ops</code> 的 <code>app.*</code> 全量改写为 <code>bms_core.*</code> / <code>bms_platform.*</code>，删除旧 <code>app</code> 包（无兼容 shim）；应用装配、路由前缀、中间件顺序、探针口径与迁移链路不变（既有测试全绿证明）。</li><li><strong>测试随工程</strong>：基座库测试 <code>libs/bms_core/tests</code>（不依赖服务应用）+ 服务测试 <code>services/platform/tests</code>（应用 / 接口 / 契约 / 插件装配），各自 <code>conftest.py</code>，根 pytest 汇总。</li><li><strong>服务边界机器护栏</strong>：<code>scripts/tools/base-check/check-service-boundaries.py</code>（含 <code>--self-test</code>）断言——共享库不得依赖服务、服务不得互相 import、服务内分层单向（<code>api → services → repositories → models/schemas</code>）、跨包不得引用私有实现；套内 <code>test_module_boundary</code> 同口径。</li><li><strong>服务脚手架</strong>：<code>backend/scripts/new_service.py</code> 按同一骨架生成新服务工程（独立 pyproject + 五层 + 入口 + 冒烟用例），命名非法 / 保留名 / 重名被拒，生成件可导入并构造应用。</li></ol><p><strong>自动化文件</strong>：<code>backend/libs/bms_core/tests/ops/test_new_service.py</code>（脚手架）、<code>backend/libs/bms_core/tests/core/test_workspace_layout.py</code>（工作区与两包）、<code>backend/libs/bms_core/tests/crosscut/test_module_boundary.py</code>（包 / 服务边界护栏）、<code>scripts/tools/base-check/check-service-boundaries.py --self-test</code>（护栏自检）；全量 <code>pytest</code> / <code>ruff</code> / <code>pyright</code> / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
