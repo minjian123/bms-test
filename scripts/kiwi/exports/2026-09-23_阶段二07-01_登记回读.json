@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2179,
+    "summary": "07-01 OIDC IdP 接入（Keycloak 自托管编排 / 声明式 realm 与客户端 / OIDC 客户端发现·授权·换码·userinfo / JWKS 票据校验）"
+  }
+]

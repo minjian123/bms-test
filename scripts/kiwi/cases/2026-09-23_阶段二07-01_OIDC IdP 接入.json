@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "07-01 OIDC IdP 接入（Keycloak 自托管编排 / 声明式 realm 与客户端 / OIDC 客户端发现·授权·换码·userinfo / JWKS 票据校验）",
+      "text": "<p><strong>覆盖范围（任务 07_01：OIDC IdP 接入）</strong></p><ol><li><strong>部署编排</strong>：<code>deploy/compose/keycloak.yml</code>（Keycloak 26.7.4 容器）与 <code>base.yml</code> 组合一键拉起；元数据落 <code>bms-postgres</code> 独立库 <code>keycloak</code>（<code>deploy/postgres/init/01-keycloak.sql</code> 幂等建角色 / 库）；宿主端口 <code>KEYCLOAK_PORT</code>（默认 8090），不经 APISIX。</li><li><strong>声明式 realm / 客户端</strong>：<code>deploy/keycloak/bms-realm.json</code>（realm <code>bms</code> + confidential 客户端 <code>bms-backend</code>）入 Git，启动 <code>--import-realm</code> 自动导入；client secret 用 <code>${KEYCLOAK_CLIENT_SECRET}</code> 占位经 <code>.env</code> 注入，凭据不落库不入镜像。</li><li><strong>OIDC 客户端（bms_core/idp）</strong>：真实 <code>OidcIdentityProvider</code>（<code>provider = oidc</code>）——Discovery 元数据获取与缓存、<code>authorize</code> 构造授权 URL、<code>exchange_token</code> 换码（含 <code>id_token</code>/<code>refresh_token</code>）、<code>userinfo</code> 拉取（<code>idp_key = issuer</code>）。</li><li><strong>JWKS 票据校验</strong>：<code>bms_core/idp/jwks.py</code> JWKS 缓存与验签助手 + <code>verify_token</code>——按 <code>kid</code> 选键、仅接受 RS256/ES256、校验 <code>exp</code>/<code>iss</code>/<code>aud</code>；失败转 <code>AuthError</code>（20001/401）、IdP 不可达转 <code>ServiceUnavailableError</code>（10007/503）。</li><li><strong>契约扩展</strong>：<code>IdentityToken</code> 增 <code>id_token</code>/<code>refresh_token</code>；<code>IdentityUser</code> 增 <code>idp_key</code>；新增 <code>IdentityClaims</code>；<code>BaseIdentityProvider</code> 增可选 <code>verify_token</code>（默认不支持该协议抛 <code>ConfigError</code> 40001，Null 实现占位返回）。</li><li><strong>外部身份映射与 JIT 口径</strong>：登记 <code>idp_key</code>（来源）+ <code>subject</code>（external_id）映射与 JIT 建号职责边界，本任务不建表不落库（随阶段六）。</li><li><strong>配置与装配</strong>：<code>[identity_provider]</code> 配置节（issuer/client_id/redirect_uri/scopes/TTL；secret 经 <code>BMS_IDENTITY_PROVIDER__CLIENT_SECRET</code> 注入）+ <code>IdentityProviderSettings</code>；<code>register_plugin(\"identity_provider\", \"oidc\", ...)</code>。</li><li><strong>验证</strong>：本机单元（MockTransport 造 Discovery/JWKS/token，含验签正反例）+ 部署件护栏（realm JSON 无明文 secret）；mjbk 真实 Keycloak 冒烟（Discovery/JWKS 可达、取令牌经 <code>verify_token</code> 通过）；全量 pytest / ruff / pyright / 基座校验全绿。</li></ol><p><strong>自动化文件</strong>：services/identity/tests/idp/test_oidc.py（OIDC 客户端 / JWKS 验签 / 部署件护栏 / 集成跳过式）、services/identity/tests/idp/test_idp.py（契约扩展）。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
