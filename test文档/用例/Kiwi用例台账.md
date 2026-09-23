@@ -282,5 +282,6 @@
 | 5 | ~~阶段四域 06 / 07 用例未登记平台~~ **已闭环（2026-09-21）** | 实际范围为域 05 `05_01` 与域 06 / 07 首批 `06_01` ~ `06_03`、`07_01` ~ `07_03`（**共 7 个任务**，台账原漏记 `05_01`）；已补登 **967 ~ 973** 并回填代码 `// kiwi_id` 标注与 7 份任务测试记录（见 §3）。 |
 | 6 | `08_08` 无平台用例、代码 `kiwi_id` 错标 | 平台回读 `775` = 07-6 图表卡、`776` / `777` = `08-9-1` / `08-9-2`；`interaction-approval-flow.spec.ts` 与 `interaction-process-modeler.spec.ts` 首行标注的 `775` / `776` 属错标；`08-8-1` / `08-8-2` 在平台无独立用例。**已闭环（2026-09-21）**：补登 **974 / 975**，并修正两个 ui-ep spec 与 2 份任务记录的 `kiwi_id` 错标。 |
 | 7 | 旧双端体系 `05-01` ~ `05-04`（`756` ~ `759`）仍 `CONFIRMED`、所指实现随旧层删除 | **已闭环（2026-09-21）**：经 `update_status.py --ids 756,757,758,759 --status DISABLED` 执行并回读为 `DISABLED`，保留编号不复用。 |
+| 后端（2026-09-23，阶段二 `06_03`） | **2176** —— 新增 / 新增断言处的自动化文件以 `@pytest.mark.kiwi_id(2176)` 标注（`libs/bms_core/tests/services/test_table_registry.py`、`libs/bms_core/tests/db/test_tenant_remote.py`、`services/tenant/tests/sources/test_tenant_source.py` 的版本键用例、`check-service-boundaries.py --self-test`）；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二06-03_平台层表归属与按服务拆分.json`（含回读 `case_id`） |
 
 > 依《文档生成规范》编写 · 测试资产仓库

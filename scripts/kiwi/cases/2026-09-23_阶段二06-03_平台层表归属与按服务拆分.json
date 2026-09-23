@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2176,
+      "summary": "阶段二 06_03 平台层表归属与按服务拆分：表归属单一来源与派生（表级归属 / 基础设施表每服务自有 / 未登记即拒）+ 静态与运行时校验收窄（取消 sys_ 前缀放行）+ 租户注册归属迁出（SysTenant 落租户服务）与租户注册只读契约 + 租户源装配点（local / remote + 版本键失效 + 契约不可达降级）",
+      "text": "<p><strong>前置</strong>：工作区形态 <code>backend/libs/bms_core</code> + <code>backend/services/*</code>；配置 <code>[tenant].source</code> 为空（自动：租户服务 <code>local</code>、其余 <code>remote</code>）；租户注册表 <code>sys_tenant</code> 已随 <code>ops/seed_tenant.py</code> 幂等种子落平台服务库；<code>[cache]</code> provider 缺省 null（不影响正确性）。</p><ol><li>运行 <code>cd backend &amp;&amp; uv run pytest -q</code>（全量）与 <code>python3 scripts/tools/base-check/check-service-boundaries.py --self-test</code>。</li><li>断言表归属单一来源：<code>TABLE_OWNERSHIP</code> 校验通过（表名唯一 / 归属在服务目录或预留标识内 / 库类别与状态合法 / 前缀与归属服务一致，<code>sys_</code> 与无前缀表按表级归属判定）；<code>table_owner</code> 命中（<code>sys_tenant</code> → tenant、<code>sys_module</code> → platform、发件箱三表 → <code>*</code>）、未登记返回 None。</li><li>断言派生：<code>chain_tables(service, datasource)</code> 含本服务表 + 基础设施三表（平台链 / 租户链各含）；<code>infrastructure_tables()</code> 为发件箱三表；合法清单 <code>validate_table_ownership</code> 双向对账为空、缺行 / 清单外行 / 字段不符逐项检出。</li><li>断言边界判定按表级归属：基础设施表、自身归属表、未登记表名放行；他服务归属表（如 <code>sys_tenant</code> 被 org 读）判越界并给出归属；只读例外按表名或前缀命中放行、写操作不放行；运行时守卫 <code>enforce</code> 模式抛 <code>DataOwnershipError</code>（10008）。</li><li>断言静态护栏收窄：规则 5 声明的表名未登记即失败；<code>sys_</code> 前缀不再整体放行（未登记 / 跨服务引用被拒）；自检 12 样例（未登记拦截、基础设施放行、表名跨服务重复、跨服务声明与原始 SQL 引用拦截、例外放行与 <code>access=write</code> 拦截）全部符合预期；真实仓库 <code>check-service-boundaries.py</code> 通过（0 越界）。</li><li>断言租户注册归属迁出与只读契约：<code>SysTenant</code> 声明在 <code>bms_tenant</code>（<code>sys_tenant</code> 归 tenant）；<code>GET /api/v1/tenant-registry?code=|domain=</code> 命中返回注册快照、未知 404 / 80001、停用 403 / 80002、参数缺失 10001。</li><li>断言租户源装配点：<code>build_tenant_lookup</code> 按名解析（未知名抛 <code>ConfigError</code>）；租户服务 <code>LocalTenantSource</code> 本地取数（按 code / domain 命中、软删除过滤、缓存命中与 <code>invalidate</code> 重查、<code>bump_version</code> 递增全局版本键 <code>bms:global:tenant:version</code> 后缓存陈旧重载）；<code>RemoteTenantSource</code> 经契约回源、缓存带版本戳、版本不符重载、停用先强制回收引擎再抛 80002、契约不可达时仅 dev/test 且 <code>allow_demo_fallback</code> 才按请求值兜底并记 WARNING。</li><li>运行 <code>uv run ruff check . &amp;&amp; uv run ruff format --check . &amp;&amp; uv run pyright</code> 与 <code>python3 scripts/tools/base-check/{check-links,check-base}.py</code>、<code>python3 scripts/tools/check-docs/check-status.py --stage 02_后端基座与服务化地基 --strict</code>。</li></ol><p><strong>预期</strong>：全部断言通过；平台层表归属唯一且校验生效（未登记 / 跨服务引用被拒），租户注册归属与读出口按详细设计生效（含缓存版本键与降级口径），门禁全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
