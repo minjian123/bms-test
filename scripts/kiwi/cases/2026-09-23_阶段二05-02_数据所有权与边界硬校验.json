@@ -1,0 +1,29 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "05-02 数据所有权边界硬校验与例外白名单（表前缀归属 / 跨服务库访问拦截 / 白名单放行）",
+      "text": "<p><strong>覆盖范围（任务 05_02：数据所有权与边界硬校验 · 静态硬校验面）</strong></p><ol><li><strong>表前缀归属单一来源</strong>：<code>bms_core/boundary/directory.py</code> —— 以服务目录 <code>SERVICE_CATALOG</code> 派生 <code>prefix_owner_map()</code> / <code>owned_prefixes_for()</code> / <code>is_shared_prefix()</code>；<code>sys_</code> 平台域共享前缀内建放行。</li><li><strong>跨服务库访问硬校验</strong>：<code>check-service-boundaries.py</code> 规则 6 —— ① 声明越权（服务声明他服务前缀的表）；② 引用越界（原始 SQL 经 <code>bms_core/boundary/sql.py</code> 提取表名、<code>ForeignKey</code> 目标表、已知表名字符串 token）；越界即 CI 失败。</li><li><strong>读侧出口例外白名单</strong>：<code>deploy/boundaries/data_ownership_exceptions.json</code> + <code>bms_core/boundary/exceptions.py</code> —— 结构 / 字段 / 归属校验（<code>access</code> 只允许 <code>read</code>、须含出口 / 消费方 / 理由 / 替代方案 / 失效条件）；命中按已登记例外放行并计数，未登记仍失败。</li><li><strong>越界判定纯函数</strong>：<code>bms_core/boundary/assess.py</code> —— 前缀归属存在、归属非当前服务、非共享前缀、未命中只读例外方判越界。</li></ol><p><strong>自动化文件</strong>：scripts/tools/base-check/check-service-boundaries.py --self-test、libs/bms_core/tests/boundary/test_boundary.py、libs/bms_core/tests/ops/test_boundary_metrics.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "05-02 运行时跨库守卫与边界度量（off/warn/enforce 三模式 + 越界计数）",
+      "text": "<p><strong>覆盖范围（任务 05_02：数据所有权与边界硬校验 · 运行时与度量面）</strong></p><ol><li><strong>运行时守卫能力域</strong>：<code>bms_core/boundary/</code> —— <code>BaseDataOwnershipGuard</code>（插件键 <code>data_ownership_guard</code>）+ 真实 <code>TableOwnershipGuard</code>（SQLAlchemy <code>before_cursor_execute</code> 按表前缀归属检测）+ 缺省 <code>NullDataOwnershipGuard</code>；配置节 <code>[data_ownership]</code>。</li><li><strong>三模式</strong>：<code>off</code> 不检测 / <code>warn</code> 记录 + 计数 + 告警（不阻断）/ <code>enforce</code> 越界抛 <code>DataOwnershipError(10008 / 500)</code>；计数经 <code>snapshot()</code> 暴露并上报 <code>bms_boundary_cross_access_total</code>。</li><li><strong>只读例外复用</strong>：运行时与静态硬校验共用同一白名单与 <code>assess.py</code> 判定（只读命中放行）。</li><li><strong>边界度量</strong>：<code>scripts/tools/governance/boundary_metrics.py</code> —— 汇总静态越界数 / 跨库访问数 / 已登记例外数；运行期指标端点未配置时降级标注（随 08_01）。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/boundary/test_boundary.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

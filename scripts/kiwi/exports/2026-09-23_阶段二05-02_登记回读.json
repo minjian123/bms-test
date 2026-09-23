@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2170,
+    "summary": "05-02 数据所有权边界硬校验与例外白名单（表前缀归属 / 跨服务库访问拦截 / 白名单放行）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2171,
+    "summary": "05-02 运行时跨库守卫与边界度量（off/warn/enforce 三模式 + 越界计数）"
+  }
+]
