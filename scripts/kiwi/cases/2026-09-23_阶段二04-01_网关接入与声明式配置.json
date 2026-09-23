@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-01 网关接入与声明式配置（服务目录生成路由 / 外部路径重写 / 编排与静态分流 / 零漂移校验）",
+      "text": "<p><strong>覆盖范围（任务 04_01：网关接入与声明式配置）</strong></p><ol><li><strong>服务目录生成</strong>：<code>bms_core/services/gateway_catalog.py</code> 读 <code>SERVICE_CATALOG</code>——仅 <code>service_key</code> 非空且 <code>status=enabled</code> 的服务参与（当前 9 个：platform/identity/tenant/org/file/notification/search/ai/report）；<code>planned</code>（wf）与纯模块行（service_key 空的产品模块）排除；上游 id=service_key、节点=<code>{service_key}:8000</code>、类型 roundrobin。</li><li><strong>路由与重写</strong>：每服务一条路由（id=route-{service_key}、uris 精确 /api/{service_key}/v1 + 前缀 /api/{service_key}/v1/*、upstream_id 指向存在上游）；<code>proxy-rewrite.regex_uri</code> 将 <code>^/api/{service_key}/v1(.*)$</code> 还原为 <code>/api/v1$1</code>（样例逐项断言）。</li><li><strong>确定性与插件钩子</strong>：两次渲染逐字节一致；<code>ROUTE_PLUGINS</code> 钩子按 service_key 合并附加插件（认证 / 限流预留、默认空）。</li><li><strong>YAML 契约</strong>：<code>render_apisix_yaml()</code> 单引号包裹、以 <code>#END</code> 结尾且可被 YAML 解析（含 upstreams / routes 结构）。</li><li><strong>CLI 零漂移</strong>：<code>backend/ops/gateway_config.py render/check</code>——render 写出 <code>deploy/gateway/apisix.yaml</code>，check 对仓库内生成件通过、对篡改件退出码非 0；接入 CI <code>base-integrity</code> 与本地预检。</li><li><strong>编排与分流</strong>：<code>deploy/compose/gateway.yml</code>（apisix:3.18.0 standalone + nginx 静态分流）、<code>deploy/gateway/config.yaml</code>（data_plane + yaml provider）、<code>nginx.conf</code>（静态托管 + /api 反代 + 安全响应头 + WebSocket 放行）；mjbk 真实拉起与经网关路由冒烟（路径重写命中上游、未登记服务 404）。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/services/test_gateway_catalog.py（生成器规则 / 过滤 / 重写 / 确定性 / 钩子 / YAML）、libs/bms_core/tests/ops/test_gateway_config.py（CLI render / check / 漂移拦截）；全量 pytest / ruff / pyright / 基座校验全绿。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
