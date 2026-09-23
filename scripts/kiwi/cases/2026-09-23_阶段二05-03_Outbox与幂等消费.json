@@ -1,0 +1,29 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "05-03 事务性发件箱与投递器（三表双链 / 同库同事务 / 轮询投递 / 顺序重试死信重放）",
+      "text": "<p><strong>覆盖范围（任务 05_03：Outbox 与幂等消费 · 发件箱与投递面）</strong></p><ol><li><strong>三表双落</strong>：<code>sys_outbox</code>（发件箱 / 事件账本）/ <code>sys_event_consumed</code>（消费幂等）/ <code>sys_event_dead_letter</code>（死信看板）随平台链 <code>0003</code> 与租户链 <code>0002</code> 迁移建表，满足「事件与业务同库同事务」。</li><li><strong>同库同事务写入</strong>：<code>bms_core/outbox/store.py::SqlOutboxStore.enqueue(session, event)</code> —— 业务事务内 <code>flush</code> 不提交，事务回滚不发事件；缺省补齐 <code>event_id</code> / <code>occurred_at</code>。</li><li><strong>轮询投递器</strong>：<code>bms_core/outbox/dispatcher.py::PollOutboxDispatcher</code>（插件键 <code>outbox_dispatcher</code>）—— <code>claim_pending</code> 按 <code>(aggregate_key, id)</code> 同聚合仅取队首、经 <code>EventPublisher</code> 端口转发并 <code>mark_delivered</code>；失败指数退避、超上限转死信（插 <code>sys_event_dead_letter</code>）；<code>lifespan</code> 内后台轮询（<code>[outbox].enabled</code>）。</li><li><strong>重放</strong>：<code>ops/outbox.py replay</code> 按 类型 / 聚合 / 时间 重置为待投递，消费端 <code>event_id</code> 幂等故重放安全。</li><li><strong>错误码</strong>：新增 <code>10009</code> <code>OUTBOX_DELIVERY</code>（投递编排非预期异常）。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/outbox/test_outbox_store.py、libs/bms_core/tests/outbox/test_outbox_dispatcher.py、libs/bms_core/tests/ops/test_outbox_cli.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "05-03 消费幂等与业务幂等键（ProcessedEventStore / Redis SETNX / 死信看板接口）",
+      "text": "<p><strong>覆盖范围（任务 05_03：Outbox 与幂等消费 · 幂等与看板面）</strong></p><ol><li><strong>消费幂等</strong>：<code>bms_core/outbox/consumed.py::ProcessedEventStore.mark(session, consumer, event_id)</code> —— <code>(consumer, event_id)</code> 唯一，首次 True 可执行副作用、重复 False 跳过；经 <code>SAVEPOINT</code> 去重、与业务副作用同一本地事务写入。</li><li><strong>业务幂等键</strong>：<code>bms_core/idempotency/redis.py::RedisIdempotencyStore</code>（<code>SETNX</code> 前置去重 + 首次结果复用 / 存取，<code>begin</code> / <code>load</code> / <code>save</code>）；唯一约束兜底由各业务表 <code>idempotency_key</code> 唯一索引承担，不改 <code>IdempotencyStore</code> 契约。</li><li><strong>事件信封</strong>：<code>EventEnvelope</code> 增 <code>event_id</code> / <code>occurred_at</code> / <code>aggregate_key</code>（对齐架构事件模型，发件箱与消费幂等共用信源）。</li><li><strong>死信看板接口</strong>（平台服务 <code>/api/v1/outbox</code>）：列表（<code>status</code> / <code>source</code> 筛选、分页）、详情（未命中 404）、重投（<code>pending → replayed</code>）、忽略（<code>pending → ignored</code>）；非法状态 <code>ConflictError(10003)</code>。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/outbox/test_consumed.py、libs/bms_core/tests/idempotency/test_idempotency_redis.py、services/platform/tests/api/test_outbox.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

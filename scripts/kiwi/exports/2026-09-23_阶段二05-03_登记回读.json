@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2172,
+    "summary": "05-03 事务性发件箱与投递器（三表双链 / 同库同事务 / 轮询投递 / 顺序重试死信重放）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2173,
+    "summary": "05-03 消费幂等与业务幂等键（ProcessedEventStore / Redis SETNX / 死信看板接口）"
+  }
+]
