@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2168,
+    "summary": "05-01 服务公开契约快照与零漂移（OpenAPI 契约版本 / 全服务快照导出 / 缺件与漂移拦截）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2169,
+    "summary": "05-01 服务间同步调用韧性与公开契约边界（超时/重试/熔断/限流 + 契约 DTO/只读投影）"
+  }
+]

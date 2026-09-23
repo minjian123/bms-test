@@ -1,0 +1,29 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "05-01 服务公开契约快照与零漂移（OpenAPI 契约版本 / 全服务快照导出 / 缺件与漂移拦截）",
+      "text": "<p><strong>覆盖范围（任务 05_01：服务契约与同步调用 · 契约快照面）</strong></p><ol><li><strong>公开契约版本</strong>：各服务公开契约（OpenAPI）<code>info.version</code> 改用服务自报契约版本（<code>CONTRACT_VERSION</code>），与 <code>sys_module.contract_version</code> 同源；服务版本仍留探针 / 日志（<code>bms_core/application.py</code>）。</li><li><strong>快照渲染与校验</strong>：<code>bms_core/services/service_contract.py</code> —— <code>enabled_service_records()</code> 枚举启用服务、<code>service_enabled()</code> 判定、<code>render_contract_json()</code> 确定性 JSON（indent=2 / sort_keys / 非 ASCII 直出）、<code>validate_contract()</code> 校验结构与 <code>info.version == 登记契约版本</code>。</li><li><strong>快照 CLI</strong>：<code>backend/ops/contract_snapshot.py</code> —— <code>export</code> 内存构建各服务 <code>ApplicationFactory().create(None).openapi()</code>（不启 lifespan / 不连库）写 <code>deploy/contracts/&lt;service&gt;.json</code>；<code>check</code> 逐字节零漂移 + 缺件 / 多余件 / 契约版本不符拦截。</li><li><strong>CI 与预检</strong>：改造既有 <code>swagger-snapshot</code> job（全服务快照导出 + <code>check</code> 门禁 + 归档 <code>deploy/contracts/*.json</code>）；<code>check-preflight.py --fast</code> 纳契约 check。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/services/test_service_contract.py、libs/bms_core/tests/ops/test_contract_snapshot.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "05-01 服务间同步调用韧性与公开契约边界（超时/重试/熔断/限流 + 契约 DTO/只读投影）",
+      "text": "<p><strong>覆盖范围（任务 05_01：服务契约与同步调用 · 同步调用与读出口面）</strong></p><ol><li><strong>公开契约边界</strong>：<code>bms_core/servicecall/base.py</code> —— <code>validate_service_request()</code> 强制 <code>service</code> 已在服务目录登记启用、<code>path</code> 以 <code>/api/v1/</code> 开头，否则 <code>ParamError(10001)</code>，不发起调用（把「只经公开契约」变成可校验护栏）。</li><li><strong>同步调用封装</strong>：<code>BaseServiceClient</code>（插件键 <code>service_client</code>）+ 数据契约 <code>ServiceRequest</code> / <code>ServiceResponse</code> / <code>ServiceCallPolicy</code>（显式 <code>timeout</code> / <code>max_retries</code> 指数退避 / <code>retry_statuses</code> / <code>circuit_breaker</code> / <code>rate_limit</code>）。</li><li><strong>真实实现</strong>：<code>HttpServiceClient</code>（httpx，可注入 transport）—— 超时 / transport 异常与命中 <code>retry_statuses</code> 重试、耗尽抛 <code>ServiceUnavailableError(10007)</code>；熔断复用 <code>BaseCircuitBreaker</code>（依赖名 <code>service:&lt;key&gt;</code>）断开快速失败；限流复用 <code>BaseRateLimiter</code> 超限抛 <code>RateLimitError(10005)</code>；失败动作复用 <code>BaseFallbackPolicy</code>（默认 raise，动作入 <code>error.data</code>）；4xx / 非重试 5xx 原样返回。<code>NullServiceClient</code> 恒定成功、不外呼（装配默认 null）。</li><li><strong>跨服务读出口</strong>：新增 <code>ServiceDto</code>（<code>bms_core/schemas/service.py</code>，响应基类派生）；只读投影沿用既有 <code>BaseQueryProvider</code>（数据查询提供者），不新建平行出口。</li><li><strong>错误码</strong>：新增通用段 <code>10007</code> 服务不可用（<code>10006</code> 已被 <code>DATABASE_UNAVAILABLE</code> 占用）。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/servicecall/test_servicecall.py、libs/bms_core/tests/schemas/test_service_dto.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
