@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-02 边缘认证与请求净化（网关注入头契约 / global_rules 剥头 / 后端 edge 信任边界 / 旁路防护占位）",
+      "text": "<p><strong>覆盖范围（任务 04_02：边缘认证与请求净化）</strong></p><ol><li><strong>身份头契约</strong>：<code>bms_core/edge/headers.py</code> —— 网关注入 / 后端信任的身份头 <code>X-User-Id</code> / <code>X-Tenant-Id</code> / <code>X-User-Scopes</code> / <code>X-Service-Identity</code> 与网关专属标记头 <code>X-Gateway-Identity</code>（值 bms-edge）；<code>STRIPPED_HEADERS</code> 为客户端伪造头剥除清单（两端口径唯一来源，仅标准库）。</li><li><strong>后端信任能力域</strong>：<code>bms_core/edge/base.py</code> —— <code>BaseEdgeTrust</code>（<code>key = plugin_key = \"edge\"</code>；<code>evaluate(headers) -&gt; EdgeTrustDecision</code>）+ 数据契约 <code>EdgeIdentity</code> / <code>EdgeTrustDecision</code> + 提供者 <code>get_edge_trust</code> + 授权下沉依赖 <code>require_edge_identity</code>（无可信身份抛 AuthError 20001 / 401）；<code>edge/null.py</code> 占位 <code>NullEdgeTrust</code>（恒定不信任）、<code>edge/marker.py</code> 实现 <code>MarkerEdgeTrust</code>（标记头匹配即信任、按头解析身份，user_id 非法记 None）。</li><li><strong>边缘守卫中间件</strong>：<code>api/middleware.py::EdgeGuardMiddleware</code> —— 无条件剥除客户端伪造身份头；信任时回写规范身份头并置 <code>edge_identity</code> 请求态与 <code>current_user_id</code> 上下文；<code>[edge].require_gateway_identity</code> 开且非豁免路径就地 401（旁路拒绝）；信任模式下剥离客户端 <code>X-Tenant-ID</code>、只采信网关注入租户头；非 http 直通、请求结束复位；装配次序先于租户解析（EdgeGuard 在 Tenant 外层）。</li><li><strong>网关声明式请求净化</strong>：<code>bms_core/services/gateway_catalog.py</code> —— <code>render_global_rules()</code> 输出全局规则 <code>edge-sanitize</code>（proxy-rewrite 先 remove 伪造身份头、再 set 网关标记）；<code>ROUTE_HEADERS_SET</code> 按 service_key 预留身份注入钩子（默认空，07_03 填充）；<code>render_apisix_config()</code> 输出 upstreams / routes / global_rules，确定性且零漂移（<code>ops/gateway_config.py render|check</code> 经 CI base-integrity 与本地预检）。</li><li><strong>配置与装配</strong>：<code>[edge]</code> 配置节（provider / require_gateway_identity / exempt_paths / options.gateway_identity）+ <code>Settings.edge</code>；<code>PLUGIN_WIRINGS</code> 增 edge、<code>_NULL_MODULES</code> 增 edge.null、显式登记 marker 工厂；<code>api/deps.py</code> 导出。</li><li><strong>验证</strong>：本机单元 + 装配用例；mjbk 真实冒烟（伪造身份头被剥、标记头注入、global_rules 与路由级 proxy-rewrite 合成结论）；全量 pytest / ruff / pyright / 基座校验全绿。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/edge/test_edge.py（契约 / 占位 / 标记实现 / 提供者 / 依赖）、libs/bms_core/tests/api/test_middleware.py（EdgeGuardMiddleware）、libs/bms_core/tests/services/test_gateway_catalog.py（global_rules 与注入钩子）、libs/bms_core/tests/ops/test_gateway_config.py（零漂移）。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

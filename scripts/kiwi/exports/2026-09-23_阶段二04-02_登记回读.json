@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2166,
+    "summary": "04-02 边缘认证与请求净化（网关注入头契约 / global_rules 剥头 / 后端 edge 信任边界 / 旁路防护占位）"
+  }
+]
