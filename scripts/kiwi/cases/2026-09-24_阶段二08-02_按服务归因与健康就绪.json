@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "08-02 按服务归因与健康就绪（SLO 告警 / blackbox 探针 / catalog 降级指标 / 跨服务链路 / 阶段度量通道）",
+      "text": "<p><strong>覆盖范围（任务 08_02：按服务归因与健康就绪）</strong></p><ol><li><strong>按服务归因复核与跨服务链路</strong>：span 资源标签 <code>service.name</code> / <code>service.version</code>、指标统一注入 <code>service</code> 标签、日志 <code>service</code> / <code>service_version</code> 三类信号归因逐项复核；跨服务链路用例——httpx 出站自动注入 W3C <code>traceparent</code>，服务端 span 与客户端 span 同 trace、父链正确、<code>resolve_trace_id</code> 与 span 上下文一致（独立 provider + in-memory exporter，显式注入不设全局 provider）；Grafana 加 <code>service</code> / <code>version</code> 变量（按服务与版本归因展示）。</li><li><strong>SLO 告警阈值锚点</strong>：<code>deploy/observability/rules/bms-slo.yml</code> 基座规则——服务指标端点不可达（<code>up==0</code> 严重）、探针失败（<code>probe_success==0</code> 严重）、依赖未就绪（<code>bms_dependency_up==0</code> 严重）、catalog 降级（<code>bms_catalog_degraded==1</code> 警告）、5xx 错误率（0.1% 警告 / 5% 严重）、P99 延迟（0.8s 警告）、发件箱积压（&gt;100 警告）；业务链路锚点（登录 / 审批 / Socket.IO / 备份）留位登记。</li><li><strong>Alertmanager 编排与告警通道</strong>：alertmanager（9093）入 <code>observability.yml</code> 一键拉起；配置经「模板入 Git + 渲染脚本」（<code>scripts/tools/observability/render_alertmanager.py</code>，凭据经 <code>deploy/.env</code> 外部化、缺失即 no-op）；邮件 SMTP receiver + 企业微信 / 钉钉 webhook receiver 骨架；warning / critical 分级路由与抑制（内部接口格式转换归通知阶段）。</li><li><strong>探针可用性观测（blackbox_exporter）</strong>：周期探测每服务 <code>/healthz</code> / <code>/readyz</code>（<code>probe_success</code> / <code>probe_duration</code>；仅 200 成功），同时使 <code>bms_dependency_up</code> 持续刷新（解决仅在 <code>/readyz</code> 被调用时记录的被动无数据）。</li><li><strong>catalog 降级指标化</strong>：新增 <code>bms_catalog_degraded</code> gauge（<code>/readyz</code> 聚合按 <code>catalog</code> 检查项刷新：失败 1 / 成功 0）+ 警告规则，落实 06_01 指标化 / 告警联动归口。</li><li><strong>阶段度量采集通道</strong>：Pushgateway（9092）+ Prometheus 抓取 + Grafana 阶段度量面板；口径——<code>bms_release_total{service,result}</code>（发布成功率）、<code>bms_contract_breaking_total{service}</code>（契约破坏数）、<code>bms_boundary_cross_access_total</code>（运行期越界数，复用）；本任务只建通道与口径，CI 推送归 09。</li><li><strong>验证</strong>：单元用例（跨服务 trace / catalog 指标 / 编排配置 / 渲染脚本）+ 既有全量回归 + mjbk 真实冒烟（三组件就位、告警真实触发与恢复、双服务跨服务 trace、阶段度量样例推送、面板出图）。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/tracing/test_cross_service_trace.py</code>、<code>backend/libs/bms_core/tests/health/test_catalog_check.py</code>、<code>backend/libs/bms_core/tests/ops/test_observability_config.py</code>、<code>backend/libs/bms_core/tests/ops/test_render_alertmanager.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

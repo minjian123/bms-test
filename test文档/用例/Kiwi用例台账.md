@@ -90,6 +90,8 @@
 | 67 | 2179 | 1 | **阶段二 07_01 OIDC IdP 接入**（Keycloak 26.7.4 自托管编排 + 声明式 realm / 客户端导入；真实 OIDC 客户端（Discovery / 授权 / 换码 / userinfo）；JWKS 票据校验（RS256/ES256 白名单 + `exp`/`iss`/`aud`）；契约扩展与凭据外部化；2026-09-23 登记，见 §3.12） | CONFIRMED（2026-09-23 登记） |
 | 68 | 2180 | 1 | **阶段二 07_02 双类 JWT**（用户 JWT `aud=api`（Keycloak + realm audience mapper）/ 服务 JWT `aud=service` BMS 自签（joserfc RS256/ES256 + 多密钥轮换）；按 `aud` 分流统一校验（`token_verifier`）与 `aud` 隔离；JWKS 分发 `/.well-known/jwks.json`；出站剥离 `Authorization` + 换服务 JWT；2026-09-23 登记，见 §3.13） | CONFIRMED（2026-09-23 登记） |
 | 69 | 2181 | 1 | **阶段二 07_03 网关认证接线与服务身份**（网关 `forward-auth` 转认证服务内部端点按 `aud=api` 全校验用户 JWT + 判公开路径 + 换发网关服务 JWT；后端 `ServiceJwtEdgeTrust` 入站服务 JWT 验签只信服务 JWT；`require_auth` 门控真实身份；`X-User-Subject`；限流维度扩用户 / 租户；2026-09-23 登记，见 §3.14） | CONFIRMED（2026-09-23 登记） |
+| 70 | 2182 | 1 | **阶段二 08_01 可观测性栈接入**（指标真实实现 `PrometheusMetrics` + `/metrics` 采集端点 + 请求 / 依赖指标；链路真实实现 `OtelTracer` + 全局 provider + 程序化自动埋点 + OTel 为 trace id 事实源；可观测栈编排（collector / Tempo / Prometheus / Grafana / Loki / Alloy）+ 保留期 15d / 30d / 72h + Grafana provisioning；Alloy→Loki 日志采集；APISIX 指标 / 访问日志入栈；2026-09-23 登记、2026-09-24 补记，见 §3.15） | CONFIRMED（2026-09-23 登记，2026-09-24 补记） |
+| 71 | 2183 | 1 | **阶段二 08_02 按服务归因与健康就绪**（按服务归因复核与跨服务链路用例 / 双服务冒烟；SLO 告警阈值锚点（Alertmanager + 基座规则 + blackbox 探针 + 渲染通道）；catalog 降级指标化；阶段度量通道（Pushgateway + 口径 + 面板）；Grafana 两张新面板与总览 service / version 变量；2026-09-24 登记，见 §3.16） | CONFIRMED（2026-09-24 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -112,7 +114,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01 / 07_02（2026-09-23） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01 / 07_02 / 07_03（2026-09-23）、08_01 / 08_02（2026-09-23 / 2026-09-24） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -274,9 +276,31 @@
 | 自动化文件 | `bms/backend/libs/bms_core/tests/edge/test_service_jwt.py` / `test_edge.py`、`bms/backend/libs/bms_core/tests/services/test_gateway_catalog.py`、`bms/backend/services/identity/tests/auth/test_introspect.py`、`bms/backend/libs/bms_core/tests/api/test_middleware.py`、`bms/backend/services/platform/tests/api/test_router_base.py`——用例函数以 `@pytest.mark.kiwi_id(2181)` 标注 |
 | 备注 | 阶段二域 07 第三个用例（域 07 收尾）；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二07-03_网关认证接线与服务身份.json`（含回读 `case_id`） |
 
+### 3.15 阶段二 08_01 可观测性栈接入（2182） <a id="batch-08-01-observability"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2182** |
+| 任务 | 阶段二 `08_01` 可观测性栈接入（需求 `08-1`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 指标真实实现（`PrometheusMetrics`：三入口 / 独立 `CollectorRegistry` / `service` 注入 / 同名冲突早失败 / `render()` 渲染）；② `/metrics` 采集端点（豁免统一响应与租户 / 占位实现 404 / `route` 为模板）；③ 请求 / 依赖指标（`bms_request_total` / `bms_request_duration_seconds` / `bms_dependency_up`）；④ 链路真实实现（`OtelTracer`：OTel 形态 id / 上下文贯穿 / 父链 / 无 provider 降级）；⑤ 全局 provider 与程序化自动埋点（资源标签 / 采样 / OTLP / W3C；FastAPI / SQLAlchemy / Redis / httpx / Celery）；⑥ 可观测栈编排与配置（collector / prometheus / tempo / loki / alloy / compose / Grafana 数据源 / 保留期）；⑦ mjbk 真实冒烟（指标可抓 / Trace 可查 / 日志按服务检索 / APISIX 入栈） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/metrics/test_prometheus_metrics.py`、`tests/tracing/test_otel_tracer.py`、`tests/api/test_metrics_endpoint.py`、`tests/ops/test_observability_config.py`——用例函数以 `@pytest.mark.kiwi_id(2182)` 标注 |
+| 备注 | 阶段二域 08 第一个用例；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二08-01_可观测性栈接入.json`；2026-09-24 随 08_02 补记入台账（当时未入账） |
+
+### 3.16 阶段二 08_02 按服务归因与健康就绪（2183） <a id="batch-08-02-attribution"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2183** |
+| 任务 | 阶段二 `08_02` 按服务归因与健康就绪（需求 `08-2`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 按服务归因复核与跨服务链路（真实 uvicorn + 真实 httpx：`traceparent` 出站注入 / 同 trace / 父链 / 处理期上下文一致；三类信号归因复核表）；② SLO 告警阈值锚点（八条基座规则：探针 / 依赖 / catalog 降级 / 5xx 0.1% 与 5% / P99 0.8s / 发件箱 100；业务链路留位）；③ Alertmanager 编排与告警通道（渲染脚本条件分支：no-op / 邮件 / webhook / 缺参跳过 / 幂等 / `--check`；配置校验实测）；④ 探针可用性观测（blackbox `http_2xx` 仅 200 成功 + 依赖指标持续刷新）；⑤ catalog 降级指标化（`bms_catalog_degraded` 1 / 0）；⑥ 阶段度量通道（Pushgateway + `bms_release_total` / `bms_contract_breaking_total` 口径 + 越界复用 + 面板）；⑦ Grafana 面板与变量；⑧ mjbk 真实冒烟（告警真实触发与恢复 / 双服务 trace / 阶段度量样例） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/tracing/test_cross_service_trace.py`、`tests/health/test_catalog_check.py`、`tests/ops/test_observability_config.py`、`tests/ops/test_render_alertmanager.py`——用例函数以 `@pytest.mark.kiwi_id(2183)` 标注 |
+| 备注 | 阶段二域 08 收尾用例；登记输入见 `scripts/kiwi/cases/2026-09-24_阶段二08-02_按服务归因与健康就绪.json`（含回读编号） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_02`（**2180**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_03`（**2181**，域 07 收尾，登记回读并回填代码标注与任务测试记录）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_02`（**2180**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_03`（**2181**，域 07 收尾，登记回读并回填代码标注与任务测试记录）；2026-09-24 补记阶段二 `08_01`（**2182**，当时未入台账，按任务测试记录回读补记）并登记 `08_02`（**2183**，域 08 收尾，登记回读并回填代码标注与任务测试记录）。
 
 | 侧 | 结果 |
 | --- | --- |
