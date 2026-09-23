@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "07-03 网关认证接线与服务身份（网关用户 JWT 校验 / 身份头注入 / 服务 JWT 信任 / 旁路防护）",
+      "text": "<p><strong>覆盖范围（任务 07_03：网关认证接线与服务身份）</strong></p><ol><li><strong>网关认证接线（forward-auth）</strong>：APISIX 每条服务路由挂 <code>forward-auth</code> 转调 <code>identity</code> 内部端点 <code>POST /api/v1/auth/introspect</code>（<code>request_headers</code> 带 <code>Authorization</code>、<code>upstream_headers</code> 注入契约身份头与网关服务 JWT、<code>status_on_error=503</code> fail-closed）；APISIX 无 <code>$jwt_claim_*</code> 变量、<code>openid-connect</code> 仅产 <code>X-Userinfo</code>，故改用 <code>forward-auth</code>（04_02 预留写法作废）。</li><li><strong>认证端点判定</strong>：按 <code>X-Forwarded-Uri</code> + <code>[gateway].public_paths</code>（登录 / 刷新 / 验证码）判公开路径免认证；受保护路径用 <code>UnifiedTokenVerifier</code> 按 <code>aud=api</code> 全校验用户 JWT（签名 / <code>exp</code> / <code>iss</code> / <code>aud</code>），通过后返回 <code>X-User-Id</code> / <code>X-User-Subject</code> / <code>X-Tenant-Id</code> / <code>X-User-Scopes</code> 并<strong>换发短时网关服务 JWT</strong>（<code>aud=service</code>，<code>sub=gateway</code>）。</li><li><strong>后端服务身份信任（<code>bms_core/edge/service_jwt.py</code>）</strong>：<code>ServiceJwtEdgeTrust</code>（<code>plugin_name=service_jwt</code>）本地 JWKS 验签入站服务 JWT 判定可信来源；<code>[edge].provider</code> 默认由 <code>marker</code> 切 <code>service_jwt</code>，<code>marker</code> 保留可回退；<code>[service_token].provider</code> 空时工厂拒绝装配（fail-closed）。</li><li><strong>旁路防护</strong>：客户端伪造身份头经网关 <code>global_rules</code> 与后端 <code>EdgeGuardMiddleware</code> 双重剥除；直连后端（伪造标记 + 身份头、无有效服务 JWT）→ 不信任、<code>require_gateway_identity</code> 开时 401；服务间携带有效服务 JWT 通过、错带用户 JWT（<code>aud=api</code>）被拒（<code>aud</code> 隔离）。</li><li><strong>授权下沉</strong>：<code>require_auth</code> 按 <code>[edge].require_gateway_identity</code> 门控——开启无可信身份 401、关闭放行（dev / 单测不破坏）；权限码细粒度归阶段七。</li><li><strong>身份头契约扩展</strong>：新增 <code>X-User-Subject</code> 与 <code>EdgeIdentity.subject</code>（Keycloak <code>sub</code> 为 UUID，与 <code>user_id</code>（int）不兼容，加法扩展）；纳入剥除清单。</li><li><strong>限流维度扩展</strong>：<code>limit-count</code> 改 <code>var_combination</code>（<code>$remote_addr</code> + <code>$http_x_tenant_id</code> + <code>$http_x_user_id</code>）。</li><li><strong>验证</strong>：本机单元 / 装配（<code>test_service_jwt.py</code> / <code>test_introspect.py</code> / <code>test_gateway_catalog.py</code> 等）+ mjbk 真实冒烟（无凭证 401 / 有效用户 JWT 身份头与网关服务 JWT / 公开路径放行 / 直连伪造 401 / 服务 JWT 直连通过 / 限流维度）。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/edge/test_service_jwt.py</code>、<code>backend/services/identity/tests/auth/test_introspect.py</code>、<code>backend/libs/bms_core/tests/services/test_gateway_catalog.py</code>、<code>backend/libs/bms_core/tests/edge/test_edge.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

@@ -89,6 +89,7 @@
 | 66 | 2164 | 1 | **阶段二 03_03 服务目录只读接口**（清单分页 + `status` / `group` 筛选（`page_catalog` 筛选后总数）；明细 `service_key` 优先回退 `module_key` + 未登记 404 / 10002；响应字段护栏（`ModuleResponse` 13 字段）；空库空数组；`get_platform_read_db` 平台库只读会话；依赖工厂契约校验转 10001；2026-09-23 登记） | CONFIRMED（2026-09-23 登记） |
 | 67 | 2179 | 1 | **阶段二 07_01 OIDC IdP 接入**（Keycloak 26.7.4 自托管编排 + 声明式 realm / 客户端导入；真实 OIDC 客户端（Discovery / 授权 / 换码 / userinfo）；JWKS 票据校验（RS256/ES256 白名单 + `exp`/`iss`/`aud`）；契约扩展与凭据外部化；2026-09-23 登记，见 §3.12） | CONFIRMED（2026-09-23 登记） |
 | 68 | 2180 | 1 | **阶段二 07_02 双类 JWT**（用户 JWT `aud=api`（Keycloak + realm audience mapper）/ 服务 JWT `aud=service` BMS 自签（joserfc RS256/ES256 + 多密钥轮换）；按 `aud` 分流统一校验（`token_verifier`）与 `aud` 隔离；JWKS 分发 `/.well-known/jwks.json`；出站剥离 `Authorization` + 换服务 JWT；2026-09-23 登记，见 §3.13） | CONFIRMED（2026-09-23 登记） |
+| 69 | 2181 | 1 | **阶段二 07_03 网关认证接线与服务身份**（网关 `forward-auth` 转认证服务内部端点按 `aud=api` 全校验用户 JWT + 判公开路径 + 换发网关服务 JWT；后端 `ServiceJwtEdgeTrust` 入站服务 JWT 验签只信服务 JWT；`require_auth` 门控真实身份；`X-User-Subject`；限流维度扩用户 / 租户；2026-09-23 登记，见 §3.14） | CONFIRMED（2026-09-23 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -262,9 +263,20 @@
 | 自动化文件 | `bms/backend/services/identity/tests/oauth/test_service_token.py` / `test_token_verifier.py` / `test_wellknown_jwks.py` 与 `bms/backend/libs/bms_core/tests/servicecall/test_servicecall.py`——用例函数以 `@pytest.mark.kiwi_id(2180)` 标注 |
 | 备注 | 阶段二域 07 第二个用例；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二07-02_双类 JWT.json`（含回读 `case_id`） |
 
+### 3.14 阶段二 07_03 网关认证接线与服务身份（2181） <a id="batch-07-03-gateway-auth"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2181** |
+| 任务 | 阶段二 `07_03` 网关认证接线与服务身份（需求 `07-3`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 网关认证接线（`forward-auth` 转认证服务内部端点 `/api/v1/auth/introspect`；`request_headers` / `upstream_headers` / fail-closed；每条服务路由与登录路由挂载）；② 认证端点（按 `X-Forwarded-Uri` + `[gateway].public_paths` 判公开路径；`UnifiedTokenVerifier` 按 `aud=api` 全校验用户 JWT；返回契约身份头 + 换发网关服务 JWT）；③ 后端服务身份信任（`ServiceJwtEdgeTrust`：入站服务 JWT 本地 JWKS 验签、`aud` 隔离、provider 空拒装配）；④ 旁路防护（直连伪造标记 / 身份头不信任、`require_gateway_identity` 开时 401）；⑤ 授权下沉（`require_auth` 门控）；⑥ 身份头扩展（`X-User-Subject` / `EdgeIdentity.subject` 剥除与注入）；⑦ 限流维度扩展（`var_combination`）；⑧ mjbk 真实冒烟（401 / 公开路径 200 / 身份头注入 / 用户 token 覆盖 / 服务 JWT 验签 / 伪造头剥除 / 限流维度） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/edge/test_service_jwt.py` / `test_edge.py`、`bms/backend/libs/bms_core/tests/services/test_gateway_catalog.py`、`bms/backend/services/identity/tests/auth/test_introspect.py`、`bms/backend/libs/bms_core/tests/api/test_middleware.py`、`bms/backend/services/platform/tests/api/test_router_base.py`——用例函数以 `@pytest.mark.kiwi_id(2181)` 标注 |
+| 备注 | 阶段二域 07 第三个用例（域 07 收尾）；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二07-03_网关认证接线与服务身份.json`（含回读 `case_id`） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_02`（**2180**，登记回读并回填代码标注与任务测试记录）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_02`（**2180**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_03`（**2181**，域 07 收尾，登记回读并回填代码标注与任务测试记录）。
 
 | 侧 | 结果 |
 | --- | --- |
