@@ -1,0 +1,29 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "05-04 事件契约版本与兼容（命名整改 / 契约注册表 / 快照门禁 / 签发三态 / 订阅主版本）",
+      "text": "<p><strong>覆盖范围（任务 05_04：事件契约与 Saga 基座 · 事件契约面）</strong></p><ol><li><strong>命名与契约模型</strong>：事件名首段必须为服务目录已登记事件域；<code>EventContract</code>（字段规格 + 版本 + 弃用）与 <code>EventSubscription</code>（消费方支持主版本集合）；存量 13 个事件名统一整改为域前缀（<code>sys.user.created</code> / <code>identity.user.jit_created</code> 等）。</li><li><strong>版本承载</strong>：<code>EventEnvelope</code> 增 <code>event_version</code>；<code>sys_outbox</code> 加 <code>event_version</code> 列（平台链 <code>0004</code> / 租户链 <code>0003</code>），签发缺省按登记契约补齐（未登记回落 <code>1.0.0</code>）、投递保真。</li><li><strong>兼容规则</strong>：字段只增不删、新增必须可选、类型 / 必填性变更与弃用回退属破坏性（升主版本）；结构变更须升版本；事件类型不得删除（置弃用保留登记）。</li><li><strong>快照门禁</strong>：<code>ops/event_contracts.py export</code>（校验兼容后写 <code>deploy/events/contracts.json</code>）/ <code>check</code>（零漂移）；预检与 CI 接线。</li><li><strong>签发校验</strong>：<code>[event].contract_mode</code> = <code>off</code> / <code>warn</code> / <code>enforce</code>（缺省 <code>enforce</code>），未登记事件拒发 <code>EventContractError</code>(<code>10010</code>)。</li><li><strong>消费兼容</strong>：订阅声明支持主版本集合，启动校验 + 主版本升级订阅覆盖校验；<code>require_event_version_compatible</code> 不符抛 <code>10010</code>。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/events/test_event_contracts.py、libs/bms_core/tests/events/test_platform_events.py、libs/bms_core/tests/outbox/test_outbox_store.py、libs/bms_core/tests/ops/test_event_contracts_cli.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "05-04 Saga 三态执行与幂等补偿（try/confirm/cancel / ProcessedEventStore / 发件箱事件 / 空实现抛错）",
+      "text": "<p><strong>覆盖范围（任务 05_04：事件契约与 Saga 基座 · Saga 补偿面）</strong></p><ol><li><strong>Saga 定义</strong>：<code>SagaDefinition</code> / <code>SagaStep</code>（<code>try</code> / <code>confirm</code> / <code>cancel</code> 三态事件）+ <code>validate_saga_definition</code>（键 / 步骤唯一 / 事件类型格式 / 契约登记联动）。</li><li><strong>三态执行器</strong>：<code>bms_core/saga/</code> 端口 <code>BaseSagaExecutor</code> + <code>ChoreographySagaExecutor</code>（协同式）；<code>try_step</code> / <code>confirm_step</code> / <code>cancel_step</code> 经 <code>ProcessedEventStore</code>（<code>consumer=saga:{定义}:{步骤}:{kind}</code>）幂等，命中即 <code>executed=false</code> 跳过。</li><li><strong>本地事务</strong>：动作 + 幂等登记 + 发件箱事件同一事务；动作异常整体回滚（幂等登记与事件一并撤销）→ 重试 / 死信；<code>emit</code> 事件 <code>aggregate_key=saga_id</code>（同 Saga 有序）。</li><li><strong>强一致口径</strong>：审计链按 <code>(service, tenant)</code> 分条（<code>build_chain_key</code>）；《后端开发规范》§10 增审计链 / 财务 / 审批 / 排除 2PC·XA 强制口径。</li><li><strong>空实现</strong>：<code>NullSagaExecutor</code> 调用即抛 <code>ConfigError</code>(<code>40001</code>)；<code>[saga].provider</code> 缺省 <code>choreography</code>；<code>get_saga_executor</code> 解析。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/saga/test_saga.py、libs/bms_core/tests/audit/test_hashchain.py。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

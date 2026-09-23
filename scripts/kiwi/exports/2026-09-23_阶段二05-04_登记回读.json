@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2174,
+    "summary": "05-04 事件契约版本与兼容（命名整改 / 契约注册表 / 快照门禁 / 签发三态 / 订阅主版本）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2175,
+    "summary": "05-04 Saga 三态执行与幂等补偿（try/confirm/cancel / ProcessedEventStore / 发件箱事件 / 空实现抛错）"
+  }
+]
