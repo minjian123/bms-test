@@ -88,6 +88,7 @@
 | 65 | 2163 | 1 | **阶段二 03_02 启动与 CI 唯一性校验**（启动接库校验（库内查重 / 双向对账 / 运行服务契约版本主版本 / 空库容错 / `CatalogError` 40003 拒启）；契约版本解析 `core/version.py`；CI `check_modules` 双模式 + 冒烟 job 迁移种子接库；只读边界三条护栏；2026-09-23 登记） | CONFIRMED（2026-09-23 登记） |
 | 66 | 2164 | 1 | **阶段二 03_03 服务目录只读接口**（清单分页 + `status` / `group` 筛选（`page_catalog` 筛选后总数）；明细 `service_key` 优先回退 `module_key` + 未登记 404 / 10002；响应字段护栏（`ModuleResponse` 13 字段）；空库空数组；`get_platform_read_db` 平台库只读会话；依赖工厂契约校验转 10001；2026-09-23 登记） | CONFIRMED（2026-09-23 登记） |
 | 67 | 2179 | 1 | **阶段二 07_01 OIDC IdP 接入**（Keycloak 26.7.4 自托管编排 + 声明式 realm / 客户端导入；真实 OIDC 客户端（Discovery / 授权 / 换码 / userinfo）；JWKS 票据校验（RS256/ES256 白名单 + `exp`/`iss`/`aud`）；契约扩展与凭据外部化；2026-09-23 登记，见 §3.12） | CONFIRMED（2026-09-23 登记） |
+| 68 | 2180 | 1 | **阶段二 07_02 双类 JWT**（用户 JWT `aud=api`（Keycloak + realm audience mapper）/ 服务 JWT `aud=service` BMS 自签（joserfc RS256/ES256 + 多密钥轮换）；按 `aud` 分流统一校验（`token_verifier`）与 `aud` 隔离；JWKS 分发 `/.well-known/jwks.json`；出站剥离 `Authorization` + 换服务 JWT；2026-09-23 登记，见 §3.13） | CONFIRMED（2026-09-23 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -110,7 +111,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01（2026-09-23） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01 / 07_02（2026-09-23） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -250,9 +251,20 @@
 | 自动化文件 | `bms/backend/services/identity/tests/idp/test_oidc.py` 与 `test_idp.py`——用例函数以 `@pytest.mark.kiwi_id(2179)` 标注 |
 | 备注 | 阶段二域 07 首个用例；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二07-01_OIDC IdP 接入.json`（含回读 `case_id`） |
 
+### 3.13 阶段二 07_02 双类 JWT（2180） <a id="batch-07-02-jwt"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2180** |
+| 任务 | 阶段二 `07_02` 双类 JWT（需求 `07-2`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 受众口径（`TOKEN_AUDIENCE_API` / `TOKEN_AUDIENCE_SERVICE` / `SERVICE_TOKEN_TYPE`；用户 JWT 由 Keycloak 签发、realm 补 `aud=api` audience mapper）；② 服务 JWT 自签（`oauth/jwt.py`：joserfc RS256/ES256、固定 + 扩展 claims（`typ`/`service`/`tenant`）、`active_kid` 选键、多密钥并行轮换）；③ 密钥与 JWKS（`oauth/keys.py`：公私钥校验、公钥 JWKS、按 `kid` 命中；私钥经环境变量注入）；④ 统一校验内核（`oauth/verify.py`：按期望受众分流 `service`→本地 JWKS、`api`→IdP JWKS；`exp`/`iss`/`aud` 全校验；`aud` 隔离；失败 `AuthError` 20001 / IdP 不可达 10007 / 受众非法 10001）；⑤ JWKS 分发端点（`identity` 服务 `GET /.well-known/jwks.json`，免鉴权、豁免租户 / 边缘、只含公钥）；⑥ 出站换券（`servicecall/http.py`：剥离入站 `Authorization` + 开关附服务 JWT）；⑦ 部署件护栏（realm audience mapper 存在且无明文密钥）；⑧ mjbk 真实冒烟（Keycloak 用户令牌 `aud=api` 校验 / `aud` 隔离 / 服务 JWT 签验 / JWKS 端点） |
+| 自动化文件 | `bms/backend/services/identity/tests/oauth/test_service_token.py` / `test_token_verifier.py` / `test_wellknown_jwks.py` 与 `bms/backend/libs/bms_core/tests/servicecall/test_servicecall.py`——用例函数以 `@pytest.mark.kiwi_id(2180)` 标注 |
+| 备注 | 阶段二域 07 第二个用例；登记输入见 `scripts/kiwi/cases/2026-09-23_阶段二07-02_双类 JWT.json`（含回读 `case_id`） |
+
 ## 4. 对账结果 <a id="reconcile"></a>
 
-对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）。
+对账时间：2026-09-16（`export_cases.py` 实时导出 + 手工核对前端标记）；2026-09-19 补记阶段四域 08 批次（760 ~ 772，平台回读）；2026-09-21 补记阶段五批次（976 / 977 / 978 / 979，登记回读）；2026-09-22 登记阶段二 `01_02`（1019）、`01_03`（1050）、`01_04`（1078）与 `01_05`（**1156**，均登记回读；`01_05` 为域 01 收尾批次）；2026-09-23 补记阶段二域 03 批次 `03_01`（**2162**）、`03_02`（**2163**）与 `03_03`（**2164**，域 03 收尾，均登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_01`（**2179**，登记回读并回填代码标注与任务测试记录）；2026-09-23 登记阶段二 `07_02`（**2180**，登记回读并回填代码标注与任务测试记录）。
 
 | 侧 | 结果 |
 | --- | --- |

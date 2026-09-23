@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "07-02 双类 JWT（服务 JWT 自签 / JWKS 分发 / 按 aud 分流统一校验 / 外部 token 不透传）",
+      "text": "<p><strong>覆盖范围（任务 07_02：双类 JWT）</strong></p><ol><li><strong>受众口径</strong>：用户 JWT（<code>aud=api</code>，Keycloak 签发，realm 补 <code>aud=api</code> audience mapper）与服务 JWT（<code>aud=service</code>，BMS 自签）；常量 <code>TOKEN_AUDIENCE_API</code> / <code>TOKEN_AUDIENCE_SERVICE</code> / <code>SERVICE_TOKEN_TYPE</code>。</li><li><strong>服务 JWT 自签（<code>bms_core/oauth/service_token</code>）</strong>：真实 <code>JwtServiceTokenIssuer</code>（joserfc 签 RS256/ES256）；固定 + 扩展 claims（<code>iss</code> / <code>sub</code>=服务标识 / <code>aud=service</code> / <code>exp</code> / <code>iat</code> / <code>jti</code> / <code>scope</code> + <code>typ=service</code> / <code>service</code> / <code>tenant</code>）；短时（默认 300s）；能力方法签发，不暴露 HTTP token 端点。</li><li><strong>密钥与 JWKS</strong>：<code>keys</code>（kid → 密钥，公钥可入配置、私钥经环境变量注入）+ <code>active_kid</code>；JWKS 文档只含公钥、按 <code>kid</code> 命中；<strong>多密钥并行 / 轮换</strong>新旧公钥并存可验。</li><li><strong>JWKS 分发</strong>：<code>identity</code> 服务宿主根路径 <code>GET /.well-known/jwks.json</code>（免鉴权、豁免租户 / 边缘、纯 JWKS 文档）。</li><li><strong>统一校验内核（<code>bms_core/oauth/token_verifier</code>）</strong>：<code>BaseTokenVerifier.verify(token, *, audience) -&gt; VerifiedToken</code>，按期望受众分流——<code>service</code> 经本地 JWKS、<code>api</code> 经 Keycloak JWKS；校验 <code>exp</code> / <code>iss</code> / <code>aud</code>；<strong><code>aud</code> 隔离</strong>（用户 token 调内部服务被拒）。</li><li><strong>外部 token 不透传</strong>：<code>servicecall</code> 出站剥离入站 <code>Authorization</code>、按目标服务签发并附服务 JWT；<code>[service_client].options.attach_service_token</code> 开关。</li><li><strong>失败语义</strong>：验签 / 过期 / <code>iss</code> / <code>aud</code> 不符 → <code>AuthError</code>（20001/401）；IdP JWKS 不可达 → <code>ServiceUnavailableError</code>（10007/503）；受众非法 → <code>ParamError</code>（10001）；缺签名私钥 → <code>ConfigError</code>（40001）。</li><li><strong>验证</strong>：本机单元 / 装配（<code>test_service_token.py</code> / <code>test_token_verifier.py</code> / <code>test_wellknown_jwks.py</code> / servicecall 出站换券）+ 部署件护栏（realm audience mapper）+ mjbk 真实冒烟（JWKS 端点 / 服务 JWT 签验 / Keycloak 用户令牌 <code>aud=api</code> 校验）。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/services/identity/tests/oauth/test_service_token.py</code>、<code>backend/services/identity/tests/oauth/test_token_verifier.py</code>、<code>backend/services/identity/tests/oauth/test_wellknown_jwks.py</code>、<code>backend/libs/bms_core/tests/servicecall/test_servicecall.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

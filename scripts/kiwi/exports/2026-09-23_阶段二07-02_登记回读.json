@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2180,
+    "summary": "07-02 双类 JWT（服务 JWT 自签 / JWKS 分发 / 按 aud 分流统一校验 / 外部 token 不透传）"
+  }
+]
