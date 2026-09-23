@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2182,
+    "summary": "08-01 可观测性栈接入（OTel 真实链路 / Prometheus 指标 / Tempo / Loki / Grafana / 一键拉起）"
+  }
+]
