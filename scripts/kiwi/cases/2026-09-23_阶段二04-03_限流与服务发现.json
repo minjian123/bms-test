@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-03 限流与服务发现（共享 Redis 边缘限流 / 登录限流优先 / 无硬编码 IP 护栏 / 指标与访问日志出口 / 灰度预留）",
+      "text": "<p><strong>覆盖范围（任务 04_03：限流与服务发现）</strong></p><ol><li><strong>边缘限流（limit-count + 共享 Redis）</strong>：<code>bms_core/services/gateway_catalog.py</code> —— 每条服务路由注入 <code>limit-count</code>（<code>policy=redis</code> 多副本共享计数、<code>key_type=var</code> + <code>key=remote_addr</code>、通用档 300/60s、<code>rejected_code=429</code>、<code>show_limit_quota_header=true</code>、<code>allow_degradation=true</code> Redis 故障放行）；Redis 连接经 <code>${{GATEWAY_REDIS_HOST:=redis}}</code> / <code>PORT</code> / <code>DATABASE</code> / <code>PASSWORD</code> 环境变量替换（默认 Compose DNS，禁硬编码 IP，密码经 .env 注入）。</li><li><strong>登录限流优先</strong>：独立路由 <code>route-identity-auth-login</code> 精确匹配认证敏感路径（<code>/api/identity/v1/auth/login</code> / <code>/auth/refresh</code>）、显式 <code>priority=10</code> 高于服务路由、挂登录档 10/60s、与身份服务同上游（仅 identity 启用时生成）。</li><li><strong>真实客户端 IP</strong>：<code>global_rules</code> 增 <code>edge-real-ip</code>（<code>source: http_x_real_ip</code> + 可信网段），使经 nginx 入口的限流按真实客户端 IP 计数。</li><li><strong>服务发现禁硬编码 IP</strong>：<code>validate_service_discovery</code> 断言上游节点必须为服务名、非 IP 字面量；<code>ops/gateway_config.py check</code> 纳为门禁（零漂移 + 无 IP）。</li><li><strong>边缘观测出口</strong>：生成器给路由挂 <code>prometheus: {}</code>，<code>config.yaml</code> 配 <code>plugin_attr.prometheus</code>（export_addr 0.0.0.0:9091）与访问日志（<code>nginx_config.http</code>，stdout）；<code>gateway.yml</code> 暴露指标端口（真实采集 / 展示归 08）。</li><li><strong>灰度预留</strong>：<code>GRAY_TRAFFIC</code> 钩子（按 service_key 合并 traffic-split 加权配置，默认空）+ 加权灰度用例（规则声明式入 Git，迁 K8s 平移 HTTPRoute backendRefs 权重）。</li><li><strong>不回归</strong>：既有外部路径重写、伪造身份头剥除、网关标记注入、确定性渲染、零漂移校验不变。</li></ol><p><strong>自动化文件</strong>：libs/bms_core/tests/services/test_gateway_catalog.py（限流 / 登录路由 / real-ip / prometheus / 灰度 / 无 IP 护栏）、libs/bms_core/tests/ops/test_gateway_config.py（check 零漂移 + 无 IP 护栏）。<strong>真机冒烟</strong>：mjbk 双 APISIX 实例共享同一 Redis，跨实例配额一致 + 登录更严 + 指标端点可达。<strong>kiwi_id 标注</strong>：<code>@pytest.mark.kiwi_id(&lt;本用例号&gt;)</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
