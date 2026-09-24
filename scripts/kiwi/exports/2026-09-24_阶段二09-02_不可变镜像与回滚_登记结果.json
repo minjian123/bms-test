@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2185,
+    "summary": "09-02 不可变镜像与回滚（服务 Compose 编排 / SHA+semver 不可变标签 / 一键回滚与版本台账 / 健康门禁 / 发布留痕 / 抓取探针目标切 DNS）"
+  }
+]
