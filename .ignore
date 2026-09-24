@@ -1,0 +1,12 @@
+# 检索屏蔽：依赖与构建产物（仅 ripgrep 类检索工具读取，不影响 git 跟踪）
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+dist/
+coverage/
+.mf/
+.pnpm-store/
+*.db
+*.db-journal
