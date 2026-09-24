@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2186,
+    "summary": "09-03 契约门禁（每服务独立契约基线 / oasdiff 破坏性变更拦截「只加不删」/ Schemathesis 打真实服务冒烟 / 契约破坏数推送 Pushgateway / 基线更新走评审）"
+  }
+]
