@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2184,
+    "summary": "09-01 父-子流水线（按变更路径调度 / 服务子流水线构建发布 / 公共模板 / resource_group / 发布度量）"
+  }
+]

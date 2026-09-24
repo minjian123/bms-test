@@ -92,6 +92,7 @@
 | 69 | 2181 | 1 | **阶段二 07_03 网关认证接线与服务身份**（网关 `forward-auth` 转认证服务内部端点按 `aud=api` 全校验用户 JWT + 判公开路径 + 换发网关服务 JWT；后端 `ServiceJwtEdgeTrust` 入站服务 JWT 验签只信服务 JWT；`require_auth` 门控真实身份；`X-User-Subject`；限流维度扩用户 / 租户；2026-09-23 登记，见 §3.14） | CONFIRMED（2026-09-23 登记） |
 | 70 | 2182 | 1 | **阶段二 08_01 可观测性栈接入**（指标真实实现 `PrometheusMetrics` + `/metrics` 采集端点 + 请求 / 依赖指标；链路真实实现 `OtelTracer` + 全局 provider + 程序化自动埋点 + OTel 为 trace id 事实源；可观测栈编排（collector / Tempo / Prometheus / Grafana / Loki / Alloy）+ 保留期 15d / 30d / 72h + Grafana provisioning；Alloy→Loki 日志采集；APISIX 指标 / 访问日志入栈；2026-09-23 登记、2026-09-24 补记，见 §3.15） | CONFIRMED（2026-09-23 登记，2026-09-24 补记） |
 | 71 | 2183 | 1 | **阶段二 08_02 按服务归因与健康就绪**（按服务归因复核与跨服务链路用例 / 双服务冒烟；SLO 告警阈值锚点（Alertmanager + 基座规则 + blackbox 探针 + 渲染通道）；catalog 降级指标化；阶段度量通道（Pushgateway + 口径 + 面板）；Grafana 两张新面板与总览 service / version 变量；2026-09-24 登记，见 §3.16） | CONFIRMED（2026-09-24 登记） |
+| 72 | 2184 | 1 | **阶段二 09_01 父-子流水线**（父流水线 trigger 调度层（9 服务按变更路径拉起子流水线 + 共享变更全量兜底）；服务子流水线公共模板（工程级测试 + 本服务包覆盖率 ≥70% → 按服务镜像 → push + Trivy 扫描 + 发布度量；`resource_group` / 不可中断）；`backend/Dockerfile` 参数化 + 镜像档开关 + core 子集测试隔离修复 + CI 配置护栏；2026-09-24 登记，见 §3.17） | CONFIRMED（2026-09-24 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -114,7 +115,7 @@
 - 平台侧操作（**2026-09-17 已执行，范围更正**）：mobile 侧旧层 spec 的删除**不改变平台状态**（同号用例由 apps 侧
   继续执行或已按上条停用）；原「mobile 侧旧层置 DISABLED」表述作废。
 
-## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01 / 07_02 / 07_03（2026-09-23）、08_01 / 08_02（2026-09-23 / 2026-09-24） <a id="latest"></a>
+## 3. 最新批次明细：阶段二 01_05 / 01_04 / 01_03 / 01_02（2026-09-22）、阶段五 01_01 / 01_02 / 02_01 / 02_02（2026-09-21）与阶段二 07_01 / 07_02 / 07_03（2026-09-23）、08_01 / 08_02（2026-09-23 / 2026-09-24）、09_01（2026-09-24） <a id="latest"></a>
 
 ### 3.1 阶段五 01_01 扩展点注册表补齐与统一装配（976） <a id="batch-01-01"></a>
 
@@ -297,6 +298,17 @@
 | 覆盖范围 | ① 按服务归因复核与跨服务链路（真实 uvicorn + 真实 httpx：`traceparent` 出站注入 / 同 trace / 父链 / 处理期上下文一致；三类信号归因复核表）；② SLO 告警阈值锚点（八条基座规则：探针 / 依赖 / catalog 降级 / 5xx 0.1% 与 5% / P99 0.8s / 发件箱 100；业务链路留位）；③ Alertmanager 编排与告警通道（渲染脚本条件分支：no-op / 邮件 / webhook / 缺参跳过 / 幂等 / `--check`；配置校验实测）；④ 探针可用性观测（blackbox `http_2xx` 仅 200 成功 + 依赖指标持续刷新）；⑤ catalog 降级指标化（`bms_catalog_degraded` 1 / 0）；⑥ 阶段度量通道（Pushgateway + `bms_release_total` / `bms_contract_breaking_total` 口径 + 越界复用 + 面板）；⑦ Grafana 面板与变量；⑧ mjbk 真实冒烟（告警真实触发与恢复 / 双服务 trace / 阶段度量样例） |
 | 自动化文件 | `bms/backend/libs/bms_core/tests/tracing/test_cross_service_trace.py`、`tests/health/test_catalog_check.py`、`tests/ops/test_observability_config.py`、`tests/ops/test_render_alertmanager.py`——用例函数以 `@pytest.mark.kiwi_id(2183)` 标注 |
 | 备注 | 阶段二域 08 收尾用例；登记输入见 `scripts/kiwi/cases/2026-09-24_阶段二08-02_按服务归因与健康就绪.json`（含回读编号） |
+
+### 3.17 阶段二 09_01 父-子流水线（2184） <a id="batch-09-01-pipeline"></a>
+
+| 项 | 值 |
+| --- | --- |
+| 编号 | **2184** |
+| 任务 | 阶段二 `09_01` 父-子流水线（需求 `09-1`） |
+| 分类 / 优先级 / 状态 / 标签 | 平台骨架 / P2 / CONFIRMED / 自动化 |
+| 覆盖范围 | ① 父流水线按变更路径调度（9 个已启用服务各一个 trigger job：`include: local` 公共模板 + `variables.SERVICE` + `strategy: depend`；main 按服务路径 / MR 全量 / 其他分支 `compare_to` 兜底；`backend-test` 全量规则收窄为共享 / 工作区路径且不含服务路径；单体 `backend-image` / `container-scanning` 移除；`stages` 含 `trigger`）；② 服务子流水线公共模板（`workflow` 只放行 `parent_pipeline`；`service-test` 工程级测试 + `--cov=bms_$SERVICE --cov-fail-under=70`；`service-build` 按服务镜像 `bms-$SERVICE:$CI_COMMIT_SHORT_SHA`（`--provenance=false` + 镜像档守卫）；`service-release` push + Trivy 扫描（固定 tag / 国内 DB 镜像 / 缓存卷）+ `after_script` 发布度量（`CI_JOB_STATUS` → `bms_release_total{service,result}`）；`resource_group: bms-release-$SERVICE` + `interruptible: false`）；③ 服务运行镜像（`backend/Dockerfile`：`ARG SERVICE` 参数化 / 锁文件一致 / 非目标服务源码不入镜像 / `alembic.ini` + `config*.toml` / 安全更新与移除 pip / `HEALTHCHECK`）；④ 模板常量与父流水线同源断言 + 镜像档开关与 Dockerfile 就位；⑤ core 子集测试隔离修复（用例自足登记 platform 目录读取器）；⑥ 真实流水线验收（仅 platform 子流水线触发且 test/build/release 全绿、镜像入 Registry、发布度量可查；共享变更 0 服务子流水线） |
+| 自动化文件 | `bms/backend/libs/bms_core/tests/ops/test_ci_pipeline.py`（5 条断言）、`bms/backend/libs/bms_core/tests/core/test_service_catalog_startup.py`（隔离修复）——用例函数以 `@pytest.mark.kiwi_id(2184)` 标注 |
+| 备注 | 阶段二域 09 首个用例；登记输入见 `scripts/kiwi/cases/2026-09-24_阶段二09-01_父子流水线.json`（含回读编号）；流水线证据见任务测试记录 §4（349 / 351 / 352） |
 
 ## 4. 对账结果 <a id="reconcile"></a>
 
