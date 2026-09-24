@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2187,
+    "summary": "06-04 租户解析与库键派生健壮性（IP 字面量主机名不入子域名解析 / 来源值形态校验 / 兜底不冒泡 5xx / contract-smoke 转阻断）"
+  }
+]
