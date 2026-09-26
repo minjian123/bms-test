@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2191,
+    "summary": "04-1-1 前端网关接入改造（域→服务前缀单一来源 / 请求层服务段组装与 baseURL 收敛 / 能力源按服务注入 endpoint / 9 份契约前端类型生成 @bms/api-types 零漂移 / 登录守卫与 401 骨架）"
+  }
+]

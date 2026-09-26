@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-1-1 前端网关接入改造（域→服务前缀单一来源 / 请求层服务段组装与 baseURL 收敛 / 能力源按服务注入 endpoint / 9 份契约前端类型生成 @bms/api-types 零漂移 / 登录守卫与 401 骨架）",
+      "text": "<p><strong>覆盖范围（任务 04-1-1：前端网关接入改造；需求 04-4）</strong></p><ol><li><strong>域→服务前缀单一来源</strong>：核心包 <code>contracts/service-endpoint.ts</code> 落服务键（9 个启用服务：platform / identity / tenant / org / file / notification / search / ai / report）与服务前缀映射及 URL 组装函数 <code>servicePrefix</code> / <code>serviceUrl</code> / <code>isServiceKey</code>；全前端只此一份，禁止各模块自拼。</li><li><strong>宿主请求层改造与 baseURL 收敛</strong>：请求入口改服务段组装（<code>apiUrl(service,path)</code> + <code>get/post/put/del(service,path)</code>），去单前缀 <code>API_PREFIX</code>；Axios <code>baseURL</code> 收敛为 <code>VITE_API_BASE</code>（缺省同源 <code>/</code>）。</li><li><strong>能力源按服务注入 endpoint</strong>：宿主 <code>api/endpoints.ts</code> 提供端点选项解析（<code>dictSourceOptions→platform</code> / <code>orgSourceOptions→org</code> / <code>captchaSourceOptions→identity</code> / <code>uploadTransportOptions→file</code> / <code>searchEngineOptions→search</code> / <code>aiStreamEndpoint→ai</code>）与令牌头 <code>authHeaders</code>；接线 dev 检查页（DictCheck / CaptchaCheck）。</li><li><strong>9 份契约前端类型生成</strong>：新增 workspace 包 <code>frontend/packages/api-types</code>，以 <code>deploy/contracts/&lt;service&gt;.json</code>（9 份快照，唯一事实源）经 <code>openapi-typescript</code> 生成 <code>src/&lt;service&gt;.ts</code> + <code>src/index.ts</code>（按服务命名空间导出）；<code>gen:check</code> 重新生成逐字节比对零漂移；CI 新增 <code>api-types-check</code> job（contracts 变更单独拉起）；纳入根 <code>lint</code>/<code>check</code> 链与本地预检。</li><li><strong>登录 / 守卫 / 401 骨架</strong>：401 钩子 <code>onUnauthorized</code> 清会话 + 跳登录占位；路由守卫逻辑落核心（公开白名单 / 无令牌判定），宿主接线默认关闭强制跳转（<code>VITE_AUTH_GUARD</code>，阶段六开启）；登录占位页 <code>/login</code>。真实登录链路归阶段六。</li><li><strong>dev 代理</strong>：vite <code>/api</code> 代理目标可配 <code>VITE_API_PROXY</code>（缺省网关 nginx），与生产同形。</li><li><strong>验证</strong>：核心 / 宿主 / api-types 用例（映射、URL 组装边界、端点选项、401、守卫判定、导出面一致）；<code>pnpm run check</code>、宿主 lint / test / build / budget、模块门禁、<code>check-base</code> / <code>check-links</code> / <code>check-status</code> / <code>check-preflight --fast</code> 全绿。</li></ol><p><strong>自动化文件</strong>：<code>frontend/packages/core/tests/service-endpoint.spec.ts</code>、<code>frontend/apps/desktop/tests/api.spec.ts</code>、<code>api-http.spec.ts</code>、<code>api-endpoints.spec.ts</code>、<code>auth-guard.spec.ts</code>、<code>frontend/packages/api-types/tests/exports.spec.ts</code>（以任务记录登记 Kiwi 编号标注）。</p><p><strong>预期</strong>：前端请求一律按服务段寻址；能力源按服务分流；类型由契约快照生成、无手写漂移；登录与各能力源请求联通（骨架）；用例覆盖、校验通过。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
