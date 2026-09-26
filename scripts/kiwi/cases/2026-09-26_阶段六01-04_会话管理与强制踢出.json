@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "01-04 会话管理与强制踢出（sessions 端点 / 统一撤销原语 / 多端上限 / 错误码 20011~20016 / session.revoked 广播占位）",
+      "text": "<p><strong>覆盖范围（任务 01_04：会话管理与强制踢出）</strong></p><ol><li><strong>会话管理端点</strong>：identity 服务 <code>GET /api/v1/sessions</code>（在线列表：仅未撤销未过期，支持 user_id 精确 / device / ip 模糊 / 登录时间区间筛选 + 分页）、<code>GET /api/v1/sessions/{session_id}</code>（详情，含已撤销会话展示 <code>revoked_at</code>）、<code>POST /api/v1/sessions/{session_id}/kick</code>（强制踢出）；端点挂 <code>require_auth</code> + <code>require_permission(\"session:query\"/\"session:kick\")</code>（permission 基座当前 Null = RBAC 前平台超管口径）。</li><li><strong>统一撤销原语</strong>：<code>SessionService.revoke</code>（黑名单 + <code>revoked_at</code> 落库 + 删 Redis 会话标记 + 可选 <code>session.revoked</code> 广播占位）；登出（<code>reason=logout</code>、不广播）与踢出（<code>reason=kick</code>、广播）共用，三路径清理一致。</li><li><strong>强制踢出即时性</strong>：踢出后目标会话 Redis 标记删除、refresh 入黑名单、<code>revoked_at</code> 落库；该会话 refresh 随即 401（不等 access 自然过期）；重复踢出返回 <code>20013</code>；已过期会话踢出 <code>20012</code>；不存在 <code>20011</code>/404；<code>20014</code>/<code>20015</code>/<code>20016</code> 登记不判定。</li><li><strong>多端会话上限</strong>：<code>[session].max_active</code>（默认 5）；登录成功后按用户统计未撤销未过期会话，达上限按 <code>login_at</code> 升序作废最旧（第 6 次登录作废最旧，被作废端 refresh 失效）；未达上限不作废。</li><li><strong>广播占位与审计</strong>：<code>BaseRealtimePublisher.emit(RealtimeEvent(session.revoked))</code>（Null 空操作，阶段八接真实 Socket.IO）；踢出结构化日志（动作 / 操作者 / 目标会话 / 租户 / 结果，不落 refresh 原始值）。</li><li><strong>验证</strong>：本机单元 / 服务层 / ASGI 端到端（登录两次建两会话 → 列表 → 踢出其一 → 该会话 refresh 401、其余不受影响）+ <code>pytest</code> / <code>ruff</code> / <code>pyright</code> / 契约快照与前端类型零漂移 / <code>check-backend-base</code> / <code>preflight --fast</code> 全绿。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/services/identity/tests/session/test_sessions.py</code>、<code>test_kick.py</code>、<code>test_session_limit.py</code>、<code>test_session_service.py</code>、<code>backend/services/identity/tests/auth/test_logout.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

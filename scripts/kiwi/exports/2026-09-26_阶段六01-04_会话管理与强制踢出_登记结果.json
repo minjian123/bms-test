@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2195,
+    "summary": "01-04 会话管理与强制踢出（sessions 端点 / 统一撤销原语 / 多端上限 / 错误码 20011~20016 / session.revoked 广播占位）"
+  }
+]
