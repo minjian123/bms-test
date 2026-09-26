@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "01-02 用户令牌自签与网关校验源切换（user_token 能力域 / JWKS 合并发布 / aud=api 校验源切本地 / 外部 IdP 解耦）",
+      "text": "<p><strong>覆盖范围（任务 01_02：用户令牌自签与网关校验源切换）</strong></p><ol><li><strong>用户令牌签发能力（<code>oauth/user_token</code> 能力域）</strong>：新增 <code>BaseUserTokenIssuer</code>（<code>issue_pair</code> / <code>jwks</code> / <code>verify(token, *, expected_type)</code>，<code>expected_type</code> 必填）+ 真实实现 <code>JwtUserTokenIssuer</code>（joserfc，RS256 / ES256 白名单）+ <code>NullUserTokenIssuer</code>（fail-closed）+ 提供者 <code>get_user_token_issuer</code>。</li><li><strong>双 token 契约</strong>：access（30 分钟）与 refresh（14 天）一次签出、<code>jti</code> 同值 = 会话 id；claims <code>iss=bms</code> / <code>aud=api</code> / <code>sub</code> / <code>tenant_id</code> / <code>type=access|refresh</code> / <code>scope</code>（可选）；密钥 kid 强制 <code>usr-</code> 前缀（用途区分），<code>active_kid</code> 签发、多密钥并行轮换。</li><li><strong>JWKS 合并发布</strong>：identity <code>GET /.well-known/jwks.json</code> 同时发布服务令牌与用户令牌公钥（只含公钥、按 kid 排序）；两域 kid 冲突 / 文档非法 → 503（fail-closed）；无密钥返回空集；豁免租户 / 边缘。</li><li><strong>校验源切换</strong>：<code>UnifiedTokenVerifier</code> 的 <code>aud=api</code> 分支由外部 IdP JWKS 切到本地用户令牌 JWKS，并强校验 <code>type=access</code>（refresh 不得当 access 用）；<code>_from_claims</code> 兼容 <code>type</code>/<code>typ</code> 与 <code>tenant_id</code>/<code>tenant</code>；不再解析 <code>[identity_provider]</code>；网关 <code>forward-auth</code> / <code>introspect</code> 链路与身份头换发不变。</li><li><strong>失败语义</strong>：验签 / 过期 / <code>iss</code> / <code>aud</code> / 类型 / 未知 kid → <code>AuthError</code>（20001/401）；<code>subject</code> / <code>session_id</code> 为空 → <code>ParamError</code>（10001）；keys 空 / <code>active_kid</code> 未命中 / 无 <code>usr-</code> 前缀 → <code>ConfigError</code>（40001）；provider 空 → Null fail-closed。</li><li><strong>装配与配置</strong>：<code>[user_token]</code>（provider=jwt / issuer=bms）+ <code>[security]</code> 密钥与 TTL；<code>PLUGIN_WIRINGS</code> / 工厂登记 / deps 导出；平台契约端口清单一致。</li><li><strong>验证</strong>：本机单元 / 装配（签发往返 / 类型强校验 / 轮换 / JWKS 合并与冲突 / 校验源切换与 aud 隔离 / 配置与装配）+ mjbk 真实冒烟（本地签发用户令牌经网关校验通过并换发服务 JWT；伪造 aud / 过期 / 错签名 401；停用 Keycloak 后本地链路不受影响）。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/services/identity/tests/oauth/test_user_token.py</code>、<code>backend/services/identity/tests/oauth/test_token_verifier.py</code>、<code>backend/services/identity/tests/oauth/test_wellknown_jwks.py</code>、<code>backend/libs/bms_core/tests/core/test_config.py</code>、<code>backend/services/platform/tests/crosscut/test_plugin_registration.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

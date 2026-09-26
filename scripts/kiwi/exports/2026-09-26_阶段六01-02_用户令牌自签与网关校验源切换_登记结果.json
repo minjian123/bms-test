@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2193,
+    "summary": "01-02 用户令牌自签与网关校验源切换（user_token 能力域 / JWKS 合并发布 / aud=api 校验源切本地 / 外部 IdP 解耦）"
+  }
+]
