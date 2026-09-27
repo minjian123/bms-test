@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2200,
+    "summary": "02-04a 企业微信免登适配（扫码/内嵌 H5 授权 + gettoken/getuserinfo 身份解析 + 同一 SSO 链路复用 + authorize-url 契约 + mock 端到端 + 凭据缺失/用户未授权/不可达分支）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2201,
+    "summary": "02-04b 钉钉免登适配（新版 OAuth2 授权 + userAccessToken + contact/users/me 身份解析 + 同一 SSO 链路复用 + authorize-url 契约 + mock 端到端 + 授权失败/不可达分支）"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2200,
+      "summary": "02-04a 企业微信免登适配（扫码/内嵌 H5 授权 + gettoken/getuserinfo 身份解析 + 同一 SSO 链路复用 + authorize-url 契约 + mock 端到端 + 凭据缺失/用户未授权/不可达分支）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 企微客户端与工厂：libs/bms_core/tests/idp/test_wecom.py（authorize 两种 mode：qr 链接含 login_type/appid/agentid/redirect_uri/state；oauth 链接含 #wechat_redirect 与 scope；gettoken 进程内缓存复用；getuserinfo 成员 userid / 非成员回落 openid；gettoken 凭据 errcode→WecomConfigError；getuserinfo errcode→WecomAuthError；网络/非 2xx/非 JSON→WecomUnavailableError；userinfo 抛 ConfigError；工厂读配置与缺参 PluginError）；\n2 行配置实例化：libs/bms_core/tests/idp/test_registry.py（type=wecom 分派构造 WecomIdentityProvider；缺 corp_id/agent_id/secret_ref 与 mode 非法抛 WecomConfigError）；\n3 企微端到端与失败分支：services/identity/tests/sso/test_wecom.py（authorize-url 返回 authorize_url/state/expires_in → 回调 ?state=&code= → gettoken/getuserinfo → JIT 建号 + 映射写入 + 会话签发 + 302；authorize 302 形态回归；凭据缺失 20057 / 授权失败 20058 / 不可达 20059 / 映射未命中且 JIT 关 20054）；\n4 mock 夹具：services/identity/tests/sso/helpers.py / conftest.py（WecomMock 成功/凭据失败/授权失败/500/非 JSON 可切换 + 按路径分派传输；seed_provider 支持 type=wecom；OIDC/CAS 既有夹具行为不变）；\n5 authorize-url 契约：services/identity/tests/sso/test_units.py（authorize_info 返回 expires_in 取 TTL）；\n6 OIDC/CAS 主链回归：services/identity/tests/sso/、tests/auth/ 全量回归不受影响；\n7 回归与门禁：pytest / ruff / pyright / 契约快照 check（identity 重生成）/ api-types gen:check / check-backend-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/idp/、backend/services/identity/tests/sso/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_04_企业微信钉钉免登适配/设计/04_详细设计_04_企业微信钉钉免登适配.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    },
+    {
+      "case_id": 2201,
+      "summary": "02-04b 钉钉免登适配（新版 OAuth2 授权 + userAccessToken + contact/users/me 身份解析 + 同一 SSO 链路复用 + authorize-url 契约 + mock 端到端 + 授权失败/不可达分支）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 钉钉客户端与工厂：libs/bms_core/tests/idp/test_dingtalk.py（authorize URL 含 client_id/scope/prompt/state/redirect_uri；userAccessToken 换令牌字段透出 accessToken/expireIn/refreshToken；contact/users/me 取身份 unionId 优先、回落 openId；4xx→DingtalkAuthError；5xx/网络/非 JSON→DingtalkUnavailableError；工厂读配置与缺参 PluginError）；\n2 行配置实例化：libs/bms_core/tests/idp/test_registry.py（type=dingtalk 分派构造 DingtalkIdentityProvider；缺 client_id/client_secret_ref 抛 DingtalkConfigError）；\n3 钉钉端到端与失败分支：services/identity/tests/sso/test_dingtalk.py（authorize-url 返回 authorize_url/state/expires_in → 回调 ?state=&code= → userAccessToken + contact/users/me → JIT + 会话签发；授权失败 20061 / 不可达 20062；providers 含 type=dingtalk）；\n4 mock 夹具：services/identity/tests/sso/helpers.py / conftest.py（DingtalkMock 成功/授权失败/500/非 JSON 可切换 + 按路径分派传输；seed_provider 支持 type=dingtalk）；\n5 authorize-url 契约：services/identity/tests/sso/test_units.py（authorize_info 返回 expires_in 取 TTL）；\n6 OIDC/CAS 主链回归：services/identity/tests/sso/、tests/auth/ 全量回归不受影响；\n7 回归与门禁：pytest / ruff / pyright / 契约快照 check（identity 重生成）/ api-types gen:check / check-backend-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/idp/、backend/services/identity/tests/sso/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_04_企业微信钉钉免登适配/设计/04_详细设计_04_企业微信钉钉免登适配.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    }
+  ]
+}
