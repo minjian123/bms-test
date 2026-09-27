@@ -1,0 +1,18 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "02-05a BMS兼作IdP（OIDC Provider 内核 + sys_client 最小注册 + 授权码流程/PKCE/Discovery/JWKS + 客户端管理）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 Provider 内核：libs/bms_core/tests/oauth/test_oidc_provider.py（Discovery 文档字段合规；ID Token 签发并本地验签 iss/aud=client_id/typ=id_token/nonce/auth_time；access token 签发与 verify_access_token 往返 aud=userinfo/typ=idp_access/tenant_id/client_id/scope；iss/aud/typ 不符拒；无密钥 ConfigError；kid 缺 usr- 前缀 ConfigError；NullOidcProvider fail-closed）；\n2 流程状态复用：libs/bms_core/tests/idp/test_state_store.py（build_idp_state_key 带 namespace；三实现 namespace 隔离；默认 idpstate 行为不变）；\n3 Discovery/JWKS：services/identity/tests/oidc/test_discovery.py（Discovery 200 字段齐全且 issuer 与端点前缀一致；jwks 公钥与用户令牌同源；无租户 404）；\n4 授权分支：services/identity/tests/oidc/test_authorize.py（登录态 → 授权码落库 payload/TTL → 302 回跳含 code/state；未登录跳 login_url / 未配 401；未知客户端/非法 redirect_uri → 400 标准错误不回跳；未注册 redirect_uri 拒；scope 非法回跳；公共客户端缺 PKCE 拒；停用客户端拒）；\n5 换码分支：services/identity/tests/oidc/test_token.py（basic 与 post 两认证；换码 → ID Token/access token 验签；授权码重放/过期 → invalid_grant；redirect_uri/PKCE 不符 → invalid_grant；未知客户端/错密钥 → invalid_client；grant_type 非授权码 → unsupported_grant_type；无 refresh_token）；\n6 userinfo：services/identity/tests/oidc/test_userinfo.py（Bearer token → sub/preferred_username/name；缺/错/过期/跨租户 401；用户不存在/停用 401；org 不可达 503）；\n7 客户端管理：services/identity/tests/oidc/test_clients.py（创建返回 client_id+明文 secret 一次；重置后旧 secret 失效、新密钥可换码；列表/详情不含 secret；启停后授权/换码拒绝；字段非法 80112；不存在 80111；重置公共客户端 80112；权限依赖生效）；\n8 端到端：services/identity/tests/oidc/test_e2e.py（登录建会话 → authorize → 换码 → userinfo 单测内全链路）；\n9 helper 分支：services/identity/tests/oidc/test_units.py（issuer 占位派生 / scope 校验 / redirect_uri 匹配 / PKCE S256 计算 / 授权码载荷编解码非法结构）；\n10 迁移与装配：libs/bms_core/tests/alembic/test_alembic_chains.py、services/platform/tests/crosscut/test_plugin_registration.py（identity:tenant 单 head 含 sys_client；oidc_provider 插件登记）；\n11 回归与门禁：pytest / ruff / pyright / 契约快照 check（identity 重生成）/ api-types gen:check / check-backend-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/oauth/、backend/libs/bms_core/tests/idp/、backend/services/identity/tests/oidc/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_05_BMS兼作IdP与客户端注册/设计/05_详细设计_05_BMS兼作IdP与客户端注册.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2202
+    }
+  ]
+}
