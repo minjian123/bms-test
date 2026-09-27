@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2198,
+      "summary": "02-02 JIT 建号与身份映射（首登建号 + sys_user_identity 写路径 + 分布式锁并发防护 + 域名/租户白名单 + identity.user.jit_created 事件 + sso:bind 只读端点）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 分布式锁真实实现：libs/bms_core/tests/lock/test_lock_memory.py（进程内：acquire 首次成功/二次失败、release 令牌校验、惰性过期、wait 轮询超时、extend）+ test_lock_redis.py（fakeredis：SET NX 首次成功/占用失败、Lua 校验释放与续租、Redis 异常降级 memory）；\n2 org 建号：services/org/tests/users/test_create.py（建号成功 status=enabled、占位口令非 PBKDF2 且 verify 恒 False、用户名撞名 created=false + reason=username_conflict、服务 JWT 鉴权分支）；\n3 identity JIT：services/identity/tests/sso/test_jit.py（首登建号 + 平台库写映射 + identity.user.jit_created 同事务入发件箱（payload user_id/idp_key 与映射键）+ 二次登录命中映射不建号不发事件 + JIT 未启用 20054 + 白名单外租户/域名/缺邮箱 20054 + 用户名后缀 _2.._5 与 5 连撞 20054 + 锁未取到 20055 + 映射唯一冲突回读复用 + org 建号不可达 20053）；\n4 绑定查看：services/identity/tests/sso/test_bind.py（GET /api/v1/users/{id}/identities 返回绑定清单、无绑定空列表、鉴权分支）；\n5 覆盖补口：services/identity/tests/sso/test_units.py（用户名清洗/派生优先级、白名单判定、jit_enabled 行优先回落全局、配置非法类型 40001）；\n6 事件契约：libs/bms_core/tests/events/test_platform_events.py 回归（identity.user.jit_created 已登记、快照零漂移）；\n7 回归与门禁：pytest / ruff / pyright / 契约与生成件零漂移（identity.json、org.json、api-types identity.ts/org.ts）/ check-backend-base / check-base / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/lock/、backend/services/identity/tests/sso/、backend/services/org/tests/users/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注（本任务新增文件标本用例号，既有文件扩展保持原编号）。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_02_JIT建号与身份映射/设计/02_详细设计_02_JIT建号与身份映射.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2198,
+    "summary": "02-02 JIT 建号与身份映射（首登建号 + sys_user_identity 写路径 + 分布式锁并发防护 + 域名/租户白名单 + identity.user.jit_created 事件 + sso:bind 只读端点）"
+  }
+]
