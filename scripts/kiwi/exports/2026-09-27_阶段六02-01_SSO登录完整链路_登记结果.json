@@ -1,0 +1,1 @@
+[{"ok": true, "skipped": false, "case_id": 2197, "summary": "02-01 SSO 登录完整链路（providers 入口清单 / authorize 授权跳转 state+nonce+PKCE / callback 一次性闭环复用会话签发 / 错误码 20051~20056 / org 内部用户概要 / Keycloak E2E）"}]

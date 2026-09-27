@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2197,
+      "summary": "02-01 SSO 登录完整链路（providers 入口清单 / authorize 授权跳转 state+nonce+PKCE / callback 一次性闭环复用会话签发 / 错误码 20051~20056 / org 内部用户概要 / Keycloak E2E）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点；2026-09-27 修正回归口径与文件清单）：\n1-4 流程状态与协议契约：libs/bms_core/tests/idp/test_state_store.py（流程状态能力域 redis/memory/null：键构造、存取删、GETDEL 一次性消费、TTL 过期、异常降级、工厂按 provider 解析）+ libs/bms_core/tests/idp/test_registry.py（行配置实例化：env: 解析成功/缺失报错、secret: 预留报错、按 type 分派、(id, updated_at) 缓存命中与失效）+ services/identity/tests/idp/test_oidc.py（扩展，随既有 Kiwi 2179）：nonce / code_challenge(S256) 入授权 URL、换码带 code_verifier、verify_token nonce 匹配与不符、id_token 透出、未传新参时 URL 与旧行为一致；\n5-9 SSO 三端点：services/identity/tests/sso/test_providers.py（入口清单：仅 enabled + 按 sort 排序 + tenant 参数回落与不一致 + 空列表）+ test_authorize.py（state/nonce/verifier 落库形态与 TTL、302 URL 参数含 PKCE、未知/停用 20051、发现失败 20053、IP/IdP 限流 10005）+ test_callback.py（成功：换码→验签→映射→org 概要→双 token + sys_session + Redis 标记 + cookie 属性 + login-state→302；state 缺失/重放/租户不符 20052、nonce/PKCE/签名失败 20052、未匹配 20054、冲突 20055、停用 20004、org 不可达 10007、无 id_token 回退 userinfo、失败 302 与 JSON 回退）+ test_units.py（helper 分支：provider_registry 解析 / flow payload 非法结构 / 租户解析无来源 / 回调限流无 IP 跳过，支撑覆盖率 100%）；\n10 回归与并存：本地登录 / 刷新 / 登出复用既有 services/identity/tests/auth/ 用例全量回归（不新建独立回归文件）；org 内部概要 services/org/tests/users/test_profile.py（found 真/假、概要字段、服务 JWT 鉴权分支）；org 客户端 services/identity/tests/auth/test_org_client.py（扩展：profile 解析）；\n11 装配一致性：services/platform/tests/crosscut/test_plugin_registration.py（_EXPECTED_PLUGIN_KEYS 增 idp_state_store）；\n12 迁移链：libs/bms_core/tests/alembic/test_alembic_chains.py（identity:tenant 0002 单 head；identity:platform 0001 已登记、branch_labels 与表集正确）；\n13 Keycloak E2E：services/identity/tests/sso/test_keycloak_e2e.py（integration，CI 跳过）：真实 Keycloak 授权→表单登录→回调→会话签发闭环（凭据读 deploy/.env，Admin API 幂等建测试用户；2026-09-27 实测通过）。\n自动化文件路径：backend/libs/bms_core/tests/idp/、backend/services/identity/tests/{idp,sso,auth}/、backend/services/org/tests/users/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注（本任务新增文件标 2197，既有文件扩展保持原编号）。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_01_SSO登录完整链路/设计/01_详细设计_01_SSO登录完整链路.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    }
+  ]
+}
