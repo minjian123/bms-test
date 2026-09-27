@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2199,
+    "summary": "02-03 CAS 兼容适配（CAS 客户端 + serviceValidate 票据校验 + 属性映射 + 同一 SSO 链路复用 + mock CAS 端到端 + 票据无效/服务未注册/IdP 不可达分支）"
+  }
+]

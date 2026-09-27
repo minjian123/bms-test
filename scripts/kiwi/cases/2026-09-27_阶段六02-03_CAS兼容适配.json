@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": null,
+      "summary": "02-03 CAS 兼容适配（CAS 客户端 + serviceValidate 票据校验 + 属性映射 + 同一 SSO 链路复用 + mock CAS 端到端 + 票据无效/服务未注册/IdP 不可达分支）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 CAS 客户端与工厂：libs/bms_core/tests/idp/test_cas.py（authorize 带 service 拼装与 login_path 可配；serviceValidate 成功解析 principal + attributes 默认映射；attribute_map 覆盖与多值取首；authenticationFailure INVALID_TICKET/INVALID_SERVICE 抛 AuthError；非 2xx / 非法 XML / 含 DOCTYPE / 超限 / 缺 authenticationSuccess 抛 ServiceUnavailableError；userinfo 抛 ConfigError；工厂读配置与缺 cas_server_url 抛 PluginError）；\n2 行配置实例化：libs/bms_core/tests/idp/test_registry.py（type=cas 分派构造 CasIdentityProvider；缺 cas_server_url 抛 ConfigError；attribute_map 非法类型抛 ConfigError）；\n3 CAS 端到端与失败分支：services/identity/tests/sso/test_cas.py（authorize → 登录 URL 的 service 含 state → 回调 ?state=&ticket=ST-ok → serviceValidate → 身份 → JIT 建号 + 映射写入 + 会话签发 + 302；ticket 无效 / 服务未注册 → 20052；IdP 不可达 → 20053；映射未命中且 JIT 关闭 → 20054；code 参数 OIDC 形态回归不受影响）；\n4 mock CAS 夹具：services/identity/tests/sso/helpers.py / conftest.py（CasMock 成功/INVALID_TICKET/INVALID_SERVICE/500/非法 XML 可切换 + 按路径分派传输；seed_provider 支持 type=cas 与 CAS 配置；OIDC 既有夹具行为不变）；\n5 契约扩展兼容：services/identity/tests/idp/test_idp.py（_PlainProvider 签名随契约扩展对齐；既有契约/占位/依赖解析用例回归）；\n6 OIDC 主链回归：services/identity/tests/sso/、tests/auth/（OIDC 主链、JIT、绑定、本地登录/刷新/登出全量回归不受影响）；\n7 回归与门禁：pytest / ruff / pyright / 契约快照 check（identity 重生成）/ api-types gen:check / check-backend-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/idp/、backend/services/identity/tests/sso/、backend/services/identity/tests/idp/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注（本任务新增文件标本用例号，既有文件扩展保持原编号）。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_03_CAS兼容适配/设计/03_详细设计_03_CAS兼容适配.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": false
+    }
+  ]
+}
