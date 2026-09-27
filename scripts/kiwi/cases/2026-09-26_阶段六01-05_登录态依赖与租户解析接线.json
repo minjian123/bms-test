@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "01-05 登录态依赖真实化与租户解析接线（require_auth 恒定强制 / X-Session-Id 身份头 / 每请求会话标记校验 20012 / 租户解析接线 / AuthContext / device_check）",
+      "text": "<p><strong>覆盖范围（任务 01_05：登录态依赖真实化与租户解析接线）</strong></p><ol><li><strong>require_auth 恒定强制</strong>：受保护路由一律要求有效登录态，来源二选一——网关路径消费可信边缘身份（<code>X-User-Subject</code> / <code>X-Tenant-Id</code> / <code>X-Session-Id</code>，服务 JWT 验签信任），本地路径本地校验 <code>aud=api</code> Bearer 用户令牌（<code>UnifiedTokenVerifier</code>）；成功返回统一身份契约 <code>AuthContext</code>（<code>subject</code> / <code>user_id</code> / <code>tenant</code> / <code>session_id</code> / <code>scopes</code> / <code>service_identity</code> / <code>source</code>）并写请求上下文（<code>current_user_id</code> / 租户）；缺 / 无效令牌 → <code>AuthError</code>（20001 / 401）。</li><li><strong>每请求会话标记校验</strong>：按 <code>session_id</code>（网关注入 <code>X-Session-Id</code> 或本地 access <code>jti</code>）经 <code>BaseSessionStore.load</code> 校验 Redis 会话标记；标记不存在（已踢出 / 登出 / 超限作废）⇒ <code>SessionAuthError</code>（20012 / 401）下一请求即拦截（不等 access 自然过期）。</li><li><strong>身份头契约扩展</strong>：新增 <code>X-Session-Id</code>（<code>EdgeIdentity.session_id</code>，<code>EdgeGuardMiddleware</code> 剥除 / 回写，网关 <code>forward-auth.upstream_headers</code> 注入，<code>/auth/introspect</code> 回填用户令牌 <code>jti</code>）。</li><li><strong>租户解析接线</strong>：请求上下文租户优先取网关身份头；本地路径以 token <code>tenant_id</code> 兜底写请求态与租户上下文，显式来源（子域名 / <code>X-Tenant-ID</code>）与 token 不一致 ⇒ 跨租户拒绝（20001 / 401）。</li><li><strong>设备 / IP 一致性（可选强度）</strong>：<code>[session].device_check</code>（默认 <code>false</code>）开启时比对会话标记内 <code>ip</code> / <code>ua</code> 与当前请求，不一致 ⇒ 20012 / 401。</li><li><strong>受保护路由统一切换</strong>：补齐遗漏的插件聚合路由（<code>platform/plugins.py</code> 挂 <code>require_auth</code>），服务目录 / 检索 / 图标 / 打印 / AI / 通知 / 偏好 / 文件 / 租户自助 / org / 会话管理路由在真实登录态下回归；<code>require_service</code> 内部端点与公开端点（auth / captcha / wellknown / introspect）口径不变。</li><li><strong>验证</strong>：<code>require_auth</code> 全分支单测（网关身份 / 本地令牌 / 401 / 20012 / 跨租户 / device_check / 租户兜底） + ASGI 端到端（登录 → 受保护接口 200；无效令牌 401；踢出后下一请求 401/20012） + 网关生成件重建（剥头 / <code>upstream_headers</code> 含 <code>X-Session-Id</code>）+ 全量 <code>pytest</code> / <code>ruff</code> / <code>pyright</code> / 契约快照与前端类型零漂移 / <code>check-backend-base</code> / <code>preflight --fast</code> 全绿。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/api/test_require_auth.py</code>、<code>backend/libs/bms_core/tests/edge/test_edge.py</code>、<code>backend/libs/bms_core/tests/api/test_middleware.py</code>、<code>backend/libs/bms_core/tests/services/test_gateway_catalog.py</code>、<code>backend/services/identity/tests/auth/test_auth_dependency.py</code>、<code>backend/services/identity/tests/auth/test_introspect.py</code>、<code>backend/services/platform/tests/api/test_router_base.py</code>（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
