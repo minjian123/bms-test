@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "02-06 外部IdP配置管理（CRUD/启停/连通性测试 + 配置校验/未知键拒绝/凭据脱敏/SSRF/测试限流）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 配置 schema：libs/bms_core/tests/idp/test_schema.py（四协议必填/类型/枚举；未知键拒绝；env: 合法、secret: 与明文拒绝；jit_enabled bool 与 allowed_email_domains 字符串数组；mask_provider_config 敏感键掩码为 env:***、非敏感键原样；has_secret）；\n2 SSRF 校验：libs/bms_core/tests/idp/test_ssrf.py（协议非 http(s) 拒；localhost/私网/回环/链路本地/元数据 IP 拒；allow_private_hosts=true 放行；公网域名通过；浏览器跳转地址仅协议+主机校验）；\n3 连通性探测：libs/bms_core/tests/idp/test_probe.py（OIDC Discovery / CAS serviceValidate / 企微 gettoken / 钉钉 userAccessToken 探活成功与失败分支；detail 不含密钥与原始报文；BaseIdentityProvider 默认不可探测、Null fail-closed）；\n4 管理面端点：services/identity/tests/idp/test_manage.py（新建/列表筛选分页/详情/修改/独立启停/软删除；列表与详情 config 敏感键脱敏、无明文；idp_key 冲突 20065；字段与配置非法 20064；不存在 20063；草稿 POST /test 与已存行 GET /{id}/test 成功/失败 20066；测试限流 10005；未登录 401 / 缺 idp:manage 403；软删后标识可复用）；\n5 登录页入口：services/identity/tests/idp/test_manage.py（GET /api/v1/auth/sso/providers 响应不含 config 与密钥字段）；\n6 回归与门禁：pytest / ruff / pyright / 契约快照 check（identity 重生成）/ api-types gen:check / check-backend-base / check-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/idp/、backend/services/identity/tests/idp/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/02_SSO与身份联邦/02_SSO与身份联邦_06_外部IdP配置管理/设计/06_详细设计_06_外部IdP配置管理.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

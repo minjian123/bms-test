@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2203,
+    "summary": "02-06 外部IdP配置管理（CRUD/启停/连通性测试 + 配置校验/未知键拒绝/凭据脱敏/SSRF/测试限流）"
+  }
+]
