@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "09-01 后端类体系根治理（体系基类/继承链四段/直继承护栏与基线/未登记补齐）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 体系基类契约：libs/bms_core/tests/core/test_objects.py（BaseValueObject / BaseDataContract / BaseFrameworkObject 继承链、object_kind、aclose 钩子位、frozen 与可变语义）；\n2 继承链四段：同文件 + libs/bms_core/tests/crosscut（BaseCapability/BaseAsyncResource/BasePlaceholder/BaseLogger/BaseRouter 改挂 BaseFrameworkObject；BaseSchema/BaseModel 改挂 BaseDataContract；仍 issubclass(..., BaseObject)）；\n3 护栏：体系根放行：scripts/tools/base-check/check-backend-base.py --self-test（fixture 中体系根直继承不报）；\n4 护栏：新增直继承拦截：同自测（非体系根直继承未入基线即失败并提示归位体系）；\n5 护栏：白名单与基线边界：同自测（体系根清单小节缺失即报错不放行；存量入基线放行；基线非法/缺失语义）；\n6 清单对账扩展：check-backend-base.py（backend/ops 纳入扫描；RateLimitDecision 与 ops 4 个类补登后通过）；\n7 基线零漂移：check-backend-base.py .（生成基线后复跑：直继承 167 类全部为体系根或基线内；160 条存量入基线）；\n8 门禁与回归：定向 pytest（libs/bms_core/tests core|schemas|api|services|crosscut|permission 与 services/platform/tests/crosscut）、ruff、pyright、check-base、check-links、preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/core/test_objects.py（@pytest.mark.kiwi_id）+ scripts/tools/base-check/check-backend-base.py --self-test。\n设计：bms文档/项目/06_认证与安全/任务/09_类体系根治理/09_类体系根治理_01_后端类体系根治理/设计/01_详细设计_01_后端类体系根治理.md\n盘点报告：同目录 实施/02_存量归位盘点报告_01_后端类体系根治理.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
