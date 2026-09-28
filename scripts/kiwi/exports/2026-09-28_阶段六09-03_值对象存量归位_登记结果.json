@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2216,
+    "summary": "09-03 值对象存量归位（批次 1：110 处改挂 BaseValueObject / 清单链回写 / 基线 160 → 50）"
+  }
+]

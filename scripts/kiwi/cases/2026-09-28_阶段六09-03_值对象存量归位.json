@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "09-03 值对象存量归位（批次 1：110 处改挂 BaseValueObject / 清单链回写 / 基线 160 → 50）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 归位完整性（AST）：backend/libs/bms_core/tests/core/test_value_object_roots.py（冻结台账 110 项逐项断言类声明为 BaseValueObject；台账条数 = 110）；\n2 体系根边界：同文件（7 个体系根仍直继承 BaseObject；本批 110 类均不在体系根白名单内）；\n3 基线零漂移：同文件 + deploy/boundaries/direct_base_object_baseline.json（entries = 50 条且不含 value_object；全域扫描的直继承类 ⊆ 体系根 ∪ 基线）；\n4 护栏与对账：scripts/tools/base-check/check-backend-base.py（继承链对账 + 直继承合法性 + --self-test 7 例 + --update-baseline 复跑零漂移）；\n5 门禁与定向回归：受影响定向 pytest（libs/bms_core/tests 与 services/identity/tests 受影响子集）、ruff check、ruff format --check、pyright、check-base、check-links、preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/core/test_value_object_roots.py（@pytest.mark.kiwi_id）+ scripts/tools/base-check/check-backend-base.py --self-test。\n设计：bms文档/项目/06_认证与安全/任务/09_类体系根治理/09_类体系根治理_03_值对象存量归位/设计/01_详细设计_03_值对象存量归位.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
