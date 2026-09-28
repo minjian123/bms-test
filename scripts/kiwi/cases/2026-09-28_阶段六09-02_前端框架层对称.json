@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "09-02 前端框架层对称（框架对象层基类/组件链四段/清单与守卫对账）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 框架对象层直承总基类：frontend/packages/core/tests/framework-object.spec.ts（BaseFrameworkObject 直承 BaseObject）；\n2 objectKind 契约：同文件（缺省 framework；子类 override 可覆写）；\n3 四段继承链：同文件（BaseCapability / BasePluggable / BaseComponent / BaseProvider / BaseProviderRegistry / BaseFactory 的原型链均经 BaseFrameworkObject 与 BaseObject）；\n4 框架类底座改挂：同文件（BaseAsyncResource / BasePlaceholder / BaseNullObject / BaseStub / BaseSubscription 均挂框架对象层）；\n5 既有链断言补强：tests/pluggable.spec.ts 与 tests/component.spec.ts（补 BaseFrameworkObject 层断言，原断言不变）；\n6 清单/源码/导出三向对账：tests/guard-base-registry.spec.ts（新增基类登记清单 + 入口具名导出 + extends 一致性六道校验）；\n7 前端门禁：pnpm run core:check（tsc --noEmit + eslint --max-warnings 0 + vitest）与 pnpm run check（聚合 core / api-types / vue / ui-ep）全绿；\n8 文档口径：bms文档/前端基类清单.md（固定四段 + 全量登记表 + §3 新小节）与架构 04 前后端对称；check-links 0 断链。\n自动化文件路径：frontend/packages/core/tests/framework-object.spec.ts（含 Kiwi 编号注释标注）。\n设计：bms文档/项目/06_认证与安全/任务/09_类体系根治理/09_类体系根治理_02_前端框架层对称/设计/01_详细设计_02_前端框架层对称.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
