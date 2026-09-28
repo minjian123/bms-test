@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2212,
+    "summary": "04-01 脱敏基座真实实现（内置规则分派/自定义策略注册/明文揭示 fail-closed/规则配置化/插件装配）"
+  }
+]

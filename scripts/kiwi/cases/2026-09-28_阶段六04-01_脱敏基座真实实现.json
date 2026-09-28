@@ -1,0 +1,18 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2212,
+      "summary": "04-01 脱敏基座真实实现（内置规则分派/自定义策略注册/明文揭示 fail-closed/规则配置化/插件装配）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 继承与标识：libs/bms_core/tests/masking/test_default_masker.py（DefaultMasker → BaseMasker → BaseCapability → BaseObject；plugin_name=default；非占位；MASK_STRATEGIES 七项含 address）；\n2 内置策略掩码结果：同文件（phone 前3后4 / id_card 前6后4 / bank_card 前4后4 / name 留首字 / address 留前6 / email 首字符+域名 / custom 全掩码，与规范示例一致）；\n3 长度不足与边界值：同文件（1234567→123****；空串→掩码串；None 与未注册字段原样返回；非字符串转 str 后掩码；星数固定不随长度变化）；\n4 自定义策略注册与优先级：同文件（register_strategy 生效；与内置同名或名称非法抛 PluginError 40002；同名自定义后注册覆盖；字段级注册 > 内置策略 > 未知策略兜底全掩码；同字段后注册覆盖）；\n5 明文判定 fail-closed 与 reveal 对称：同文件（占位权限检查器 check_plain False 且 mask 输出掩码值；非占位检查器拒绝/允许两路径；有权限返回原值、无权限返回掩码值）；\n6 配置解析与校验：同文件（mask_char 缺省 * 与覆盖生效；mask_char 非单字符 / rules 非映射 / 键值非字符串抛 PluginError 40002）；\n7 提供者装配：libs/bms_core/tests/masking/test_default_masker.py（默认配置解析到 DefaultMasker；provider 空回落 NullMasker；契约版本校验）；\n8 既有契约回归：libs/bms_core/tests/masking/test_masking.py（Kiwi 39，仅同步 MASK_STRATEGIES 断言，其余断言不变）；\n9 回归与门禁：pytest / ruff / pyright / check-backend-base / check-links / preflight --fast 全绿。\n自动化文件路径：backend/libs/bms_core/tests/masking/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/04_数据脱敏与安全加固/04_数据脱敏与安全加固_01_脱敏基座真实实现/设计/01_详细设计_01_脱敏基座真实实现.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
