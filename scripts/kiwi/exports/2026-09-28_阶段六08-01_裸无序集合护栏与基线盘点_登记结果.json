@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2213,
+    "summary": "08-01 裸无序集合护栏与基线盘点（AST 检出/基线豁免与新增拦截/报告与 JSON/preflight+CI 挂接）"
+  }
+]

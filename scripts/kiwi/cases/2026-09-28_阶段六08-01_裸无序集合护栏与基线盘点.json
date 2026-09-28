@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "08-01 裸无序集合护栏与基线盘点（AST 检出/基线豁免与新增拦截/报告与 JSON/preflight+CI 挂接）",
+      "text": "覆盖范围（详细设计 §3.5 自测矩阵与 §5 用例清单，按实施落点）：\n1 护栏检出形态：scripts/tools/base-check/check-bare-collections.py --self-test（命中外建容器与 typing 别名 Dict/List/Set/FrozenSet/DefaultDict、dict[X] 下标、X|None 联合、字符串前向引用）；\n2 不命中口径：同自测（Sequence/Mapping/Iterable 等只读或有序抽象不报；自定义基座集合类不报）；\n3 位置与排除口径：同自测（函数体内局部注解不报；tests 目录与 test_*.py 不扫描）；\n4 基线语义：同自测（无基线时存量全部视为新增→不通过；存量入基线后通过且零漂移；新增违规被拦截；修复后基线可递减且不改结论；--update-baseline 后再次通过）；\n5 模式与输出：同自测（--report 恒退出 0 且输出统计；--json 结构合法含 passed/counts；--update-baseline 输出基线条目数）；\n6 基线零漂移复校：scripts/tools/base-check/check-bare-collections.py .（生成基线后立即复跑，新增 0 / 残留 0；基线 554 条）；\n7 挂接生效：scripts/tools/preflight/check-preflight.py --fast（基座与边界段含该护栏及 --self-test）；.gitlab-ci.yml 的 base-integrity job（lint stage）脚本清单含该护栏两条命令；\n8 定向回归：scripts/tools/base-check/ 既有 4 个脚本 + boundary_metrics.py + check-status.py --stage 06_认证与安全 全绿。\n自动化文件路径：scripts/tools/base-check/check-bare-collections.py（--self-test 矩阵，代码内以 kiwi_id 注释标注用例号）。\n设计：bms文档/项目/06_认证与安全/任务/08_裸无序集合治理/08_裸无序集合治理_01_护栏与基线盘点/设计/01_详细设计_01_护栏与基线盘点.md\n盘点报告：同目录 实施/02_存量盘点报告_01_护栏与基线盘点.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
