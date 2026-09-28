@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "03-07 账号锁定与解锁管理（三型锁定落库/fail_limit 到期自动解锁/手动锁定幂等/手动解锁恢复登录/列表详情/审计占位）",
+      "text": "覆盖范围（详细设计 §5 用例清单，按实施落点）：\n1 fail_limit 写锁与幂等：services/org/tests/account_lock/test_fail_limit.py（阈值命中写 sys_account_lock fail_limit 行 + expire_at=now+窗口；重复命中不新增；未达阈值不写；locked_until 与锁记录一致）；\n2 fail_limit 到期自动闭锁：services/org/tests/account_lock/test_fail_limit.py（apply_login_state success=True 写回时补 unlock_at=expire_at / unlock_mode=auto / unlock_by=NULL；未到期不闭；inactive/manual 不受影响）；\n3 inactive 落库（既有适配）：services/org/tests/account_lock/test_scan.py（扫描写 inactive 行 + expire_at=NULL；远期 locked_until 哨兵）；\n4 手动锁定：services/org/tests/account_lock/test_manual_lock.py（写 manual 行 + locked_until 哨兵 + expire_at=NULL + locked_by=操作者；已生效锁幂等返回既有；目标不存在 10002）；\n5 手动解锁：services/org/tests/account_lock/test_unlock.py（清 locked_until/failed_count；回填 unlock_at/unlock_by/unlock_mode=manual；重复解锁 30007；并发乐观锁 10004；审计 capture 调用）；\n6 列表与详情：services/org/tests/account_lock/test_list.py（user_id/lock_type/active/时间区间筛选 + 分页与排序白名单；详情含已解锁；不存在 30007；lock_type 非法 10001）；\n7 管理端点：services/org/tests/account_lock/test_endpoints.py（GET/POST/PUT 有效登录态放行、permission Null；无票据/失效会话 401；手动锁定→被锁 verify.locked=True→解锁→恢复 的端到端）；\n8 迁移与表：libs/bms_core/tests/alembic + services（org:tenant head=0004_sys_account_lock_expire 单链；sys_account_lock 含 expire_at/unlock_mode；模型元数据与迁移零漂移）；\n9 回归与门禁：pytest / ruff / pyright / 契约快照 check（org 重生成）/ api-types gen:check / check-backend-base / check-service-boundaries / preflight --fast 全绿。\n自动化文件路径：backend/services/org/tests/account_lock/、backend/services/org/tests/credentials/；代码以 @pytest.mark.kiwi_id(<用例号>) 标注。\n设计：bms文档/项目/06_认证与安全/任务/03_验证码与账号治理/03_验证码与账号治理_07_账号锁定与解锁管理/设计/01_详细设计_07_账号锁定与解锁管理.md",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
