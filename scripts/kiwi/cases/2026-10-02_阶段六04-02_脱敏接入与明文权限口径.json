@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-02 脱敏接入与明文权限口径（序列化自动掩码 / 日志脱敏配置化 / 导出脱敏 / mask_phone 回接 / 明文口径 fail-closed）",
+      "text": "<p><strong>覆盖范围（任务 04_02：脱敏接入与明文权限口径）</strong></p><ol><li><strong>敏感字段声明归一化</strong>：<code>BaseSchema.masked_fields</code> 支持映射写法（<code>{字段: 策略}</code>，如 <code>mobile</code> 取 <code>phone</code> 策略）与集合写法兼容（字段名同名内置策略，非内置字段名兜底 <code>custom</code> 全掩码）；默认空集不掩码。</li><li><strong>序列化自动掩码（递归）</strong>：顶层声明字段掩码；嵌套子模型（自身声明生效 + 父层幂等）、声明字段为列表时逐元素掩码、声明字段值为裸字典时按外层声明掩码内部键；容器类型保持（<code>ConcurrentStableList</code> / <code>ConcurrentStableDict</code>）；深度上限 5 层，超深原样返回不抛错。</li><li><strong>策略解析链</strong>：<code>[masking].options.rules</code> / 显式注册 &gt; Schema 声明（<code>mask</code> 的 <code>strategy</code> 入参）&gt; 字段名同名内置策略 &gt; 未命中原样返回；未知策略名兜底 <code>custom</code> 全掩码；<code>None</code> 原样。</li><li><strong>明文口径 fail-closed</strong>：占位权限检查器（<code>NullPermissionChecker</code>）下 <code>check_plain</code> 恒 <code>False</code>（无权限码时 <code>data:plain</code> 静默不生效、输出掩码）；非占位允许检查器放行明文、拒绝检查器输出掩码。</li><li><strong>掩码器全局注入</strong>：应用工厂建 <code>FastAPI</code> 时挂全局标注依赖 <code>Depends(get_masker)</code>，未显式挂载的路由同样自动掩码；请求结束 <code>current_masker</code> 复位。</li><li><strong>日志脱敏配置化</strong>：<code>[log].redact_keys</code> / <code>[log].redact_suffixes</code> 追加生效（敏感键值整体替换 <code>***</code>）；内置名单恒生效（并集语义，只可追加不可移除）。</li><li><strong>导出脱敏</strong>：<code>transfer/masking.py::mask_rows</code> 按「列名 → 策略」逐行逐列掩码、未声明列原样、空映射原样返回入参；<code>BaseExporter</code> 契约不变。</li><li><strong>既有场景回接</strong>：<code>captcha/base.py::mask_phone</code> 委托内置 <code>phone</code> 策略纯函数（正常号 / 8 位 / 7 位 / 单字符 / 空串口径与回接前逐字节一致）；短信回显调用面不变。</li><li><strong>文本掩码辅助</strong>：<code>masking/text.py::mask_text</code> 内置策略分派（<code>email</code> 特例 / 未知策略兜底 <code>custom</code>），不做值探测（供 <code>ai_chat_log</code> 等消费方登记使用）。</li><li><strong>验证</strong>：全量 <code>pytest</code> 1896 passed / 40 skipped；新增模块覆盖率 100%（<code>masking/text.py</code> 38 语句、<code>transfer/masking.py</code> 7 语句）；<code>ruff</code> / 格式 / <code>pyright</code>（改动文件 0 errors）/ <code>check-backend-base</code> / <code>check-base</code> / <code>check-bare-collections</code> / <code>check-links</code> / <code>preflight --fast</code> 全绿。</li></ol><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/masking/test_masking_wiring.py</code>（新增，主体）、<code>backend/libs/bms_core/tests/transfer/test_masking.py</code>（新增）、<code>backend/libs/bms_core/tests/captcha/test_mask_phone.py</code>（新增）、<code>backend/libs/bms_core/tests/core/test_logging.py</code>（脱敏配置化用例）；既有 Kiwi 39 / 63 / 1205 与 09 值对象台账用例仅同步替身签名与私有函数调用，不新增编号（代码以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
