@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "07-01 阶段验收门禁核对与测试报告（阶段六 10 行门禁逐条结论与证据索引 / 阶段测试报告归档 / 三类文档状态一致 / 遗留台账逐条归口）",
+      "text": "<p><strong>覆盖范围（任务 07_01：阶段验收门禁核对与测试报告；需求 07-1）</strong></p><ol><li><strong>门禁表结论与证据</strong>：阶段计划 §5 门禁表 <strong>10 行</strong>（本地登录链路 / SSO 登录链路 / JIT 建号 / 前端登录与按服务寻址 / 策略强制生效 / 会话强制踢出 / 账号锁定与手动解锁 / BMS 作 IdP / 数据脱敏 / 安全与覆盖率门槛）逐行「对应任务」非空、「核对方式与证据来源」非空且长度充足、无 <code>—</code>；含「门禁对照」表与「2026-10-03 达成」标注；需求总览<strong>不再承载</strong>门禁表。</li><li><strong>计划收口状态自洽</strong>：头部「已完成 N 项，剩余 0 项」且 N == §2 已完成表数据行数（<strong>不写死 46</strong>）；§3 剩余表数据行为 0；§4 进度含阶段六达成节点与 <code>milestone</code>；§1 工作量行为 <code>check-status</code> S1 可校验形态；§7 台账存在且引用阶段测试报告。</li><li><strong>阶段测试报告归档</strong>：<code>bms文档/项目/06_认证与安全/01_测试报告_认证与安全.md</code> 存在且六节（用例执行统计 / 缺陷统计 / 覆盖率 / 风险与遗留项 / 复盘与经验教训 / 附录 A）齐备；头部 meta 含阶段范围（40 条需求）与条数快照；含 <code>check-status</code>。</li><li><strong>三类文档状态一致</strong>：任务文档不含「状态 / 完成日期」字段；域总览子任务表不含状态列（进度唯一落点为阶段计划表）；计划登记 <code>07_01</code> 已完成与完成日期 <code>2026-10-03</code>。</li></ol><p><strong>边界（登记遗留）</strong>：模块经 <code>api</code> 的真实后端登录态浏览器实测（改归口「具备应用账号的环境 / 阶段十七」）；阶段六窗口 18 条开放自动缺陷单（只登记归口，不擅自关闭）；测试资产仓《Kiwi 用例台账》阶段六补齐（含 09_04 未登记用例与 09_05 记录误引 2217）——均登记阶段计划 §7。</p><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/crosscut/test_m6_closure.py</code>（4 个断言面：门禁表结论与证据 / 计划收口状态 / 报告归档 / 三类文档一致），以 <code>@pytest.mark.kiwi_id(&lt;编号&gt;)</code> 标注；文档断言读相对路径 <code>parents[5] / \"bms文档\"</code>（与 <code>test_m2_closure.py</code> / <code>test_m5_closure.py</code> 同口径）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
