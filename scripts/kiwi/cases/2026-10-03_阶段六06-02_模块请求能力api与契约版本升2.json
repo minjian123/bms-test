@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "06-02 模块请求能力 api 与契约版本升 2（api 能力基类与注入 / 契约版本升 2 与旧模块拒绝 / 模块禁自建 HTTP 护栏 / demo·sample 回归）",
+      "text": "<p><strong>覆盖范围（任务 06_02：模块请求能力 api 与契约版本升 2；需求 06-2）</strong></p><ol><li><strong>api 能力契约面</strong>：<code>ModuleApi</code>（服务键 + 路径的 <code>get</code> / <code>post</code> / <code>put</code> / <code>del</code> + 通用 <code>request</code> 逃生口）；<code>ModuleApiRequest</code> 字段边界（方法 / 服务 / 路径 / 查询 / 请求体 / 头部 / 幂等键），<strong>不含凭据类参数</strong>（token / withCredentials / 租户头一律不出现在契约里）。</li><li><strong>api 能力基类</strong>：<code>BaseModuleApi</code>（组件侧 · 能力域基类，父 <code>BasePlaceholderState</code>；能力键 <code>module-api</code>；五法编排经核心 <code>request()</code> + <code>serviceUrl()</code>；写方法自动幂等键；幂等键口径为<strong>宿主实现点</strong>；未注入适配器抛 <code>NOT_IMPLEMENTED</code> 零请求；非法服务键抛 <code>CAPABILITY_VIOLATION</code>）。</li><li><strong>注入上下文升契约版本</strong>：<code>ModuleHostContext</code> 新增请求能力注入项（<code>token</code> 不注入模块）；<code>MODULE_CONTRACT_VERSION</code> 与 <code>frontend/module-contract.json</code> 同步升 <strong>2</strong>；加载器 / 发布前强校验 / 清单护栏 / 回滚四处按单一来源校验；<strong>旧契约版本模块被明确拒绝加载</strong>。</li><li><strong>模块禁自建 HTTP 护栏</strong>：隔离扫描新增自建 HTTP 规则（裸 <code>fetch</code> / <code>axios</code> / <code>XMLHttpRequest</code>），<strong>源码面 + 产物面</strong>双面生效；含 fixture 拦截与合法写法（<code>api.get(...)</code> / <code>prefetch</code>）不误判。</li><li><strong>宿主实现与注入</strong>：<code>HostModuleApi</code>（复用宿主请求层服务段组装与幂等键口径）+ <code>createModuleApi()</code> 装配注入；调用链为 模块 → <code>context.api</code> → 核心 <code>request()</code> → 宿主 Axios 适配器（token 注入 / 统一解包 / <strong>401 单例静默刷新与重放，对模块透明</strong>）。</li><li><strong>双模块回归</strong>：demo 与 sample 经 runtime 记录请求能力、页面 <code>onMounted</code> 经 api 调 identity <code>GET /auth/me</code> 取当前用户概要并渲染三态（未接入 / 成功 / 失败降级）；未注入 api 时自行降级；模块自身版本升 <strong>0.2.0</strong> 并重发布（版本发现：清单 = 产物元数据 = 源码；契约版本 = 2）。</li><li><strong>契约用例工厂扩展</strong>：<code>describeModuleContract</code> 新增请求能力断言（冻结注入探针 api 不抛错、探针五法齐备）。</li><li><strong>本地联调实测</strong>：真实网关下 <code>GET /api/identity/v1/auth/me</code> 未鉴权返回 401（模块调用同一路径）；发布存储 + 宿主 dev 下 0.2.0 产物被加载（无模块加载失败页）；模块独立预览下未注入请求能力按降级文案呈现。</li></ol><p><strong>边界（登记遗留）</strong>：模块经 api 的真实后端<strong>登录态成功路径</strong>浏览器实测（本地未记录 BMS 应用账号，未登录直达模块页被守卫重定向）；<code>api</code> 服务白名单；模块请求观测 / 审计；既有 5 项注入上下文基类化；<code>VITE_AUTH_GUARD=off</code> 骨架屏先存缺陷——均登记阶段计划 §7。</p><p><strong>自动化文件路径</strong>：<code>frontend/packages/core/tests/module-api.spec.ts</code>（能力基类与契约面）；<code>frontend/packages/core/testing/module.ts</code>（契约工厂请求能力断言）；<code>frontend/apps/desktop/tests/module-api.spec.ts</code>（宿主实现整链 + 401 透明）；<code>frontend/apps/desktop/tests/guard-module-isolation.spec.ts</code>（自建 HTTP fixture）；<code>frontend/modules/demo/tests/module-context.spec.ts</code> 与 <code>frontend/modules/sample/tests/module-context.spec.ts</code>（模块经 api 消费与降级）；护栏命令 <code>frontend/scripts/check-module-isolation.mjs</code> 与 <code>frontend/scripts/check-module-manifest.mjs</code>。用例以 Vitest <code>// kiwi_id: 2236</code> 标注。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

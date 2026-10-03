@@ -103,6 +103,7 @@
 | 80 | 2196 | 1 | **阶段六 01_05 登录态依赖真实化与租户解析接线**（`require_auth` 恒定强制 + `AuthContext` + 每请求会话标记校验 20012 + 租户解析接线 + `[session].device_check`；2026-09-26 登记，见 §3.25；2026-09-27 补入本表） | CONFIRMED（2026-09-26 登记） |
 | 81 | 2197 | 1 | **阶段六 02_01 SSO 登录完整链路**（providers 入口清单 / authorize 授权跳转 state+nonce+PKCE / callback 一次性闭环复用会话签发 / 错误码 20051~20056 / org 内部用户概要 / Keycloak E2E；2026-09-27 登记，见 §3.26） | CONFIRMED（2026-09-27 登记） |
 | 82 | 2235 | 1 | **阶段六 04_04 安全专项用例与覆盖率门槛**（七类安全专项集中套件：基座横切〔脱敏泄露响应·日志·导出 / 注入契约边界 / 上传路径穿越 / 限流窗口与键作用域〕+ 认证链路〔登录 IP·账号双维度限流与强制验证码 / 会话伪造·过期·踢出后重放 / 跨租户与跨用户口径 / 登录契约注入边界〕+ 前端 `v-html` 净化护栏〔XSS〕；路径级覆盖率门禁脚本 `check-coverage-threshold.py`（认证 ≥80% 接 CI + `--self-test`）） | CONFIRMED（2026-10-03 登记） |
+| 83 | 2236 | 1 | **阶段六 06_02 模块请求能力 `api` 与契约版本升 2**（`api` 入继承链为能力域基类 `BaseModuleApi`（幂等键口径为宿主实现点）/ 注入上下文新增请求能力并升契约版本 2（旧契约版本模块拒绝加载）/ 隔离护栏新增自建 HTTP 规则（源码面 + 产物面双扫）/ demo·sample 双模块经 `api` 调 identity `/auth/me` 与降级回归（模块版本升 0.2.0 重发布）/ 契约用例工厂覆盖请求能力；2026-10-03 登记） | CONFIRMED（2026-10-03 登记） |
 
 ## 2.1 用例迁移与下线（S5c，2026-09-17） <a id="migration"></a>
 
@@ -480,5 +481,7 @@
 | 后端（2026-10-02，阶段六 `04_02`） | **2225** —— 新增 / 改造的自动化文件以 `@pytest.mark.kiwi_id(2225)` 标注（`libs/bms_core/tests/masking/test_masking_wiring.py` 新增（主体，含声明归一化 / 递归掩码 / 策略解析链 / fail-closed / 全局注入 / `mask_text`）；`libs/bms_core/tests/transfer/test_masking.py`、`libs/bms_core/tests/captcha/test_mask_phone.py` 新增；`libs/bms_core/tests/core/test_logging.py` 增脱敏配置化用例；既有 Kiwi 39 / 63 / 1205 与 09 值对象台账用例仅同步替身签名与私有函数调用，不新增编号）；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-10-02_阶段六04-02_脱敏接入与明文权限口径.json`（含回读 `case_id`） |
 
 | 后端（2026-10-03，阶段六 `04_04`） | **2235** —— 新增的自动化文件以 `@pytest.mark.kiwi_id(2235)` 标注（`libs/bms_core/tests/security/test_security_controls.py`、`services/identity/tests/auth/test_auth_security_special.py` 新建）；前端 `frontend/packages/ui-ep/tests/guard-vhtml-sanitize.spec.ts` 以 `// kiwi_id: 2235` 标注；路径级覆盖率门禁脚本 `scripts/tools/base-check/check-coverage-threshold.py`（`--self-test`）归属同一用例；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-10-03_阶段六04-04_安全专项用例与覆盖率门槛.json`（含回读 `case_id`） |
+
+| 前端（2026-10-03，阶段六 `06_02`） | **2236** —— 新增 / 改造的自动化文件以 `// kiwi_id: 2236` 标注（`packages/core/tests/module-api.spec.ts` 新增〔服务键 + 路径五法编排 / 写方法自动幂等键 / 抽象幂等键实现点 / 未注入适配器占位 / 非法服务键〕；`packages/core/testing/module.ts` 契约用例工厂增请求能力断言；`apps/desktop/tests/module-api.spec.ts` 新增〔整链 / 401 单例刷新透明 / 刷新失败 / 业务失败 / 非法服务键〕；`apps/desktop/tests/guard-module-isolation.spec.ts` 增自建 HTTP fixture；`modules/{demo,sample}/tests/module-context.spec.ts` 增请求能力断言）；契约版本升 2（`module-contract.json` / core 常量 / 产物元数据）与模块 0.2.0 重发布护栏（`check-module-manifest.mjs` / `check-module-isolation.mjs`）同属该用例；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-10-03_阶段六06-02_模块请求能力api与契约版本升2.json`（含回读 `case_id`） |
 
 > 依《文档生成规范》编写 · 测试资产仓库
