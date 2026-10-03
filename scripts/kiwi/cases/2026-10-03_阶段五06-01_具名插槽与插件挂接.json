@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段五 06_01 具名插槽基座功能与前后端配套插件：具名插槽声明与解析（多 Tab / 排序 / 权限显隐 / 显示条件 / 降级）+ 前后端配套约定 + 平台内样例插件全链路（宿主不直连插件 / 未登记不渲染 / 卸载无残留）",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li>前端基座：区域项声明扩展（title / icon / perm / permMode / when）与注册表解析过滤（权限三模式、显示条件、保序、未登记不渲染）；具名插槽命名口径 NAMED_SLOT_ID_PATTERN（{域}.{页面}.{区域}，注册期校验仍 ≥2 段）</li><li>区域插槽件：inline 形态行为不变、tabs 形态多页签（标题取 title、按 order 稳定排序）、空区域与未知区域渲染为空</li><li>宿主侧：用户详情宿主页留具名插槽 sys.user.detail.tabs；平台来源项与模块来源项同槽；宿主页不直连具体插件（护栏扫描）</li><li>样例插件：frontend/modules/slot-sample 经清单远端加载，注册区域项并按权限显隐、经宿主注入 api 调用后端契约</li><li>后端契约：platform 服务 /api/v1/user-extensions（按 user_id 读列表 + 新增 + 更新；10001 / 10002 / 10003 失败分支；sys:user-extension:query / update 权限码）</li><li>降级与残留：插件未加载 / 未启用即插槽项隐藏且宿主页其余正常；装配后卸载插件区域项与路由零残留</li></ol><p><strong>前置</strong>：前端依赖已安装、后端可启动；Kiwi 本用例对应自动化套件已落地。</p><p><strong>步骤</strong>：</p><ol><li>跑前端核心 / 宿主 / 模块用例：<code>pnpm --filter @bms/core test</code>、<code>pnpm --filter @bms/ui-ep test</code>、<code>pnpm --filter @bms/desktop test</code>、<code>pnpm --filter @bms/module-slot-sample test</code></li><li>跑后端用例：<code>uv run pytest services/platform/tests/api/test_user_extensions.py libs/bms_core/tests/services/test_table_registry.py -q</code></li><li>跑门禁：<code>uv run python -m ops.check_tables</code>、<code>uv run python -m ops.contract_snapshot check</code>、<code>uv run python -m ops.check_contracts</code>、<code>scripts/tools/base-check/check-coverage-threshold.py</code></li><li>发布与实跑：<code>pnpm --filter @bms/module-slot-sample build</code> → <code>node frontend/scripts/release-module.mjs publish --module slot-sample</code> → 宿主 dev 加载并走查具名插槽</li></ol><p><strong>预期</strong>：上述用例与门禁全绿；具名插槽按 order 与权限正确渲染、缺失即降级隐藏；卸载后无残留。</p><p><strong>自动化文件</strong>：<code>frontend/packages/core/tests/registries.spec.ts</code>、<code>frontend/packages/ui-ep/tests/module-area-outlet.spec.ts</code>、<code>frontend/apps/desktop/tests/guard-slot-host-isolation.spec.ts</code>、<code>frontend/apps/desktop/tests/module-registration.spec.ts</code>、<code>frontend/modules/slot-sample/tests/*.spec.ts</code>、<code>backend/services/platform/tests/api/test_user_extensions.py</code>；代码内以 Kiwi 编号标注。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
