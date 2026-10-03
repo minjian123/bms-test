@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "05-04 扫码登录前端（四态状态机 / 可插拔状态源 / 过期重取 / 退避 / 换取会话）",
+      "text": "<p><strong>覆盖范围（任务 05_04：扫码登录前端；需求 05-4）</strong></p><ol><li><strong>核心领域纯函数</strong>：可扫码身份源过滤与 src 排序（企业微信 / 钉钉）；指数退避（2s 起、封顶 30s）与终态判定；授权信息与轮询结果归一（未知状态回落 <code>pending</code>、非法 <code>redirect</code> 丢弃）。</li><li><strong>核心能力域基类 <code>BaseSsoQr</code></strong>（沿 <code>BasePlaceholderState</code> 派生）：未注入状态源占位零请求；取址进入待扫；四态流转（<code>scanned</code> / <code>confirmed</code> 含 <code>redirect</code>）；退避与成功复位；连续失败 5 次转 <code>failed</code> 停轮询；到期进入 <code>expired</code> 并<strong>自动重取一次</strong>；轮询回报 <code>expired</code>；可见性暂停 / 恢复；释放幂等。</li><li><strong>状态源插件族与注册表</strong>：<code>BaseSsoQrSource</code>（取授权 URL / 轮询）与 <code>SsoQrSourceRegistry</code>（登记 / 解析 / 注销 / 同键拒重）。</li><li><strong>ui-ep 扫码面板 <code>SsoQrLoginPanel</code></strong>：四态渲染与二维码件 <code>status</code> 映射；可扫码源过滤与多源切换；空清单空态；<code>confirmed</code> / <code>expired</code> / <code>failed</code> / <code>refresh</code> / <code>back</code> 事件；可见性暂停。</li><li><strong>宿主</strong>：<code>fetchSsoAuthorizeInfo</code> 服务段寻址与租户参数 / <code>idpKey</code> 编码；宿主状态源（真实取授权 URL + 占位轮询零请求）；<code>/login/qr</code> 扫码页（可扫码源过滤 / 空态 / 确认完成〔带 <code>redirect</code> 顶层跳转、否则 <code>ensureReady</code> + 站内安全回跳〕/ 返回保留回跳）；登录页第三方入口区按需显示「扫码登录」入口。</li><li><strong>核对页</strong>：<code>sso-qr-check</code> 四组自检全部通过。</li><li><strong>验证</strong>：三包用例（核心 1261 / 件族 917 / 宿主 214）全绿；<code>vue-tsc</code> / ESLint 全绿；<code>api-types</code> 零漂移；核对页自检零失败项。真实平台适配（企微 <code>@wecom/jssdk</code> / 钉钉内嵌登录或后端状态端点）与真实企业凭据 E2E 归阶段十七。</li></ol><p><strong>自动化文件路径</strong>：<code>frontend/packages/core/tests/{sso-qr-domain,sso-qr-capability,sso-qr-source}.spec.ts</code>；<code>frontend/packages/ui-ep/tests/sso-qr-panel.spec.ts</code>；<code>frontend/apps/desktop/tests/{api-sso-authorize,sso-qr-source,sso-qr-view,sso-qr-check,login-view}.spec.ts</code>；代码以 <code>// kiwi_id: &lt;用例号&gt;</code> 标注。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
