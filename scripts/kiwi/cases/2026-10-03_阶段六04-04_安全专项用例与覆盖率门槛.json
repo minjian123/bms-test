@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "04-04 安全专项用例与覆盖率门槛（七类专项集中套件 / 认证模块 ≥80% 接 CI）",
+      "text": "<p><strong>覆盖范围（任务 04_04：安全专项用例与覆盖率门槛；需求 04-4）</strong></p><ol><li><strong>限流爆破</strong>：登录 IP 维度限流（键 <code>bms:{租户主键}:rate:ip:{ip}</code>，命中 429/10005）与账号维度组合、达阈值强制验证码（20101）与成功清零；限流基座窗口过期边界（<code>MemoryRateLimiter</code> 计数器窗口内递增、窗口外重置）。</li><li><strong>脱敏泄露</strong>：响应序列化掩码（含嵌套 / 列表 / fail-closed）、日志脱敏（敏感键 / 后缀 / 连接串 / 深度上限）、导出链路掩码（<code>mask_rows</code> 仅掩声明列、未声明列不掩、空字段短路、空集直接返回）——同一用例内断言「响应 / 日志 / 导出」三条出路无敏感明文。</li><li><strong>会话安全（劫持）</strong>：令牌伪造（<code>mint</code> 畸形票据：缺 <code>jti</code> / 类型不符）拒绝；会话记录 <code>expires_at &lt;= now</code> 路由级 401；强制踢出后旧 refresh 重放 401；会话安全原语（指纹随 ip/ua 变化、黑名单键）。</li><li><strong>越权</strong>：跨租户请求显式不一致拒绝（<code>X-Tenant-ID</code> 与令牌租户不符、跨租户中间件）；<strong>跨用户口径固化</strong>——RBAC 就绪前为平台超管口径（<code>require_permission</code> 为 Null），同租户内凭权限码可列表 / 查看 / 踢出他人会话，归属校验登记为阶段七 RBAC 遗留。</li><li><strong>认证注入</strong>：登录契约边界（空 / 超长 <code>account</code> / <code>password</code> → 校验错误而非 5xx）；注入样本字符串（<code>' OR '1'='1</code> 等）作为账号 → 20002（参数化不穿透）；验证码 <code>kind</code> 非法 10001。</li><li><strong>XSS</strong>：前端 <code>sanitizeHtml</code> 白名单清洗（脚本 / 事件属性 / 危险协议移除）复用；新增 <code>v-html</code> 净化护栏——组件内每个 <code>v-html</code> 必须局部 <code>eslint-disable vue/no-v-html</code> 留痕、<code>eslint</code> 未全局关闭该规则、fixture 反例被拦。</li><li><strong>上传绕过</strong>：存储路径穿越（绝对路径 / <code>..</code> / 空 key → 拒绝）与契约层校验（<code>sha256</code> 非 64 位十六进制、<code>size&lt;=0</code>、<code>part_no&lt;1</code> → 参数错误）；前端类型 / 大小校验复用。</li><li><strong>覆盖率门槛</strong>：新增路径级门禁脚本 <code>scripts/tools/base-check/check-coverage-threshold.py</code>（读 <code>coverage.json</code> 按路径组校验子阈值：认证（identity 整包）与认证（<code>bms_core</code> 横切：<code>api/base.py</code> / <code>session</code> / <code>security</code> / <code>captcha</code> / <code>ratelimit</code> / <code>permission</code> / <code>masking</code> / <code>idp</code> / <code>oauth</code>）均 ≥80%；<code>--self-test</code> 覆盖正常与四类反例（低于阈值 / 无匹配文件 / 空语句 / 部分组缺失））。</li><li><strong>CI 挂接与证据</strong>：<code>backend-test</code> 追加 <code>--cov-report=json:coverage.json</code> 与门禁步骤、<code>coverage.json</code> 作 artifact 归档供域七阶段测试报告引用；失败自动缺陷单沿用既有 <code>defect-capture</code> 机制。</li></ol><p><strong>未覆盖项（登记遗留，归后续安全强化）</strong>：后端 HTML 净化基座（后端无富文本净化被测物）、上传安全控制真实实现（魔数 / 类型白名单 / 大小上限 / 随机存储名）、跨用户越权归属校验（归阶段七 RBAC）。</p><p><strong>自动化文件路径</strong>：<code>backend/libs/bms_core/tests/security/test_security_controls.py</code>（基座横切六类）；<code>backend/services/identity/tests/security/test_auth_security_special.py</code>（认证链路四类）；<code>frontend/packages/ui-ep/tests/guard-vhtml-sanitize.spec.ts</code>（XSS 护栏）；门禁脚本 <code>scripts/tools/base-check/check-coverage-threshold.py</code>（<code>--self-test</code>）。用例以 <code>@pytest.mark.kiwi_id(&lt;用例号&gt;)</code> / <code>// kiwi_id: &lt;用例号&gt;</code> 标注。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
