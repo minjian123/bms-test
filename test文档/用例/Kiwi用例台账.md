@@ -484,4 +484,6 @@
 
 | 前端（2026-10-03，阶段六 `06_02`） | **2236** —— 新增 / 改造的自动化文件以 `// kiwi_id: 2236` 标注（`packages/core/tests/module-api.spec.ts` 新增〔服务键 + 路径五法编排 / 写方法自动幂等键 / 抽象幂等键实现点 / 未注入适配器占位 / 非法服务键〕；`packages/core/testing/module.ts` 契约用例工厂增请求能力断言；`apps/desktop/tests/module-api.spec.ts` 新增〔整链 / 401 单例刷新透明 / 刷新失败 / 业务失败 / 非法服务键〕；`apps/desktop/tests/guard-module-isolation.spec.ts` 增自建 HTTP fixture；`modules/{demo,sample}/tests/module-context.spec.ts` 增请求能力断言）；契约版本升 2（`module-contract.json` / core 常量 / 产物元数据）与模块 0.2.0 重发布护栏（`check-module-manifest.mjs` / `check-module-isolation.mjs`）同属该用例；任务实施与测试记录已回填（含 Kiwi 编号），无孤儿引用；登记输入见 `scripts/kiwi/cases/2026-10-03_阶段六06-02_模块请求能力api与契约版本升2.json`（含回读 `case_id`） |
 
+| 后端 + 前端（2026-10-04，阶段七 `03_01`） | **2242** —— 后端新增 `services/platform/tests/api/test_menu_metadata.py`（六实体 CRUD 与挂接链、40201/40203/40205/40206、`sys.form.updated` 发布）与 `test_my_menu.py`（业务码过滤、按钮/字段标记、hidden 保留、locale 与缺省回退、版本递增与写后缓存失效），均以 `@pytest.mark.kiwi_id(2242)` 标注；测试替身新增 `tests_support/menu_metadata.py`；前端 `apps/desktop/tests/menu-store.spec.ts`、`menu-expanded.spec.ts` 以 `// kiwi_id: 2242` 标注，`packages/ui-ep/tests/side-menu.spec.ts` 增响应式菜单源与 defaultOpeneds / open·close 断言；任务实施与测试记录已回填（含 Kiwi 编号）；登记输入见 `scripts/kiwi/cases/2026-10-04_阶段七03-01_菜单表单按钮字段挂接与动态菜单.json`（含回读 `case_id`） |
+
 > 依《文档生成规范》编写 · 测试资产仓库

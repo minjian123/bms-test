@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段七 03_01 菜单/表单/按钮/字段挂接与动态菜单：权限元数据维护（菜单 / 表单 / 按钮 / 字段 CRUD + 菜单→表单→业务、按钮→动作挂接链校验）+ 动态菜单接口（按已授予菜单 / 表单权限过滤菜单树并下发表单元数据，按钮按动作权限、字段按字段权限标记）+ 元数据缓存版本失效 + sys.form.updated 事件发布 + 前端动态菜单消费（侧栏 / 路由 / 按钮 v-perm / 字段权限 / 菜单展开态持久化）",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li>权限元数据落库：sys_menu / sys_form / sys_button / sys_field / sys_business / sys_action 六表与四张 _i18n 附表（联合主键 主表 ID + locale，缺省回退主表默认文案）；统一归 platform 服务、随 platform:platform 链迁移 0007_menu_metadata 落地</li><li>元数据维护接口：/api/v1/menus、/forms、/buttons、/fields 增改删 + 挂接链完整性校验（菜单 1:1 表单、表单 1:1 业务、按钮 1:1 动作）；失败分支 40201 实体不存在 / 40202 挂接链断裂 / 40203 路径冲突 / 40204 平台码租户不可改 / 40205 字段键重复 / 40206 被引用禁停用</li><li>只读权限码：/api/v1/businesses、/actions 租户侧可见可分配不可增删（business:query / action:query）</li><li>动态菜单接口：GET /api/v1/menus/my 单接口嵌套返回菜单树 + 每菜单表单 + 表单下按钮（按动作权限标记可见）/ 字段（按字段权限标记可见可编辑）+ 当前用户权限码集合；未授予业务码的菜单不可见、挂接链断裂不可见、目录节点按「存在可见子节点」保留、hidden 菜单仍下发（路由可直达）；登录即可访问</li><li>缓存：菜单树与表单元数据按 locale 维度缓存（键 bms:{租户}:menu:{locale}:{version}），写操作事务提交后版本号递增并删除当前语言旧键；TTL 取 sys_config 参数 menu.tree_cache_ttl（默认 300，含随机偏移）</li><li>事件：菜单 / 表单 / 字段 / 按钮变更在同一事务内经发件箱发布 sys.form.updated（载荷 form_id / menu_id / business_id / changed_type）</li><li>前端消费：动态菜单 store（菜单树 + 表单元数据 + 权限码回填，失败降级：生产置空 + 一次提示 / 开发态回退占位）、按动态菜单注册路由与侧边栏（不硬编码路由表）、按钮经 v-perm 按动作权限显隐、字段经 FormRenderer 按字段权限显隐与只读、菜单展开态持久化（localStorage 键 bms_menu_expanded，SideMenu default-openeds + open / close 事件）</li></ol><p><strong>前置</strong>：后端依赖与前端依赖已安装；平台库已迁移且种子已执行（ops/seed_menu.py）；Kiwi 本用例对应自动化套件已落地。</p><p><strong>步骤</strong>：</p><ol><li>跑后端定向用例：<code>uv run pytest services/platform/tests/api/test_menu_metadata.py services/platform/tests/api/test_my_menu.py libs/bms_core/tests/alembic -q</code></li><li>跑前端用例：<code>pnpm --filter @bms/ui-ep test</code>、<code>pnpm --filter @bms/desktop test</code>、<code>pnpm run core:test</code></li><li>跑门禁：<code>uv run python -m ops.check_tables</code>、<code>uv run python -m ops.contract_snapshot check</code>、<code>uv run python -m ops.check_contracts</code>、<code>pnpm run api-types:gen:check</code>、<code>scripts/tools/base-check/check-bare-collections.py</code></li><li>前端实跑：宿主 dev 打开菜单核对页（menu-check.html），走查动态菜单侧栏、按钮显隐、字段权限标记与展开态刷新恢复</li></ol><p><strong>预期</strong>：上述用例与门禁全绿；新增菜单 / 表单 / 按钮 / 字段后免发版生效；未授予菜单不可见、未授予按钮不渲染、字段按权限显隐与只读；挂接链断裂在角色授予时被拦截并提示；业务 / 动作码租户侧只读。</p><p><strong>自动化文件</strong>：<code>backend/services/platform/tests/api/test_menu_metadata.py</code>、<code>backend/services/platform/tests/api/test_my_menu.py</code>、<code>frontend/apps/desktop/tests/menu-store.spec.ts</code>、<code>frontend/apps/desktop/tests/menu-expanded.spec.ts</code>、<code>frontend/packages/ui-ep/tests/side-menu.spec.ts</code>；代码内以 Kiwi 编号标注。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
