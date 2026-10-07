@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段二 12_01 产品注册机制（R4.1）：产品档案 sys_product + 产品级注册清单 PRODUCT_CATALOG + 模块产品归属校验 + 接库双向对账 + 种子幂等",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li>产品档案落库：sys_product（product_key / name / frontend_package_source / status；唯一 (product_key, deleted_at) + 公共软删除索引），随 platform:platform 链迁移 0009_sys_product 落地；表归属登记归 platform / 平台服务库</li><li>产品级注册清单（单一来源 PRODUCT_CATALOG）：三行 biz（enabled）/ cw（enabled）/ mdm（planned，先注册后建表的预登记）；frontend_package_source 本期留空（随 R4.3 前端多包合并回填）</li><li>离线校验：ProductRegistry.validate() 校验产品标识格式 / 名称 / 来源 / 状态合法 + product_key 唯一；ModuleRegistry.validate() 增产品归属校验（产品分组模块的 product_key 须在 PRODUCT_CATALOG 登记，未登记即拒；非产品分组不得带 product_key）</li><li>接库对账（CI ops.check_modules --url）：sys_module 与 sys_product 均做「清单 ↔ 库」双向对账（缺行 / 清单外行 / 字段不符）；冲突即退出码 1，通过退出码 0</li><li>种子幂等（ops.seed_module）：sys_module + sys_product 同脚本按 module_key / product_key 幂等 upsert；首建与重复执行（0 / 0）；既有行仅差异赋值</li><li>只读仓储 ProductRepository：按状态查询与按 product_key 单条查询，软删行不可见，仓储无写方法 / 无会话写调用（注册运行时只读边界）</li><li>模型与迁移：sys_product 可建表落库（SQLite 真库）；平台链 head = 0009_sys_product，链元数据表集与归属登记派生一致，迁移零漂移</li></ol><p><strong>前置</strong>：后端依赖已安装（uv）；平台库已迁移且种子已执行（uv run python -m ops.seed_module）。</p><p><strong>步骤</strong>：</p><ol><li>跑后端定向用例：<code>uv run pytest libs/bms_core/tests/services/test_module_registry.py libs/bms_core/tests/ops/test_module_ops.py libs/bms_core/tests/ops/test_check_modules.py libs/bms_core/tests/services/test_table_registry.py libs/bms_core/tests/alembic services/platform/tests/repositories -q</code></li><li>跑基座与契约门禁：<code>uv run python -m ops.check_modules</code>、<code>uv run python -m ops.check_tables</code>、<code>uv run python -m ops.contract_snapshot check</code>、<code>scripts/tools/base-check/check-base.py</code>、<code>scripts/tools/preflight/check-preflight.py --fast</code></li><li>种子实测：<code>uv run python -m ops.seed_module</code> 首跑新增、重复跑 0 / 0；<code>uv run python -m ops.seed_module --dry-run</code> 输出产品档案清单</li></ol><p><strong>预期</strong>：上述用例与门禁全绿；未登记产品的产品分组模块被拒（启动 / CI 均拒）；产品档案与库表零漂移；产品先注册后建表可用（mdm 预登记不影响平台清单校验）；sys_product 只读访问生效、无写接口。</p><p><strong>自动化文件</strong>：<code>backend/libs/bms_core/tests/services/test_module_registry.py</code>、<code>backend/libs/bms_core/tests/ops/test_module_ops.py</code>、<code>backend/libs/bms_core/tests/ops/test_check_modules.py</code>、<code>backend/libs/bms_core/tests/services/test_table_registry.py</code>、<code>backend/libs/bms_core/tests/alembic/test_alembic_chains.py</code>、<code>backend/services/platform/tests/repositories/test_product_repository.py</code>；代码内以 kiwi_id 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
