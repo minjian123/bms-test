@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2253,
+      "summary": "mdm 阶段一 01_01 mdm 产品工程骨架与平台接入：org 服务经共享基座装配 + 产品服务清单两侧同值 + 配置/迁移/运维/部署/CI + 契约快照",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>工作区与跨仓依赖</strong>：mdm 后端 uv 工作区（成员 <code>services/*</code>）+ 共享基座 <code>bms-core</code> 经 git 源依赖锁定 bms 提交 SHA；<code>uv sync --frozen</code> 可复现安装（venv 落 <code>backend/</code> 以支撑基座工程根定位）</li><li><strong>服务工程骨架</strong>：org 服务包 <code>mdm_org</code>（入口 / 应用工厂 / 分层骨架 / 模型空清单）经共享基座 <code>BaseServiceApplicationFactory</code> 装配；<code>/</code> <code>/healthz</code> <code>/readyz</code> 可用且探针响应服务身份为 <code>org</code>；业务路由经服务级登记表挂 <code>/api/v1</code></li><li><strong>产品服务装配与 org 标识承接</strong>：应用工厂声明 <code>product_key=\"mdm\"</code> 并注入本产品清单；服务目录视图 = 平台清单 + 注入记录（同 <code>module_key</code> 同值去重）；org 四要素（module_key / service_key / table_prefix / event_domain 均为 <code>org</code>）与平台侧登记行逐字段同值</li><li><strong>产品维度 fail-closed</strong>：注入清单非空 / 记录均为产品分组 / 产品归属与声明一致 / 含运行服务登记行——逐项检出即拒启</li><li><strong>清单离线校验</strong>：<code>ops.check_modules</code> 校验注册要素唯一与格式 + 产品维度四条断言 + 两侧同值（异值即拒）+ 服务包契约声明主版本一致；服务工程 ↔ 清单双向核对</li><li><strong>配置分层与库名前缀</strong>：最小差异 <code>config.toml</code>（<code>[database].name_prefix = \"mdm\"</code>）+ 三环境覆盖；库名派生 <code>mdm_org</code> / <code>mdm_org_{租户}</code> / <code>mdm_archive</code>；连接串一律经配置读取</li><li><strong>迁移骨架与运维脚本</strong>：<code>alembic.ini</code> 登记 org 三链配置段与版本目录（本期无脚本 → 跳过不建业务表）；<code>ops.db_admin</code> 建库、<code>ops.migrate</code> 分链迁移（dry-run 列出清单）、<code>ops.contract_snapshot</code> 导出与零漂移</li><li><strong>部署与 CI</strong>：服务镜像（单服务参数化、venv 落工作目录）+ Compose（服务名 <code>org</code>、接入平台网络、平台基础设施不重复编排）；CI 门禁（门禁冒烟 / ruff / pyright / pytest + 覆盖率 / 离线清单 + 契约零漂移）</li><li><strong>公开契约产品侧自持</strong>：<code>deploy/contracts/org.json</code> 快照 + 零漂移检查</li></ol><p><strong>前置</strong>：uv 已安装；bms 侧 11_01（组织服务退役与 org 标识释放）已交付并推送，平台侧 <code>org</code> 登记行已易主为 mdm 产品行。</p><p><strong>步骤</strong>：</p><ol><li><code>cd mdm/backend &amp;&amp; uv sync --frozen</code></li><li><code>uv run python -m ops.check_modules</code>（离线清单 + 产品维度 + 两侧同值 + 服务包声明）</li><li><code>uv run python -m ops.contract_snapshot export &amp;&amp; uv run python -m ops.contract_snapshot check</code></li><li><code>uv run python -m ops.migrate --dry-run</code>（列 <code>mdm_org</code> / <code>mdm_archive</code> 目标；链无脚本）</li><li><code>uv run pytest --cov=mdm_org --cov=services --cov=ops --cov-branch</code>、<code>uv run ruff check .</code>、<code>uv run pyright</code></li></ol><p><strong>预期</strong>：清单校验通过（产品清单 1 项 + 平台侧 16 行同值对账 + 服务包声明）；契约快照与当前公开契约零漂移；迁移 dry-run 清单与库名派生正确（<code>mdm_org</code> / <code>mdm_archive</code>）；服务经共享基座装配可启动（探针 200、服务身份 <code>org</code>）；用例与全部门禁全绿。</p><p><strong>自动化文件</strong>：<code>mdm/backend/services/org/tests/test_service_boot.py</code>、<code>mdm/backend/tests/test_module_catalog.py</code>、<code>mdm/backend/tests/test_config_and_databases.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
