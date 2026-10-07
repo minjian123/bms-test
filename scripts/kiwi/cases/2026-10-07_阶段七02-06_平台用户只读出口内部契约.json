@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段七 02_06 平台用户只读出口内部契约：POST /api/v1/platform/internal/users/query 服务间只读出口（require_service 白名单 org）+ 关键字/状态/限定集合 ids 筛选分页 + 只读契约字段（含 dept_id 可空、联系方式原样返回）+ 契约快照加性变更",
+      "case_id": 2257,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>端点与鉴权</strong>：platform 新增 <code>POST /api/v1/platform/internal/users/query</code>（内部端点、东西向直连不经网关），模块级 <code>require_service(\"org\")</code>——仅接受签发方服务标识为 mdm 组织服务键 <code>org</code> 的有效服务 JWT（<code>aud=service</code>）；其他服务标识 / 用户令牌 / 网关服务票据（<code>sub=gateway</code>）/ 无凭证一律拒（<code>AuthError</code> 20001 / 401）</li><li><strong>筛选</strong>：<code>keyword</code>（账号 / 姓名，大小写不敏感）；<code>status</code>（enabled / disabled，非法取值抛 <code>ParamError</code> 10001）；<code>ids</code> 限定集合（非空时只在该集合内筛选并与关键字 / 状态叠加；空数组视为不限定）；三者与分页 <code>page</code> / <code>size</code>（1~200）同口径</li><li><strong>响应契约</strong>：<code>ApiResponse[BasePageResponse[InternalUserItem]]</code>（<code>{list,total,page,size}</code>）——字段 <code>id</code> / <code>username</code> / <code>name</code> / <code>status</code> / <code>phone</code> / <code>email</code> / <code>dept_id</code>；<strong>不返回</strong>口令哈希、失败计数、锁定字段与密码策略字段；<code>dept_id</code> 当前恒 <code>null</code>（<code>sys_user.dept_id</code> 随需求 07-2 落地后生效）；手机 / 邮箱<strong>原样返回</strong>（脱敏归消费方 mdm 出口）；软删除用户不返回；结果按主键升序</li><li><strong>只读约束</strong>：不写库、不开写事务、不产生审计与事件（<code>sys_outbox</code> 无新增条目）</li><li><strong>契约与门禁</strong>：公开契约快照（<code>deploy/contracts/platform.json</code>）与前端 <code>@bms/api-types</code> 重生成零漂移；<code>ops.contract_gate check</code> 通过（加性变更，基线不动）；<code>pytest</code> / <code>ruff</code> / <code>format</code> / <code>pyright</code>（strict）/ <code>preflight --fast</code> 全绿</li></ol><p><strong>前置</strong>：02_05 用户账号归口平台已交付（<code>sys_user</code> 在 platform 服务租户库，内部端点前缀 <code>/api/v1/platform/internal/*</code>）。</p><p><strong>步骤</strong>：</p><ol><li><code>cd bms/backend &amp;&amp; uv run ruff check . &amp;&amp; uv run ruff format --check . &amp;&amp; uv run pyright</code></li><li><code>uv run pytest services/platform/tests -q</code>（定向用例）</li><li><code>uv run python -m ops.contract_snapshot export &amp;&amp; uv run python -m ops.contract_snapshot check</code>、<code>uv run python -m ops.check_contracts</code>、<code>uv run python -m ops.contract_gate check --service platform</code></li><li><code>node frontend/packages/api-types/scripts/generate.mjs &amp;&amp; ... gen:check</code></li><li><code>python3 scripts/tools/preflight/check-preflight.py --fast</code></li></ol><p><strong>预期</strong>：内部只读出口仅服务身份可入（白名单外拒）；关键字 / 状态 / 限定集合 + 分页筛选正确且与总数同口径；契约字段与需求 07-2 口径一致（<code>dept_id</code> 恒 null、联系方式原样）；无写库与事件副作用；契约快照与前端类型零漂移、基线不变且门禁通过；全部门禁绿。</p><p><strong>自动化文件</strong>：<code>bms/backend/services/platform/tests/</code>（内部端点鉴权 / 筛选 / 分页 / 契约字段）；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
