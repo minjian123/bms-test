@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2251,
+      "summary": "阶段二 12_03 共享基座产品服务装配支持：服务目录注入钩子 + 产品维度校验 + 产品服务经共享基座装配与启动 + 平台服务行为不变",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li>服务目录本地清单注入（应用工厂 service_records() 钩子）：产品服务工厂覆写本产品服务清单后，应用实例的服务目录视图等于「平台清单 + 产品记录」；未覆写钩子的平台服务工厂其视图严格等于 SERVICE_CATALOG（默认视图不变）</li><li>产品维度声明与校验（product_key）：注入记录非空 / 记录均为产品分组 / 记录产品归属与声明一致 / 记录含运行服务登记行——四项断言逐项检出并拒启（CatalogError 40003 + service_catalog_invalid，scope=offline，带明细）</li><li>合并清单唯一性：注入记录与平台记录在 module_key / table_prefix / event_domain / service_key / errcode_segment 上冲突时拒启（逐项给出冲突项）</li><li>产品服务经共享基座装配并启动：假产品服务工厂构造应用，/healthz 与 /readyz 返回 200、探针响应服务名为产品服务身份、业务路由挂 /api/v1、根路由回显服务身份</li><li>接库服务目录对账走合并清单：桩快照返回「平台 + 产品」行时启动通过；产品行缺失 / 字段不符时拒启；运行服务项按注入记录校验（自报契约版本与登记值主版本兼容）</li><li>事件契约校验按合并清单事件域：产品服务自有事件域通过校验；未登记事件域仍拒（既有口径不变）</li><li>视图入口：ModuleRegistry.catalog_records() / event_domains() 与清单一致；list_modules() 筛选语义不变</li><li>依赖分离：共享基座库无对任何服务包的静态依赖，产品服务装配只需 bms-core 与自身包（check-service-boundaries 通过）</li></ol><p><strong>前置</strong>：后端依赖已安装（uv）。</p><p><strong>步骤</strong>：</p><ol><li>跑共享基座定向用例：<code>uv run pytest libs/bms_core/tests/core libs/bms_core/tests/services -q</code></li><li>跑门禁：<code>uv run ruff check .</code>、<code>uv run pyright</code>、<code>python3 scripts/tools/preflight/check-preflight.py --fast</code></li></ol><p><strong>预期</strong>：上述用例与门禁全绿；产品服务经共享基座装配并启动（探针 200）、注入清单与平台清单合并校验生效、产品维度四项断言逐项拒启、合并冲突拒启、接库对账按合并清单执行、事件域按合并清单判定；平台服务装配与校验行为与改动前完全一致。</p><p><strong>自动化文件</strong>：<code>backend/libs/bms_core/tests/core/test_product_service_assembly.py</code>、<code>backend/libs/bms_core/tests/services/test_module_registry.py</code>；代码内以 kiwi_id 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
