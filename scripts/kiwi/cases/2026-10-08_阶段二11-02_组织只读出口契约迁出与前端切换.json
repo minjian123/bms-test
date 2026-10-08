@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段二 11-02 组织只读出口契约迁出与前端切换：组织只读出口契约（bms_core/org）自基座移除（契约 / 装配 / 依赖导出 / 配置项零残留）+ 前端组织选择字段族出口切 mdm 产品命名空间（单一来源 productPrefix('mdm','org')，路径 data-source/{users,posts,dept-tree} 与 resolve-names）+ 响应形态兼容（{list}/{items}/裸数组）+ 部门树一次性返回 + 查询与批量回显分列 + 门禁回归",
+      "case_id": 2262,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>契约迁出（后端）</strong>：组织只读出口契约（用户 / 岗位 / 部门 / 名称回显数据契约与 <code>org_data_source</code> / <code>org_name_resolver</code> 插件基类）自基座 <code>bms_core/org</code> <strong>移除</strong>，由 mdm 组织域提供真实实现（mdm 需求 <code>01-3</code> 交付）；基座装配（插件装配项与空实现模块登记）、公共依赖导出、系统配置项与相关测试期望<strong>同步清理</strong>，无残留引用</li><li><strong>前端切址（单一来源）</strong>：前端组织选择字段族（统一件 / 人员 / 岗位 / 部门树 / 复合弹窗）的组织数据源 <strong>HTTP 默认实现</strong>出口地址切 <strong>mdm 产品命名空间</strong> <code>/api/mdm/v1/org</code>；端点由<strong>寻址契约组装</strong>（<code>productPrefix('产品键','域')</code>）而非字面量拼接——与「产品服务只经产品命名空间暴露、模块 / 页面不自拼前缀」口径一致</li><li><strong>出口路径与语义</strong>：路径切出口口径——用户 <code>/data-source/users</code>、岗位 <code>/data-source/posts</code>、部门树 <code>/data-source/dept-tree</code>、名称回显 <code>/resolve-names</code>；<strong>查询与批量回显分列两个出口</strong>（关键词 / 部门含子级 / 状态 / 分页 与 <code>target</code> + <code>id_in</code> 批量），<strong>部门树一次性返回</strong>（不分页）</li><li><strong>响应形态兼容</strong>：出口统一响应包装（<code>{ code, message, data }</code>）解包后，分页结果为 <code>{ list, total }</code> 或 <code>{ items }</code>、部门树与回显为 <code>{ items }</code> 或裸数组——前端解析<strong>两种形态均可</strong>（切址不因集合字段名差异而破）</li><li><strong>降级与错误</strong>：无 <code>fetch</code> 能力时不请求、返回 <code>undefined</code>；HTTP 非 2xx 与业务码非 0/200 抛组织数据源不可用（错误码 <code>30101</code>）；未登记 / 未注入数据源时组织选择能力为占位（零请求）</li><li><strong>开发核对页</strong>：核对页自检项覆盖「数据源默认端点＝产品命名空间（经寻址契约组装）」与「数据源可替换（默认键 + 自定义登记）」，可本地复跑</li><li><strong>门禁回归</strong>：前端 <code>lint</code> / 类型检查 / 用例全绿、模块隔离扫描零违规、后端 <code>pytest</code> / <code>ruff</code> / <code>pyright</code> 与 <code>preflight --fast</code> 全绿；无「org 服务出口」当前状态残留表述</li></ol><p><strong>前置</strong>：阶段二 <code>11_01</code>（组织服务工程退役与 <code>org</code> 标识释放）已交付；mdm 组织只读出口（mdm 需求 <code>01-3</code>：<code>/org/data-source/{users,posts,dept-tree}</code>、<code>/org/resolve-names</code>、<code>/org/user-roles</code>）已交付并经契约门禁。</p><p><strong>步骤</strong>：</p><ol><li><code>cd bms/frontend &amp;&amp; pnpm --filter @bms/ui-ep run test</code>（组织数据源：默认端点＝<code>/api/mdm/v1/org</code>、四路径与查询参数、分页 / 树 / 回显形态兼容、降级与 <code>30101</code>）</li><li><code>pnpm --filter @bms/core run test</code>（寻址契约：<code>productPrefix('mdm','org')</code> 与产品键登记）</li><li><code>node frontend/scripts/check-module-isolation.mjs</code>（产物面与源码面隔离零违规）</li><li><code>cd bms/backend &amp;&amp; uv run pytest -q</code> + <code>uv run ruff check</code> + <code>uv run pyright</code>（基座清理后全绿；参考实现已移出基座）</li><li><code>python3 scripts/tools/preflight/check-preflight.py --fast</code></li></ol><p><strong>预期</strong>：前端组织选择字段经 mdm 产品命名空间取数（地址由寻址契约组装、四路径与参数口径一致、分页与树 / 回显形态解包正确）；基座内无组织只读出口契约 / 装配 / 配置 / 测试残留；降级与错误口径不变；全部门禁绿。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/ui-ep/tests/field-org-select.spec.ts</code>（HTTP 数据源：端点 / 路径 / 参数 / 形态兼容 / 降级）、<code>bms/frontend/apps/desktop/src/dev/OrgCheck.vue</code>（自检项）；用例名或注释标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
