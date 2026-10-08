@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2267,
+    "summary": "阶段七 02_03 追加子任务：角色码可改与内置判定脱钩——内置判定改按 sys_role.role_type 列、role.protected_codes 常量与参数退役、角色码放开可改（含内置）、role_type 不可改、全局 BaseSchema 严格（未知字段即拒）、前端类型展示与原型同步"
+  }
+]
