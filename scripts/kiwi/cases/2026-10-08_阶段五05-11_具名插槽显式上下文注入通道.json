@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段五 05-11 具名插槽显式上下文注入通道：宿主页经插槽件注入只读上下文（非路由承载页）+ 区域项组件经注入通道只读取得 + 未注入即降级（不渲染/不请求）+ 宿主不直连插件 + 角色分配页签留槽并注入 roleId",
+      "case_id": 2260,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>显式上下文注入</strong>：宿主页放置具名插槽时可声明<strong>上下文对象</strong>（如角色 id / 业务实体标识）；<strong>区域项组件经注入通道以只读方式取得</strong>，宿主页与插件之间<strong>不新增直接依赖</strong>（宿主不 import 插件、插件不 import 宿主页）</li><li><strong>只读约束</strong>：注入的上下文为<strong>只读</strong>（冻结 / 只读引用），插件侧改动不生效且不抛错；上下文键未提供时以 <code>undefined</code> 呈现</li><li><strong>降级</strong>：上下文缺失（未注入 / 键缺失）时插件<strong>自行降级</strong>——不渲染或不发起请求、不假定存在；缺上下文<strong>不阻塞宿主页其余部分</strong></li><li><strong>与路由通道并存</strong>：既有「路由参数」通道（<code>sys.user.detail.tabs</code> 口径）<strong>不受影响</strong>；插件可消费两通道之一或并存</li><li><strong>宿主页留槽（首个非路由消费方）</strong>：角色记录页「角色分配」页签以具名插槽 <code>sys.role.detail.assign</code> 提供挂接位，并注入当前角色 id；插件缺失 / 未注册 / 无权限时该项不渲染，宿主页其余正常</li><li><strong>契约与护栏</strong>：通道按<strong>向后兼容新增</strong>承载（不递增模块契约版本），沿统一注册与契约测试；护栏断言「未注入上下文不渲染 / 不请求」「宿主不直连插件」；区域项声明字段与注册表基座不变（不新造注册表）</li><li><strong>文档回写</strong>：架构 35「区域声明 / 具名插槽」节、架构 10 §9、组件设计（模块区域插槽件）、知识档案《微前端 · 业务模块接入指南》「上下文与数据通路」节、bms 阶段七 <code>01_01</code> 的「未就绪按降级」登记回写为「已就绪」</li></ol><p><strong>前置</strong>：阶段五 <code>06_01</code>（具名插槽基座与区域插槽件 / <code>useModuleArea</code> 投影）已交付；消费方为 mdm 组织域「岗位分配 / 部门分配」插件（mdm 需求 <code>01-4</code>）。</p><p><strong>步骤</strong>：</p><ol><li><code>pnpm --filter @bms/ui-ep run test</code>（插槽件：注入上下文可被区域项取得 / 无上下文不注入 / 只读 / <code>inline</code> 与 <code>tabs</code> 两形态一致）</li><li><code>pnpm --filter @bms/desktop run test</code>（宿主页：角色分配页签留槽 + 注入 <code>roleId</code>；用户详情页路由通道不受影响；护栏「宿主不直连插件」）</li><li><code>pnpm --filter @bms/core run test</code>（区域声明与注册表：字段零变化，上下文非注册声明面）</li><li><code>node frontend/scripts/check-module-isolation.mjs</code>（模块侧隔离零违规）</li><li><code>python3 bms/scripts/tools/preflight/check-preflight.py --fast</code></li></ol><p><strong>预期</strong>：非路由承载宿主页可经具名插槽向区域项注入只读上下文；插件缺失上下文即降级、不请求、不阻塞宿主；既有路由参数通道零回归；角色分配页签可挂 mdm 岗位 / 部门分配插件（缺插件时页签内容为空且不报错）；相关文档口径与实现一致；全部门禁绿。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/ui-ep/tests/</code>（插槽件与上下文通道，按既有工程落点）、<code>bms/frontend/apps/desktop/tests/</code>（宿主页留槽与注入 / 护栏）；用例名或注释标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
