@@ -1,0 +1,10 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "07 02-04 主体链权限计算引擎：主体链并集（直接角色 ∪ mdm 岗位/部门链，降级与严格模式）+ 权限聚合（菜单/表单→业务码、动作→业务码:动作码）+ 统一权限快照与租户版本失效 + 两级校验（豁免/码集/校验链，未预加载从严拒）+ 字段权限静态收窄 + 数据范围四策略（越界即拒、写校验）+ 内部失效端点 + 动态菜单字段标记接入",
+      "case_id": 2269,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>主体链并集</strong>：直接角色（<code>sys_user_role</code>）∪ 岗位/部门链角色（mdm 只读出口 <code>/api/v1/org/user-roles</code>，带服务令牌）去重合并；跨服务不可达按<strong>降级</strong>（仅直接角色生效并上报），<code>require_org_roles</code> 严格模式抛 <code>10002</code></li><li><strong>权限聚合（两段解析）</strong>：菜单授权连带其表单业务码、表单授权取业务码、动作授权经快照按钮元数据解析为 <code>业务码:动作码</code></li><li><strong>统一权限快照与缓存</strong>：快照 = 码集合 + 数据范围规则 + 字段权限收窄 + <code>tier</code>/<code>profile</code>；缓存键含租户权限版本，租户版本 +1 即整体失效（并发写不改 key、不 <code>DEL</code>）</li><li><strong>两级校验</strong>：<code>check</code> 同步判定 = 豁免层级（超管/系统管理员）→ 码集命中 → 校验链全通过；<strong>未预加载从严拒绝</strong>（提示依赖漏挂）；校验链为显式接缝（登记即生效）</li><li><strong>字段权限</strong>：<code>sys_role_field</code> 静态收窄、默认全开、多角色<strong>从严合并</strong>；动态菜单字段标记与写拒绝共用同一快照字段态</li><li><strong>数据范围四策略</strong>：<code>select</code>/<code>region</code>/<code>match</code>/<code>extension</code> 经策略注册表求值（核心不判策略类型）；同字段并集合并、跨维度合取；越界（区间起止倒置、通配符越界）与未注册一律退化为永假（该条不产生放行）；读注入 + 服务层写校验双向</li><li><strong>失效通道</strong>：内部端点 <code>POST /api/v1/platform/internal/permissions/invalidate</code>（<code>require_service(\"org\")</code>），mdm 角色/岗位/部门变更后即时生效</li><li><strong>文档与回归</strong>：后端全量 2104 例通过；契约快照同步；详设/表文件/概设/需求口径回写</li></ol>"
+    }
+  ]
+}
