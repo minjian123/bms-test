@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2268,
+    "summary": "mdm 阶段一 02-01 部门编码与岗位码可改：org_dept 增部门编码（必填 / 租户内唯一 / 格式约束 / 可改）+ 迁移 0003_dept_code 存量回填 + 岗位码放开可改 + 出口与管理面契约带 code + mdm 前端与原型 + bms 部门树展示编码"
+  }
+]
