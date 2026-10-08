@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段二 11-03 门禁回归与阶段收口（域十一组织服务退役收口）：服务目录 / 网关配置 / 契约快照 / 契约实现一致性 / 事件契约 / 前端 api-types 六项零漂移 + 本地预检全绿 + pytest/ruff/pyright 全绿 + 文档口径一致（无「org 服务」当前状态残留）+ 阶段二计划两表回写（域十一整域收口）",
+      "case_id": 2263,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>服务目录零漂移</strong>：服务目录清单（平台服务 8 + 产品服务行）唯一、四要素齐备、与服务包声明一致；产品维度 fail-closed 校验通过（`ops.check_modules`，离线与接库两口径）</li><li><strong>网关配置零漂移</strong>：网关声明式配置与服务目录一致、服务发现无硬编码 IP、**无 org 服务级路由残留**（`ops.gateway_config check`）</li><li><strong>契约零漂移**：公开契约快照与实现一致（8 个启用服务）、实现路由全部进入公开契约且不可见路由均在白名单（`ops.contract_snapshot check` + `ops.check_contracts`）</li><li><strong>事件契约零漂移</strong>：事件契约条数与订阅数快照一致且向后兼容（`ops.event_contracts check`）</li><li><strong>前端类型零漂移</strong>：8 份服务契约生成类型与契约快照一致（`@bms/api-types` 的 `gen:check`）</li><li><strong>本地预检全绿</strong>：`preflight --fast` 全部通过（含基座校验 / 基类清单继承链 / 环境变量模板 / 覆盖率阈值 / 契约 / 事件 / 网关 / 服务目录）</li><li><strong>测试与静态检查全绿</strong>：后端 `pytest` 全量（通过 / 跳过口径）、`ruff check` + `ruff format --check`、`pyright` 0 错误</li><li><strong>文档口径一致（无「org 服务」当前状态残留）</strong>：架构设计（总体架构 / 后端基础类体系 / 接口与集成 / 权限计算引擎 / 部署与运维）、后端开发规范、后端基类清单、数据库设计总览与组织表文件、阶段二需求与计划——逐份核对「当前状态」表述；**历史实施 / 测试记录不回溯**（只回写 live 文档）</li><li><strong>阶段计划两表回写</strong>：域十一三子任务状态与完成日期回写（进度只在阶段计划表承载，嵌套子任务并入父任务行）</li></ol><p><strong>自动化面</strong>：本任务为<strong>收口任务</strong>，不新增自动化用例；以<strong>既有门禁工具</strong>（服务目录 / 网关配置 / 契约快照 / 契约实现一致性 / 事件契约 / 前端类型生成检查 / 预检脚本）与既有收口断言用例（阶段测试报告归档与门禁表自洽断言）为自动化证据面，逐项留结论与原始输出。</p><p><strong>步骤</strong>：</p><ol><li><code>cd bms/backend &amp;&amp; uv run python -m ops.check_modules --offline</code> / <code>uv run python -m ops.gateway_config check</code> / <code>uv run python -m ops.contract_snapshot check</code> / <code>uv run python -m ops.check_contracts</code> / <code>uv run python -m ops.event_contracts check</code></li><li><code>cd bms/frontend &amp;&amp; pnpm --filter @bms/api-types run gen:check</code></li><li><code>cd bms &amp;&amp; python3 scripts/tools/preflight/check-preflight.py --fast</code></li><li><code>cd bms/backend &amp;&amp; uv run pytest -q &amp;&amp; uv run ruff check . &amp;&amp; uv run ruff format --check . &amp;&amp; uv run pyright</code></li><li>文档口径核对（逐份 grep「org 服务」当前状态表述并按实现回写）</li></ol><p><strong>预期</strong>：六项零漂移门禁全绿、预检全绿、后端测试与静态检查全绿；文档无「org 服务」当前状态残留（历史记录不改）；阶段二计划表状态与任务实际一致，域十一整域收口。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
