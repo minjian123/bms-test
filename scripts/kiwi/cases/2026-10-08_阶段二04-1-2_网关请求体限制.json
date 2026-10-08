@@ -1,0 +1,16 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段二 04-1-2 网关请求体限制：边缘 nginx 请求体上限变量化声明（GATEWAY_MAX_BODY_SIZE 缺省 32m）+ APISIX 全局请求体限制同值（纵深防御）+ 与文件上传 20MB / 分片口径对齐（≥ 整包上限）+ 超限拒绝口径一致（413）+ 三方一致机器校验（网关配置校验扩展断言）+ 分片上传不受影响（分片单片 ≤ 整包上限时天然满足）+ 真机实测随部署联调",
+      "case_id": 2264,
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>边缘请求体上限（声明式）</strong>：边缘 nginx 模板配置请求体上限，且<strong>经环境变量注入</strong>（`GATEWAY_MAX_BODY_SIZE`，缺省 32m）而非硬编码——按环境可调、声明式入 Git、随容器重启生效</li><li><strong>APISIX 侧纵深防御</strong>：APISIX 启动配置（`deploy/gateway/config.yaml` 的 `nginx_config`）配置<strong>同值</strong>请求体限制；超限仍由<strong>边缘先拒</strong>（nginx 413），两侧拒绝口径一致（413 Request Entity Too Large）</li><li><strong>与文件上传口径对齐</strong>：上限 ≥ 文件上传整包上限（`file.upload.max_size` = 20MB = 20971520 字节）；>20MB 走分片上传，单片字节数不超过整包上限时**分片天然不受网关限制影响**（分片单片值由文件管理阶段初始化接口下发）</li><li><strong>三方一致机器校验</strong>：网关配置校验（`ops.gateway_config check`）扩展断言——① nginx 模板请求体上限为**变量化**声明（不得硬编码）；② compose 环境变量缺省值与 APISIX 配置**同值**；③ 该值解析为字节数后 ≥ 整包上限（20MB）；任一不满足即退出码非 0（纳入预检与 CI）</li><li><strong>超限拒绝口径一致</strong>：请求体超限返回 413（边缘 nginx），不落在 500/502；错误语义为「请求体过大」且可被前端识别（上传前本地校验兜底 + 服务端 413 兜底）</li><li><strong>实测</strong>：真机（网关栈：nginx + APISIX）实测「超限被拒（413）+ 分片上传不受影响」——<strong>本机无容器运行时，登记为部署联调随行</strong>（与 mdm 联调同批；证据补入 04-1-2 测试记录）</li></ol><p><strong>前置</strong>：04_01 网关骨架（nginx 模板渲染 + APISIX standalone 文件驱动）已交付；文件上传口径见《架构设计 · 文件管理》「≤20MB 整包 / >20MB 分片」与《概要设计 · 系统参数》`file.upload.max_size`。</p><p><strong>步骤</strong>：</p><ol><li><code>cd bms/backend &amp;&amp; uv run pytest -q libs/bms_core/tests/ops/test_gateway_config.py</code>（新增用例：变量化声明 / 三方同值 / ≥ 20MB 对齐 / 违规即失败）</li><li><code>uv run python -m ops.gateway_config check</code>（仓库内三方一致）</li><li><code>python3 scripts/tools/preflight/check-preflight.py --fast</code>（含网关配置校验）</li><li><code>uv run pytest -q libs/bms_core/tests</code> + <code>ruff</code> / <code>format</code> / <code>pyright</code></li><li>真机（部署联调）：<code>docker compose -f compose/gateway.yml up -d</code> → 超限请求（&gt;32m）返回 <strong>413</strong>；≤20MB 整包上传通过；&gt;20MB 分片（单片 ≤ 20MB）逐片通过</li></ol><p><strong>预期</strong>：边缘与 APISIX 请求体限制配置就位且同值、与文件上传口径对齐（≥20MB）；超限统一 413；三方一致校验可机器复跑；分片上传不受影响（真机证据随部署联调补入）；全部门禁绿。</p><p><strong>自动化文件</strong>：<code>bms/backend/ops/gateway_config.py</code>（三方一致校验断言）、<code>bms/backend/libs/bms_core/tests/ops/test_gateway_config.py</code>（新增用例，标注本用例编号）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
