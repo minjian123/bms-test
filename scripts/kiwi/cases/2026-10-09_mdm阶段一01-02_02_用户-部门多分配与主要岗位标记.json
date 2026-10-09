@@ -1,0 +1,25 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "mdm 阶段一 01-02-02 用户-部门多分配（后端）：org_user_dept 多分配与主要部门 / org_user_post 主要岗位 + 全量覆盖 diff（含主要项悬空清理）+ 单条解绑 + 独立置位端点（同事务互斥置位、置位未分配项 330113）+ 上限 330112 + org.user_dept.changed 事件（assigned / unassigned / primary）+ OrgUser 去 dept_id 与迁移 0004 升降级往返",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>用户-部门多分配四端点</strong>：<code>GET /api/v1/org/user-depts/{user_id}</code>（含 <code>primary_dept_id</code>）、<code>PUT /api/v1/org/user-depts/{user_id}</code>（全量覆盖、diff 后增删单事务）、<code>DELETE /api/v1/org/user-depts/{user_id}/{dept_id}</code>（单条解绑）、<code>PUT /api/v1/org/user-depts/{user_id}/primary</code>（<code>dept_id</code> 传 <code>null</code> 即清除）</li><li><strong>全量覆盖语义</strong>：目标集合与既有集合 diff —— 新增项建关联并发 <code>assigned</code>；被移除项软删除并发 <code>unassigned</code>；<strong>被移除项若为主要项则同事务清空标记</strong>（不留悬空主要项，且只发 <code>unassigned</code>、不额外发 <code>primary</code>）；重复提交同一集合幂等无副作用</li><li><strong>主要项互斥置位</strong>：置位 B 后 A 自动取消（同事务先清既有主要项再置位目标项）；同一项重复置位幂等；置位目标<strong>不在</strong>该用户已分配集合内 ⇒ <code>330113</code>；跨用户互不影响；并发两次置位最终至多一个主要项</li><li><strong>上限与不存在</strong>：单用户部门数超上限 ⇒ <code>330112</code>（系统参数可调）；目标部门不存在 ⇒ <code>330051</code>；解绑不存在的关联 ⇒ <code>330111</code>（404）</li><li><strong>主要岗位（用户侧）</strong>：<code>PUT /api/v1/org/user-posts/{user_id}/primary</code>（<code>post_id</code> 传 <code>null</code> 清除）；<code>UserPostIds</code> / <code>UserDeptIds</code> 带 <code>primary_post_id</code> / <code>primary_dept_id</code>（未设置为空）</li><li><strong>事件与缓存</strong>：新增 <code>org.user_dept.changed</code>；既有 <code>org.user_post.changed</code> 与新增事件的 <code>changed_type</code> 扩取值 <code>primary</code>；分配 / 解绑 / 主要项变更均按既有口径推进 <code>user-roles</code> 缓存的<strong>租户级失效代</strong></li><li><strong>用户删除清理</strong>：消费 <code>sys.user.deleted</code> 清理该用户全部部门关联（幂等，重复消费为 0 条）</li><li><strong>结构变更</strong>：<code>org_user_dept</code> / <code>org_user_post</code> 各增 <code>is_primary</code>（BOOL NOT NULL 默认假）；<code>OrgUser</code> <strong>去 <code>dept_id</code></strong>（部门归属改由 <code>org_user_dept</code> 表达）；迁移 <code>0004</code> 升降级往返可执行</li><li><strong>部门链解析口径</strong>：<code>user-roles</code> 部门链改用<strong>全部已分配部门</strong>（精确匹配、不含子树）；<strong>主要项不参与角色解析</strong></li><li><strong>文档与门禁</strong>：数据库设计表文件与总览登记一致；公开契约 / 事件契约快照零漂移；<code>ruff</code> / <code>pyright</code> / <code>pytest</code> 全绿</li></ol><p><strong>自动化文件</strong>：<code>mdm/backend/services/org/tests/assignment/test_user_depts.py</code>（标 <code>@pytest.mark.kiwi_id</code>）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "mdm 阶段一 01-02-02 用户-部门多分配（前端）：契约类型重生成后补 5 个服务层端点 + 四具名插槽插件（用户分配岗位 / 用户分配部门 / 岗位分配 / 部门分配）改动进草稿 + 经插槽上下文 registerSubmitter 跟随宿主保存（无通道自提交兜底）+ 主要项单选列 + 去「操作（解绑）」列 + 契约管理面端点防漏接与模块定义断言",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>契约类型与服务层</strong>：<code>@mdm/api-types</code> 重生成后补齐 <code>user-depts</code> 四端点与 <code>PUT .../primary</code> 两置位端点共 <strong>5 个服务层函数</strong>；契约管理面端点<strong>防漏接</strong>用例（直读后端契约快照 + 显式驱动全部服务函数）零缺失</li><li><strong>四具名插槽插件</strong>：用户分配岗位（<code>sys.user.detail.tabs</code>，order 20）/ <strong>新增</strong>用户分配部门（同槽，order 30，部门树精确匹配 + 主要部门单选）/ 角色侧岗位分配与部门分配（<code>sys.role.detail.assign</code>，order 20 / 30）；键位、挂接位、<code>org:update</code> 权限码与 <code>module-definition</code> 断言一致</li><li><strong>草稿与跟随宿主保存</strong>：弹窗内勾选与主要项选择<strong>只进草稿</strong>（不立即请求，未提交前不写库）；宿主提供 <code>registerSubmitter</code> 通道时登记 <code>{ submit, isDirty }</code> ⇒ 由宿主记录页签「保存」统一提交、未保存时显示脏标记；<strong>无通道</strong>时「确定」即自提交兜底（提示当前页无统一保存通道）</li><li><strong>提交器内两步</strong>：全量覆盖 <code>PUT /user-posts|user-depts/{uid}</code> → 主要项 <code>PUT .../primary</code> 置位 / 清除；两者均幂等，任一失败整单失败并保留草稿供重试</li><li><strong>列表与交互相应变更</strong>：<strong>去「操作（解绑）」列</strong>（移除分配＝弹窗内取消勾选后提交）；「主要」列单选；已分配列表名称 / 编码回显（岗位经 <code>GET /posts</code>、部门经 <code>GET /depts</code> 建索引）</li><li><strong>上下文通道</strong>：作用实体标识经<strong>显式上下文注入</strong> <code>useModuleSlotField('userId' | 'roleId')</code> 取得，<strong>路由参数兜底</strong>；未注入即降级（不请求、给出「当前页面未提供实体标识」提示）</li><li><strong>降级与权限</strong>：请求能力未注入 ⇒ 哨兵错误降级为「未接入」提示；无 <code>org:update</code> ⇒ 分配入口与提交按钮隐藏并给出提示</li><li><strong>门禁</strong>：<code>vue-tsc</code> / <code>eslint --max-warnings 0</code> / <code>vitest</code> / <code>api-types gen:check</code> 零漂移 / 模块隔离产物面零违规</li></ol><p><strong>自动化文件</strong>：<code>mdm/frontend/modules/org/tests/{slots,module-definition,contract-alignment}.spec.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

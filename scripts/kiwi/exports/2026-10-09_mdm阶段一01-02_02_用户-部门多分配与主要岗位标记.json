@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2272,
+    "summary": "mdm 阶段一 01-02-02 用户-部门多分配（后端）：org_user_dept 多分配与主要部门 / org_user_post 主要岗位 + 全量覆盖 diff（含主要项悬空清理）+ 单条解绑 + 独立置位端点（同事务互斥置位、置位未分配项 330113）+ 上限 330112 + org.user_dept.changed 事件（assigned / unassigned / primary）+ OrgUser 去 dept_id 与迁移 0004 升降级往返"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2273,
+    "summary": "mdm 阶段一 01-02-02 用户-部门多分配（前端）：契约类型重生成后补 5 个服务层端点 + 四具名插槽插件（用户分配岗位 / 用户分配部门 / 岗位分配 / 部门分配）改动进草稿 + 经插槽上下文 registerSubmitter 跟随宿主保存（无通道自提交兜底）+ 主要项单选列 + 去「操作（解绑）」列 + 契约管理面端点防漏接与模块定义断言"
+  }
+]
