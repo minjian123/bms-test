@@ -1,0 +1,10 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "case_id": 2275,
+      "summary": "07 02-01-01 平台用户只读出口字段收口：POST /api/v1/platform/internal/users/query 响应移除 dept_id（用户-部门关系归 mdm）+ 契约快照/前端类型/契约基线零漂移 + mdm 消费方同批切换",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>响应字段移除</strong>：<code>POST /api/v1/platform/internal/users/query</code> 的 <code>InternalUserItem</code> 移除 <code>dept_id</code>（该字段<strong>从未落库、恒 <code>null</code></strong>；用户-部门关系整体归 mdm <code>org_user_dept</code>，需求 07-11）——<strong>破坏性变更</strong>（契约门禁 oasdiff「只加不删」）：重生成 <code>deploy/contracts/platform.json</code> 与前端 <code>@bms/api-types</code>，并执行 <code>ops.contract_gate baseline-update --service platform</code> 把新契约作为基线（内部端点 <code>require_service(\"org\")</code>、不经网关，消费方白名单仅 mdm）</li><li><strong>入参不变</strong>：<code>keyword</code> / <code>status</code> / <code>ids</code>（限定集合）/ <code>page</code> / <code>size</code> 保持原口径（本就不含 <code>dept_id</code>，无入参变更）</li><li><strong>其余字段口径不回退</strong>：<code>id</code>（雪花 id 按字符串序列化）/ <code>username</code> / <code>name</code> / <code>status</code> / <code>phone</code>（原样，脱敏归消费方）/ <code>email</code>（同）；<strong>不含</strong>口令哈希 / 失败计数 / 锁定字段 / 策略字段</li><li><strong>鉴权与只读语义不变</strong>：仅 <code>sub=org</code> 服务票据（<code>identity</code> / 网关票据 / 未知票据 / 无凭证一律 401）；只读——不写库、不开写事务、不产事件</li><li><strong>消费方同批切换（跨仓）</strong>：mdm 组织只读出口 <code>user_source.py</code> 的 <code>_ITEM_COLUMNS</code> 仅 <code>{id, username, name, status}</code> 且 <code>_to_user()</code> 不读该字段（mdm <code>01_02/_02</code> 同批交付）；mdm 用例断言 <code>\"dept_id\" not in user_items[0]</code>；前端类型产物重生成后零漂移</li><li><strong>门禁</strong>：定向用例（<code>services/platform/tests/users</code>）+ <code>ruff</code> / <code>format</code> / <code>pyright</code>（strict）+ <code>ops.contract_snapshot check</code> / <code>ops.check_contracts</code> + <code>api-types gen:check</code> + <code>preflight --fast</code> 全绿；无迁移（<code>sys_user</code> 无 <code>dept_id</code> 列）</li></ol>"
+    }
+  ]
+}
