@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "mdm 阶段一 01-02-03 组织域内部写端点（宿主编排通道）：服务身份白名单（require_service platform）内部写通道 4 组全量覆盖 + 主要项 + 幂等键回放 + 审计与校验不放松 + XA 分支参与方（挂基座分支端点 + 四 op 只调已有服务层，provider=null 时明确拒绝）+ 公开契约快照与 @mdm/api-types 零漂移",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>内部写通道 4 组</strong>：<code>PUT /api/v1/org/internal/user-posts/{user_id}</code>、<code>/internal/user-depts/{user_id}</code>、<code>/internal/role-posts/{role_id}</code>、<code>/internal/role-depts/{role_id}</code>——全量覆盖 + 主要项（用户侧）两段提交，**复用同一套服务层**（校验 / 事务 / 事件 / 失效代 / 审计一律同公开面，不因「内部」放松）</li><li><strong>鉴权</strong>：服务身份 <code>platform</code>（服务 JWT，签发方在调用方白名单内）放行；登录态令牌拒绝（<code>10010</code> / 401）；非白名单服务身份拒绝（<code>20001</code> / 401）；内部端点**不挂 <code>org:*</code> 权限码**（与只读出口双通道同构，无旁路）</li><li><strong>幂等</strong>：接受 <code>Idempotency-Key</code>（宿主编排生成的同一业务幂等键，按租户归一）；同键重复提交**返回同结果**（载荷回放，不重复写入）</li><li><strong>校验与返回</strong>：上限 <code>330112</code>、目标不存在 <code>330051</code>、主要项置位未分配 <code>330113</code>；响应回**生效后**集合与主要项（供编排比对）；角色侧不接受主要项字段（传了即参数错误）</li><li><strong>XA 分支参与方</strong>：<code>org</code> 服务挂基座分支端点（<code>POST /api/v1/txn/branches</code>：调用方服务身份 + <code>{xid, db_key, op, args}</code>；<code>commit</code> / <code>rollback</code> / 状态 / 悬挂列举＝<code>require_service(\"txn\")</code>）；<code>app.state.branch_handlers</code> 登记四 <code>op</code>（<code>org.user-posts.assign</code> / <code>org.user-depts.assign</code> / <code>org.role-posts.assign</code> / <code>org.role-depts.assign</code>），每个处理器**只调本域已有服务层方法**（不复制业务逻辑）；<code>[transaction_manager].provider</code> 缺省 <code>null</code> ⇒ 协议动作**明确拒绝</code>（<code>10013</code> / 503），不静默降级</li><li><strong>恢复原语</strong>：失败＝**幂等重放**（TM 重驱动分支）；**禁止手工改数据**（废除「快照回滚 + 落待人工」措辞）</li><li><strong>口径删除</strong>：基线快照读端点与收敛版本（<code>org:assign:applied:{tenant}</code>）**不实施**（强一致专项已就绪，属废路径）</li><li><strong>契约与门禁</strong>：内部路径**进**公开契约快照与 <code>@mdm/api-types</code>（消费方为 bms 后端编排，不进产品前端可见面）；快照零漂移；<code>pytest</code> / <code>ruff</code> / <code>pyright</code> 全绿</li></ol><p><strong>自动化文件</strong>：<code>mdm/backend/services/org/tests/internal/</code>（内部写 / 鉴权 / 幂等 / 分支参与方）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
