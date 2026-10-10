@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2274,
+    "summary": "mdm 阶段一 01-02-03 组织域内部写端点（宿主编排通道）：服务身份白名单（require_service platform）内部写通道 4 组全量覆盖 + 主要项 + 幂等键回放 + 审计与校验不放松 + XA 分支参与方（挂基座分支端点 + 四 op 只调已有服务层，provider=null 时明确拒绝）+ 公开契约快照与 @mdm/api-types 零漂移"
+  }
+]
