@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2286,
+    "summary": "02 11 系统字段 form_key 落表：字典表补 form_key（多表联合判别列）+ parent_id、标识列 DB 名改 code（ORM 属性与契约字段名保持）、明细表补 parent_id；表文件 / 模型 / 迁移零漂移 + form_key 构建期清单（跨表全局唯一）+ 基座校验（check-system-fields / ops.check_tables）"
+  }
+]
