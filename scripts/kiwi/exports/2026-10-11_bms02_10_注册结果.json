@@ -1,0 +1,20 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2287,
+    "summary": "02 10 统一数据源注册：DataSourceRegistry（data_source_key / 名称 / 类型 kind（dict / form）/ 数据出口 / 字段白名单 / 级联 / 可用策略 / 状态）+ 构建期清单 DATA_SOURCE_CATALOG（覆盖 bms 侧全部 form_key + 跨项目示例）+ 离线校验 + form_key → data_source_key 回填闭合"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2288,
+    "summary": "02 10 通用数据接口三层：BaseGenericDataSource（基础，所有表：取数 / 版本比对 / 缓存 / 批量）← BaseFormDataSource / BaseDictDataSource（后两者继承基础、只声明差异）+ 通用条目 DataSourceItem + 出口映射 + 字典可直用 / 可继承实现类 DictTableDataSource"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2289,
+    "summary": "02 10 命名重构与迁移：dict_key → data_source_key 全链收口（DB 列 / ORM / 契约字段）+ 插件键 dict_source → data_source + 族符号顺延改名 + sys_data_scope / sys_query_scheme 列改名迁移（0016，含唯一约束更名）"
+  }
+]
