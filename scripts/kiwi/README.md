@@ -44,10 +44,10 @@ python3 scripts/kiwi/export_cases.py --reconcile --code-root ../bms/backend
 | 目录 | 内容 | 说明 |
 | --- | --- | --- |
 | `cases/` | 每批登记的**输入文件**（`<日期>_<任务>_<名称>.json`） | 幂等重跑与复核用（平台按 `summary` 去重，重跑只会跳过）；文件内附平台回读的 `case_id` |
-| `exports/` | 平台快照（`<日期>_策展用例快照.json`） | 对账与台账取证，口径见 [exports/README.md](exports/README.md) |
+| `exports/` | 平台快照（`<日期>_策展用例快照.json`） | 对账取证，口径见 [exports/README.md](exports/README.md) |
 | `examples/` | 输入模板 | 不含真实数据 |
 
-临时转储写 `test/temp/`（已 gitignore）；入库的只有 `cases/` 与 `exports/`。批次台账与对账结论记在《[Kiwi 用例台账](../../test文档/用例/Kiwi用例台账.md)》，此处不复述。
+临时转储写 `test/temp/`（已 gitignore）；入库的只有 `cases/` 与 `exports/`。批次与对账结论以平台为准（用例编号只存平台，本仓不再维护台账），此处不复述。
 
 ### 2.2 已知口径缺口（待排期） <a id="gaps"></a>
 
