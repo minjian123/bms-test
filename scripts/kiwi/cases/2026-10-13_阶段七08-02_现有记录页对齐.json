@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段七 08_02：现有记录页对齐——角色 / 用户记录页改用字典记录页骨架件 DictRecordLayout（首行三字段 Code/Name/State 三列等宽顺序固定、其余字段排首行之后、信息栏固定两 Tab + 业务 Tab），骨架件增 sys-extra 扩展位承载用户页 SSO 身份绑定只读区块",
+      "text": "<p><strong>覆盖范围（用例清单）</strong></p><ol><li><strong>骨架件契约扩展</strong>：<code>ui-ep</code> 布局件 <code>DictRecordLayout</code> 增可选具名插槽 <code>sys-extra</code>——渲染在「系统信息」页签内、内置系统信息件之后；不传即不渲染（不产生空容器）；props / emits / 既有插槽与落点不变</li><li><strong>角色记录页（<code>RoleRecordTab</code>）</strong>：改用骨架件——页签依序「详细信息 → 权限配置 → 系统信息」；详细信息首行固定三字段（角色码 / 角色名 / 状态，三列 <code>span=8</code>、顺序固定），其余字段（角色类型）一律排首行之后；系统信息经内置件呈现；工具栏单一保存（保存 / 撤销 / 编辑 / 关闭 / 脏标记 / 内置角色提示）行为不变</li><li><strong>用户记录页（<code>UserRecordTab</code>）</strong>：改用骨架件——页签依序「详细信息 → 用户分配 → 系统信息」；首行固定三字段（用户名 / 姓名 / 状态）；其余字段（手机号 / 邮箱 / 首登改密）排首行之后；「用户分配」业务 Tab 与挂接位不变；SSO 身份绑定只读区块经 <code>sys-extra</code> 落「系统信息」侧（系统信息七项之后）</li><li><strong>系统信息口径</strong>：第 7 项显示表单名——角色「角色管理」（<code>role</code>）、用户「用户管理」（<code>user</code>）；时间不传 <code>timezone</code>，按件内缺省时区格式化为 <code>yyyy-MM-dd HH:mm</code></li><li><strong>消费口径</strong>：两页为平台内建字典页，直接使用骨架件（不引入 <code>isDictPage</code> 判定分支）；「按 kind 套骨架」的判定与消费位由 <code>core</code> 能力层与清单用例覆盖</li><li><strong>文档回写</strong>：<code>08_01</code> 详细设计 §4.6 契约与 §9 对齐记录补 <code>sys-extra</code>；计划表 <code>08_02</code> 进度回写</li></ol><p><strong>步骤</strong>：</p><ol><li><code>cd bms/frontend/packages/ui-ep &amp;&amp; CI=true ./node_modules/.bin/vitest run</code>（<code>dict-record-layout.spec.ts</code>：<code>sys-extra</code> 渲染位与顺序；<code>layout-style.spec.ts</code>：布局族仍 20 件）</li><li><code>cd bms/frontend/apps/desktop &amp;&amp; CI=true ./node_modules/.bin/vitest run --coverage</code>（<code>role-record-tab.spec.ts</code> / <code>user-record-tab.spec.ts</code> / <code>user-assign-slot.spec.ts</code> / <code>role-view.spec.ts</code>）</li><li><code>cd bms/frontend/apps/desktop &amp;&amp; ./node_modules/.bin/vue-tsc -b --force &amp;&amp; ./node_modules/.bin/eslint . --max-warnings 0</code></li><li>真机对照：本地全套（后端 + 宿主 5173）启动并 <code>seed</code>，登录后进 <code>/sys/roles</code>、<code>/sys/users</code>，双击列表行打开记录页签，逐页截图对照《布局设计 · 字典页》17 §2 / §2.2 / §2.5 / §3 / §4 与既有页面原型《08 用户管理 03 用户表单页》《09 角色管理 03 角色表单页》</li><li><code>python3 bms/scripts/tools/preflight/check-preflight.py</code>（完整预检，含覆盖率门禁与文档基座校验）</li></ol><p><strong>预期</strong>：两记录页详细信息首行三字段顺序与列宽固定、无字段插队；信息栏含「详细信息」「系统信息」且业务 Tab 不受限；系统信息区为对齐后的通用件（7 项、第 7 项为 <code>form_key</code>）；用户页 SSO 区块仍在系统信息侧；真机逐页对照结论齐备、偏离项已修复或登记归口；前端定向用例通过、覆盖率达标、<code>check-preflight.py --fast</code> 全绿（含 <code>check-prototype-review</code> 项）。</p><p><strong>自动化文件</strong>：<code>bms/frontend/apps/desktop/tests/role-record-tab.spec.ts</code>、<code>tests/user-record-tab.spec.ts</code>、<code>tests/user-assign-slot.spec.ts</code>、<code>bms/frontend/packages/ui-ep/tests/dict-record-layout.spec.ts</code>；用例名或首行注释标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

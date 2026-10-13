@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2294,
+    "summary": "阶段七 08_02：现有记录页对齐——角色 / 用户记录页改用字典记录页骨架件 DictRecordLayout（首行三字段 Code/Name/State 三列等宽顺序固定、其余字段排首行之后、信息栏固定两 Tab + 业务 Tab），骨架件增 sys-extra 扩展位承载用户页 SSO 身份绑定只读区块"
+  }
+]
