@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2293,
+    "summary": "阶段七 08_01：清单显式 kind 与前端按 kind 套骨架——两份构建期清单逐条显式声明 kind（取值不变）且基座脚本可断言、清单接口派生 is_dict、core 判定与归一（isDictKind/isDict）、ui-ep 系统信息件对齐 17 §2.5 与新增字典记录页骨架件 DictRecordLayout"
+  }
+]
