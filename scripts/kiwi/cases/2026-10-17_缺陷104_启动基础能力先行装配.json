@@ -1,0 +1,27 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "服务启动顺序：基础能力（Redis 统一客户端）先于开库引导 / 接库校验装配（跨实例创建锁取到共享客户端）",
+      "case_id": 2299,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>启动顺序</strong>：<code>service_lifespan</code> 在「离线清单校验 → 事件契约校验」之后、<code>ensure_development_schema</code>（开发库自动建表）与 <code>_validate_service_catalog</code>（接库服务目录校验）之前，先执行 <code>assemble_base_plugins</code> 装配基础能力；其余能力仍在接库校验之后装配（原顺序口径不变，仅基础能力前移）。</li><li><strong>共享客户端登记</strong>：基础能力清单 <code>BASE_PLUGIN_KEYS</code> 当前为 <code>redis_client</code>；provider 为 <code>redis</code> 时由 <code>RedisRedisClient.setup()</code> 登记进程共享客户端，取库路径（<code>EngineRegistry.get</code> → 跨实例创建锁 → 分布式锁基座 → 共享客户端）不再拿到 <code>null</code> 实现。</li><li><strong>回归缺陷</strong>：接库校验读本服务平台库时，跨实例创建锁取共享 Redis 客户端取不到（<code>RedisUnavailableError</code>：Redis 为基础能力，当前未启用或共享客户端未就绪），服务启动即退（MySQL 等非 SQLite 数据源触发；SQLite 数据源免跨实例锁故不触发）。</li></ol><p><strong>前置</strong>：清空共享客户端登记（<code>clear_shared_redis_client()</code>）并置 <code>BMS_REDIS__PROVIDER=redis</code>（构造期不建连）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/core/test_application_startup_paths.py -q</code>（用例 <code>test_lifespan_assembles_base_capabilities_before_db_bootstrap</code>）。</p><p><strong>预期</strong>：两个取库步骤（开库引导 / 接库校验）执行时 <code>shared_redis_client()</code> 均为 <code>RedisRedisClient</code>（基础能力已先行装配），应用就绪标记置位；改前取到 <code>NullRedisClient</code>，断言失败。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/core/test_application_startup_paths.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "插件装配分批语义：assemble_base_plugins / assemble_plugins(only=…) 已装配接线不重复解析、结果累计",
+      "case_id": 2300,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>分批装配</strong>：<code>assemble_base_plugins(app, settings, resources)</code> 仅装配 <code>BASE_PLUGIN_KEYS</code>，返回值与 <code>app.state.plugin_providers</code> 只含已装配键。</li><li><strong>幂等跳过</strong>：随后调用 <code>assemble_plugins</code>（缺省全部）补齐其余能力；已装配接线不重复解析实例、不重复执行 <code>setup()</code>（以 <code>_resolve_or_reject</code> 计数断言 <code>redis_client</code> 仅解析一次）。</li><li><strong>结果累计</strong>：<code>app.state.plugin_providers</code> 与 <code>app.state.assembled_plugin_keys</code> 累计为全部装配清单（键集合与 <code>PLUGIN_WIRINGS</code> 一致）。</li></ol><p><strong>前置</strong>：测试应用工厂构建应用（平台实现已登记），尚未进入 lifespan 装配。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/core/test_application_startup_paths.py -q</code>（用例 <code>test_assemble_base_plugins_batches_without_duplicate_resolution</code>）。</p><p><strong>预期</strong>：基础能力可单独装配；二次装配补齐其余且无重复解析；累计装配结果完整、无遗漏。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/core/test_application_startup_paths.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}
