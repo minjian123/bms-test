@@ -1,0 +1,27 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "双模入站鉴权 require_auth_or_service：登录态或东西向服务身份（排除网关代发票据）",
+      "case_id": 2301,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>服务分支</strong>：请求无边缘身份且携带有效服务 JWT（<code>aud=service</code>、签发方标识非空且非网关）时，<code>require_auth_or_service</code> 直接返回服务身份上下文（<code>source=\"service\"</code>、<code>service_identity=&lt;服务标识&gt;</code>），<strong>不查会话标记</strong>（东西向直连无用户会话）。</li><li><strong>网关代发票据排除</strong>：签发方标识等于网关身份（<code>[gateway].service_identity</code>，缺省 <code>gateway</code>）的服务 JWT 不算服务身份，回落登录态路径——无用户凭证即 401（避免经网关绕过会话即时失效）；网关边缘身份在场时仍走 <code>require_auth</code> 全装配。</li><li><strong>用户分支</strong>：<code>aud=api</code> 用户令牌 / 网关边缘身份走 <code>require_auth</code> 全装配（租户接线 + 会话标记校验 + 设备校验），会话失效即 20012。</li><li><strong>fail-closed</strong>：无凭证、验签失败、服务标识为空（占位校验器语义）一律 401 / 20001。</li></ol><p><strong>前置</strong>：直接构造 Starlette 请求，显式注入统一校验器 / 会话存储 / 网关配置替身（不经服务应用框架）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/api/test_require_auth_or_service.py -q</code>。</p><p><strong>预期</strong>：服务身份放行且不查会话；网关代发票据回落登录态（无用户凭证 401）；用户令牌与网关边缘身份按 <code>require_auth</code> 口径放行 / 拒（会话失效 20012）；无凭证与空服务标识 401。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/api/test_require_auth_or_service.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    },
+    {
+      "summary": "服务目录快照双模鉴权：服务身份（东西向直连）可读、用户登录态仍可读，接库校验不再恒降级",
+      "case_id": 2302,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>服务身份可读</strong>：经服务 JWT（<code>aud=service</code>、<code>sub/service=identity</code>）直连 <code>GET /api/v1/modules/snapshot</code> 返回 200，<code>data</code> 为全量清单（与 <code>sys_module</code> 登记一致）——各服务启动接库校验由此恢复真实对账。</li><li><strong>用户登录态仍可读</strong>：用户 access 令牌（<code>aud=api</code>）请求同一端点保持 200（<code>modules</code> 路由由 <code>require_auth</code> 改挂 <code>require_auth_or_service</code>，用户侧行为不变）。</li><li><strong>网关代发票据不放行</strong>：仅持 <code>sub=gateway</code> 服务票据（无用户凭证 / 无边缘身份）时请求 401。</li><li><strong>回归缺陷（#111）</strong>：修前该端点挂 <code>require_auth</code>（拒纯服务身份），非目录权威服务启动取快照恒 401 → <code>ServiceUnavailableError</code> → <code>/readyz</code> <code>catalog</code> 非必需项恒降级（<code>bms_catalog_degraded=1</code>），「启动接库对账」形同失效。</li></ol><p><strong>前置</strong>：平台应用工厂建应用并进入 lifespan；以依赖覆盖注入按受众分支的令牌校验器替身（<code>aud=service</code> 返回服务身份、<code>aud=api</code> 返回用户身份）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest services/platform/tests/api/test_modules.py -q</code>（用例 <code>test_snapshot_readable_with_service_identity</code> / <code>test_snapshot_rejects_gateway_ticket_without_user</code>）。</p><p><strong>预期</strong>：服务身份请求快照 200 且清单行数与登记一致；用户令牌请求仍 200；仅网关票据请求 401；无凭证 401。</p><p><strong>自动化文件</strong>：<code>bms/backend/services/platform/tests/api/test_modules.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

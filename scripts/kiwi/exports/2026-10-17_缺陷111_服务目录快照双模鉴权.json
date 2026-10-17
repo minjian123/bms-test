@@ -1,0 +1,14 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2301,
+    "summary": "双模入站鉴权 require_auth_or_service：登录态或东西向服务身份（排除网关代发票据）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2302,
+    "summary": "服务目录快照双模鉴权：服务身份（东西向直连）可读、用户登录态仍可读，接库校验不再恒降级"
+  }
+]
