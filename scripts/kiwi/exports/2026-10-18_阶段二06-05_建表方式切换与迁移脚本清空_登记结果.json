@@ -1,0 +1,50 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2303,
+    "summary": "06-05 启动期自动建表：四库方言放开（去 SQLite 限定）且按服务表集幂等，无脚本链照建当前表集"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2304,
+    "summary": "06-05 ops 建表入口：按「服务 × 数据源 × 库」批量幂等建表并输出新建 / 已存在统计，支持单库与 --dry-run"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2305,
+    "summary": "06-05 租户初始化三段：建库 → 建表 → 种子全幂等（库已存在跳过 / 表已存在跳过 / 种子 0 行）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2306,
+    "summary": "06-05 三库集成流程 migrate 段语义内改：命令名保留、内部按对象建表且幂等（达梦按模式）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2307,
+    "summary": "06-05 迁移机制保留：脚本清空后链注册 / 配置段 / 版本读取 / 库级编排仍可用（临时链脚本自检驱动）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2308,
+    "summary": "06-05 护栏保留：check-backend-base 迁移链项与 check_tables 脚本表集项在空脚本下自动跳过且不误报"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2309,
+    "summary": "06-05 编排改「建表先行」：release.py deploy/bootstrap 建表步骤与镜像「含建表能力」断言（compose / CI 文案同步）"
+  },
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2310,
+    "summary": "06-05 文档口径回写零残留：开发 / 演示库一律删库重建 + 建表先行，无「真库一律走迁移」「迁移先行」「迁移前置步骤」"
+  }
+]
