@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "三权分立（03_02）：内置三类管理员互斥前置校验 / role 业务仅安全管理员 / 防自锁 / 平台超管边界",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>内置三类管理员与互斥（30010）</strong>：系统 / 安全 / 审计管理员按 <code>sys_role.role_type</code> 判定（<code>SEPARATION_ROLE_TYPES</code> 单一来源）；三处 <code>sys_user_role</code> 写入口（<code>RoleAssignService.assign_users</code> / <code>RoleAssignmentWriter._apply_users</code> / <code>UserAssignmentWriter._apply_roles</code>）在事务内、<strong>写入之前</strong>调用 <code>SeparationGuard</code> 校验——同一用户将兼任两类内置管理员即拒绝 <code>30010</code>，且不产生任何写入、不递增权限版本。</li><li><strong><code>role</code> 业务归属（30048）</strong>：<code>role:*</code> 权限码（平台库 <code>sys_permission ⋈ sys_business(code='role')</code>）只允许授予 <code>role_type=security</code> 的角色；系统 / 审计管理员调用角色域写端点即 <code>30048</code>（操作人侧护栏，覆盖 <code>POST/PUT/DELETE /roles*</code> 与 <code>PUT /roles/{id}/permissions|fields|data-permissions|assignments</code>）。</li><li><strong>防自锁（30048）</strong>：安全管理员不得修改自身所属角色的授权集合（权限 / 字段 / 数据权限），不得通过授权使自身兼任互斥类型角色。</li><li><strong>平台超管边界</strong>：<code>TIER_PLATFORM_ADMIN</code> 快照仅由 <code>RbacPermissionChecker.aprepare</code> 的无用户上下文分支产生、不经租户 RBAC 计算；<code>sys_admin</code> 登记为 <code>PLANNED</code> / <code>owner=identity</code> / <code>datasource=PLATFORM</code>，不在任何租户库表清单内；平台库不含租户业务表。</li><li><strong>护栏与审计</strong>：<code>tests/boundary/test_separation_guard.py</code> 静态 AST 断言三处写入口均调用 guard 且调用行号早于写入行号、<code>replace_permissions</code> 调用 <code>ensure_grant_scope</code>；互斥拒绝 / 越权拒绝 / <code>role</code> 归属违规经 <code>AuditCapturer.capture()</code> 产生审计事件（当前 <code>NullAuditCapturer</code> 不落库，用例以替身断言）。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；平台服务测试临时租户库可建。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest services/platform/tests/role services/platform/tests/boundary services/platform/tests/api/test_role_api.py services/platform/tests/users/test_admin_api.py services/platform/tests/seed/test_seed_rbac.py -q</code>。</p><p><strong>预期</strong>：互斥与越权分支全部按 <code>30010</code> / <code>30048</code> 拒绝且前置生效（写入未发生）；无冲突路径与既有内置角色保护（<code>30043</code>）行为不变；护栏用例全绿。</p><p><strong>自动化文件</strong>：<code>bms/backend/services/platform/tests/role/test_separation_guard.py</code>、<code>bms/backend/services/platform/tests/boundary/test_separation_guard.py</code> 及相关补充用例；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
