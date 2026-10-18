@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2311,
+    "summary": "预检默认档反转：按 git 变更定向（含变更源文件覆盖率门禁）+ 预算护栏，全量须显式 --full"
+  }
+]

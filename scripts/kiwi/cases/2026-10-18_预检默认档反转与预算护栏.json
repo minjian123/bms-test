@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "预检默认档反转：按 git 变更定向（含变更源文件覆盖率门禁）+ 预算护栏，全量须显式 --full",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>默认档＝定向（不再缺省全量）</strong>：<code>check-preflight.py</code> 不带参数时不跑聚合全量；按 <code>git diff --name-only origin/main</code> + 未跟踪文件推导受影响范围——<code>backend/libs/bms_core/**</code> → <code>libs/bms_core/tests</code>、<code>backend/services/&lt;服务&gt;/**</code> → <code>services/&lt;服务&gt;/tests</code>、<code>backend/ops/**</code> → <code>libs/bms_core/tests/ops</code>；无后端变更则跳过 pytest（静态与基座 / 边界段照跑）。</li><li><strong>覆盖率门禁落在变更源文件</strong>：对每个变更的包内源文件开 <code>--cov=&lt;模块&gt;</code>，合并 <code>--cov-branch --cov-fail-under=100</code>；<code>ops</code> / <code>scripts</code> 不入覆盖率源（与聚合档口径一致）。</li><li><strong>预算护栏</strong>：单步 / 总体双上限（定向档 120s / 180s，全量档 600s / 1200s，<code>--step-seconds</code> / <code>--budget-seconds</code> 可覆盖）；超时即中止后续步骤并提示「全量交 CI」，计入失败项。</li><li><strong>全量档须显式申请</strong>：<code>--full</code> 才跑聚合全量 + 工程级范围；<code>--fast</code> 保持「只静态与基座 / 边界」；<code>--no-cov</code> / <code>--no-scope</code> 语义不变。</li><li><strong><code>--self-test</code></strong>：定向推导（基座 / 服务 / ops / 纯文档）与预算护栏自测，不触网不跑测试。</li></ol><p><strong>前置</strong>：bms 仓库根；<code>git</code> 可用（推导变更集）、<code>uv</code> 与本地依赖就位。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/boundary/test_preflight_scoping_guard.py -q</code>；亦可跑 <code>python3 scripts/tools/preflight/check-preflight.py --self-test</code>。</p><p><strong>预期</strong>：变更路径按上述映射得到测试目录与覆盖率目标（纯文档 / 前端变更不引测试与覆盖率）；零预算立即判耗尽；模式互斥（<code>--fast</code> 跳过 pytest、<code>--full</code> 才全量）。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/boundary/test_preflight_scoping_guard.py</code> 与 <code>bms/scripts/tools/preflight/check-preflight.py --self-test</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}

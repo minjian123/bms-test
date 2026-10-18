@@ -1,0 +1,109 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "06-05 启动期自动建表：四库方言放开（去 SQLite 限定）且按服务表集幂等，无脚本链照建当前表集",
+      "case_id": 2303,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>方言放开</strong>：启动期建表（<code>ensure_service_schema</code>）不再限定 SQLite——去 <code>_is_sqlite</code> 判定，对该服务各数据源连接一律执行 <code>metadata.create_all(checkfirst=True)</code>（生成方言适配 DDL；达梦走既有方言补丁 + 连接串 <code>database</code> 段作模式切换）。</li><li><strong>去脚本门槛</strong>：不再要求「该链有迁移脚本」（原 <code>has_revisions(chain)</code> 门槛移除）——<code>alembic/versions/**</code> 清空后空链照建当前表集，新库 / 新服务首次接入无需先造脚本。</li><li><strong>幂等</strong>：重复启动不改动既有对象（<code>checkfirst=True</code>，只补不建改）；同一 URL 经去重只建一次。</li><li><strong>跳过分支</strong>：<code>[database].auto_create=false</code>（生产建议关）、运行服务未在服务目录登记、链表集为空 三类均跳过且不建连。</li></ol><p><strong>前置</strong>：平台 / 租户库指向临时 SQLite 文件（<code>BMS_DATABASE__PLATFORM__URL</code> / <code>BMS_DATABASE__TENANTS__URL</code>），<code>[app].service</code> 置 <code>platform</code>。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/alembic/test_auto_create_tables.py -q</code>。</p><p><strong>预期</strong>：<code>ensure_service_schema</code> 返回已建表库键（<code>platform</code> / <code>tenant_demo</code> 等）；平台库建出 <code>sys_module</code> / <code>sys_table_ownership</code> / <code>sys_outbox</code>，租户库建出 <code>sys_data_scope</code> / <code>sys_query_scheme</code>；重复执行表集不变；<code>planned</code> 骨架表（<code>sys_task</code>）不入链不建；开关关 / 未登记服务 / 空表集返回空且不产生引擎。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/alembic/test_auto_create_tables.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 ops 建表入口：按「服务 × 数据源 × 库」批量幂等建表并输出新建 / 已存在统计，支持单库与 --dry-run",
+      "case_id": 2304,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>批量形态</strong>：<code>python -m ops.init_schema</code> 与批量迁移同构（<code>--target</code> / <code>--service</code> / <code>--code</code> / <code>--all-tenants</code>），逐库对「服务 × 数据源」表集执行幂等建表，输出「新建 N 表 / 已存在 M 表」统计。</li><li><strong>单一来源</strong>：表集派生与启动期共用同一派生点（<code>chain_metadata(chain)</code>），避免两处表集漂移；启动期是服务自身库的自动路径，ops 入口是运维 / CI 指定库的显式路径。</li><li><strong>单库形态</strong>：<code>--db-key</code> / <code>--url</code> 指定单个目标（运维与集成流程用）。</li><li><strong>容错与幂等</strong>：缺库 / 建表失败记错误但不阻断整批，末尾汇总；存在失败退非零；重复执行无副作用。</li><li><strong>--dry-run</strong>：仅打印清单与库数量统计，不建连、不建表。</li></ol><p><strong>前置</strong>：目标库已建（建库经 <code>ops.provision_tenant</code> / <code>ops.init_tenant</code>）；SQLite 形态可用临时文件库跑通。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/ops -q</code>（<code>test_init_schema.py</code>）。</p><p><strong>预期</strong>：清单与批量迁移一致；首次建表输出新建计数、再次执行为「已存在」计数且退 0；失败目标计入汇总并使退出码为 1；<code>--dry-run</code> 不产生连接与表。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/ops/test_init_schema.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 租户初始化三段：建库 → 建表 → 种子全幂等（库已存在跳过 / 表已存在跳过 / 种子 0 行）",
+      "case_id": 2305,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>三段次序</strong>：<code>ops.init_tenant</code> 由原「建库 → 迁移 → 幂等种子」改为「<strong>建库 → 建表 → 幂等种子</strong>」——建表段调 ops 建表入口（本服务租户链表集），种子段仍为系统参数种子。</li><li><strong>幂等</strong>：库已存在跳过、表已存在跳过、种子重复执行为 0 行；<code>--skip-create-db</code> 跳过建库；<code>--dry-run</code> 仅打印计划不建连。</li><li><strong>达梦</strong>：<code>--schema</code> 显式模式在建表前切换。</li></ol><p><strong>前置</strong>：临时 SQLite 库文件形态（或库已由 CI 建好 + <code>--skip-create-db</code>）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/ops/test_migration_ops.py -q</code>。</p><p><strong>预期</strong>：首次执行建库「新建」、建表输出新建计数、种子「新增 N 行」；重复执行三段全跳过 / 0 行；缺 <code>--service</code> 且 <code>[app].service</code> 为空时快速失败。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/ops/test_migration_ops.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 三库集成流程 migrate 段语义内改：命令名保留、内部按对象建表且幂等（达梦按模式）",
+      "case_id": 2306,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>命令名保留</strong>：<code>ops.test_db plan / create / migrate / drop</code> 四段不变，CI 与文档命令零改动；<code>migrate</code> 段内部由「分链 Alembic 迁移」改为「调 ops 建表入口建表」（步骤文案改「建表」）。</li><li><strong>幂等</strong>：重复执行 <code>migrate</code> 段无副作用（表已存在即跳过），仍输出对象与统计。</li><li><strong>达梦</strong>：按对象模式名建表前切换会话模式。</li><li><strong>对象映射</strong>：平台对象 → 平台链表集、租户对象 → 租户链表集（映射口径不变）。</li></ol><p><strong>前置</strong>：SQLite 全流程自测（<code>--url</code> 指向临时文件库、<code>--execute</code>）；真库形态由 CI 三库 job 按需验证。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/ops/test_test_db.py -q</code>。</p><p><strong>预期</strong>：<code>migrate</code> 段建出该对象链表集；重复执行为「已存在」；计划模式无副作用；未配置连接串计入失败并退 1。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/ops/test_test_db.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 迁移机制保留：脚本清空后链注册 / 配置段 / 版本读取 / 库级编排仍可用（临时链脚本自检驱动）",
+      "case_id": 2307,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>机制保留面</strong>：<code>alembic.ini</code> 全 7 配置段、<code>alembic/versions/&lt;服务&gt;/&lt;数据源&gt;/</code> 空壳目录、链名派生与反解、配置段映射、表集派生（<code>chain_metadata</code>）、连接串解析（<code>chain_url</code>）、版本读取（<code>current_revision</code>）、库级编排（<code>ops.migrate_tenants</code>）均保留可用。</li><li><strong>空链语义</strong>：无脚本链 <code>has_revisions=False</code> → <code>head_revision()</code> 返回 <code>None</code>；批量迁移逐链输出「无脚本（跳过）」；<code>alembic upgrade head</code> 不报错。</li><li><strong>临时链脚本自检</strong>：机制代码中「有脚本才可达」的分支（版本遍历 / 升级路径 / 链头判定 / 版本读取）由用例在临时目录现场造出最小链脚本驱动，不依赖仓库内脚本、不开 <code># pragma: no cover</code>、不减覆盖率门禁。</li></ol><p><strong>前置</strong>：无（用例自建临时 <code>alembic.ini</code> + 版本目录 + 最小脚本）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/alembic -q</code>。</p><p><strong>预期</strong>：链名 / 表集 / 配置段 / 连接串 / 元数据子集机制用例全绿；临时脚本驱动下链头判定与版本读取分支被覆盖；仓库内 <code>alembic/versions/**</code> 无脚本而上述机制仍可用。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/alembic/</code>（<code>test_alembic_chains.py</code> / <code>test_alembic_env.py</code> 等）；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 护栏保留：check-backend-base 迁移链项与 check_tables 脚本表集项在空脚本下自动跳过且不误报",
+      "case_id": 2308,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>check-backend-base 迁移链项保留</strong>：按 <code>versions/&lt;服务&gt;/&lt;数据源&gt;/</code> 校验每链单 head / 无断链 / 链首 <code>branch_labels</code> / 配置段登记；空链自动跳过（打印「迁移版本目录为空——跳过链检查」），将来重建脚本即自动生效。</li><li><strong>check_tables 脚本表集项保留</strong>：按「净新建」口径校验脚本建表集 ⊆ 链派生表集；无脚本链自动跳过；表归属 / 模型对账其余项不受影响（仍报 0 硬违规）。</li><li><strong>自检</strong>：<code>check-backend-base --self-test</code> 的迁移链用例（合规放行 / 违规拦截）继续通过。</li></ol><p><strong>前置</strong>：本仓仓库树（脚本已清空）。</p><p><strong>步骤</strong>：<code>python3 scripts/tools/base-check/check-backend-base.py</code> 与 <code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m ops.check_tables --offline</code>；必要时 <code>check-backend-base.py --self-test</code>。</p><p><strong>预期</strong>：两项护栏均通过且空脚本不被判违规；自检用例全绿。</p><p><strong>自动化文件</strong>：<code>bms/scripts/tools/base-check/check-backend-base.py</code>、<code>bms/backend/ops/check_tables.py</code>、<code>bms/backend/libs/bms_core/tests/ops/test_check_tables.py</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 编排改「建表先行」：release.py deploy/bootstrap 建表步骤与镜像「含建表能力」断言（compose / CI 文案同步）",
+      "case_id": 2309,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>一键部署</strong>：<code>release.py deploy</code> 由「迁移先行」改「<strong>建表先行</strong>」——以目标标签镜像跑一次性建表容器（<code>ops.init_schema</code>）再起容器、健康门禁、写台账。</li><li><strong>数据引导</strong>：<code>bootstrap</code> 四段改为「应用账号与授权 → 建库 → <strong>建表</strong> → 种子」，建表段逐服务调 ops 建表入口（平台链 + 各服务租户链）。</li><li><strong>镜像能力</strong>：镜像断言由「含迁移能力」改「含建表能力」（<code>alembic/</code> + <code>ops/</code> 一并随镜像分发不变）。</li><li><strong>文案同步</strong>：<code>deploy/compose/services.yml</code> 注释、<code>deploy/ci/verify/db</code>、<code>.gitlab-ci.yml</code> 注释与 README 表述按新口径。</li></ol><p><strong>前置</strong>：仓库检出（不需要部署机在线）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest libs/bms_core/tests/ops/test_deploy_config.py -q</code>。</p><p><strong>预期</strong>：Dockerfile 含 <code>alembic/</code> 与 <code>ops/</code>（可用于建表）；<code>release.py</code> 的 deploy / bootstrap 步骤与文案无「迁移先行」残留；compose / CI 文案与实现一致。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/ops/test_deploy_config.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "06-05 文档口径回写零残留：开发 / 演示库一律删库重建 + 建表先行，无「真库一律走迁移」「迁移先行」「迁移前置步骤」",
+      "case_id": 2310,
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>规范层</strong>：《数据库开发规范》「迁移与建表口径」节改为「机制保留 + 脚本清空 + 启动期自动建表 + ops 建表入口」并补「开发 / 演示库一律删库重建」；《部署发布规范》「迁移先行」→「建表先行」、《AI开发规范》《后端开发规范》《代码评审规范》《后端审计规范》《测试规范》同步。</li><li><strong>设计与资料层</strong>：《架构设计 · 数据架构》「迁移策略」改「建表策略」并注明机制保留；总体架构 / 模块注册 / 多租户路由对应节、数据库设计总览与数据规范、约 30 份表文件「迁移」行、部署说明「数据引导 / 一键部署 / 排障」节同步。</li><li><strong>排障条目删除</strong>：《服务编排与发布部署使用说明》删「迁移停在 <code>0010</code> / <code>0003</code>」与「前置数据步骤提示」三条排障行，改为「开发库删库重建」口径。</li><li><strong>机制退役回写</strong>：<code>PREREQUISITE_STEPS</code> / <code>ops.backfill_tenant_id_columns</code> 相关机制文档条目一并清理；缺陷 #103 处置口径改写（原「现场回填 + 迁移」作废）。</li></ol><p><strong>前置</strong>：改造已落地。</p><p><strong>步骤</strong>：在 <code>bms/bms文档</code> 与 <code>bms/backend</code> 检索关键词：<code>迁移先行</code> / <code>真库一律走迁移</code> / <code>PREREQUISITE_STEPS</code> / <code>backfill_tenant_id_columns</code> / <code>0010_dict_item_parent_id</code> / <code>0003_sys_user_identity</code>，核对仅剩新口径表述。</p><p><strong>预期</strong>：上述关键词在新口径文本中不再出现旧语义；规范 / 架构 / 数据库设计 / 部署说明 / README 与 <code>alembic/README.md</code> 表述一致；<code>check-docs-scope</code> 与文档链接门禁全绿。</p><p><strong>自动化文件</strong>：文档面（<code>bms/bms文档/**</code>、<code>bms/backend/README.md</code>、<code>bms/backend/alembic/README.md</code>）；核对记录见本任务测试记录。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
