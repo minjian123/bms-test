@@ -1,0 +1,29 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "插件装配（平台服务）：默认就地实现 / 配置切换 / 依赖注入 / 生命周期 / 启动日志脱敏",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>默认装配</strong>：平台服务 lifespan 后 <code>app.state</code> 各能力为配置实现——对象存储缺省 <code>local</code>（<code>LocalObjectStorage</code>）、脱敏 <code>NullMasker</code>、权限 <code>RbacPermissionChecker</code>（平台是权限引擎所有者：<code>prepare_settings()</code> 未显式配置时置 <code>rbac</code>）、健康检查 <code>HealthCheckRegistry</code>；<code>resolve_plugin(\"object_storage\", \"local\")</code> 与 <code>app.state</code> 为同一实例。</li><li><strong>配置切换生效</strong>：<code>[plugin].object_storage.provider=custom</code> 时装配自定义实现，且 <code>resolve_plugin</code> 可解析。</li><li><strong>依赖注入</strong>：脱敏工厂注入权限校验器（<code>masker.check_plain()</code> 依权限判定返回 <code>False</code>）。</li><li><strong>生命周期</strong>：<code>setup</code> / <code>aclose</code> 各调用一次，装配后 <code>app.state</code> 指向该实例。</li><li><strong>启动日志</strong>：打印「插件装配完成」与实现名，且<strong>不泄露选项值</strong>（探针选项 <code>top-secret</code> 不出现）。</li><li><strong>配置不改写</strong>：<code>prepare_settings</code> 只补缺省，显式 <code>[data_scope].provider</code> 不被覆盖。</li></ol><p><strong>前置</strong>：平台服务工程依赖就位；用例以隔离注册表（<code>monkeypatch</code> 替换进程级默认实例）避免跨用例污染。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest services/platform/tests/crosscut/test_plugin_assembly.py -q</code>。</p><p><strong>预期</strong>：6 条用例全通过；默认实现类型与 <code>resolve_plugin</code> 结果一致、切换配置生效、注入与生命周期调用次数符合、日志含实现名且不含选项值。</p><p><strong>自动化文件</strong>：<code>bms/backend/services/platform/tests/crosscut/test_plugin_assembly.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    },
+    {
+      "summary": "插件启动校验（平台服务）：非法实现 / 契约版本 / setup 失败 / 实例化失败 / 依赖隔离 + CI 离线校验脚本",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>非法实现拒启</strong>：<code>[plugin].object_storage.provider=ghost</code> ⇒ 启动抛 <code>PluginError</code>（消息含「未注册的 object_storage 实现：ghost」）。</li><li><strong>契约版本不兼容拒启</strong>：实现声明的契约版本与基座不兼容 ⇒ <code>PluginError</code>（「插件契约版本不兼容」）。</li><li><strong>setup 失败拒启</strong>：实现 <code>setup</code> 抛错 ⇒ <code>PluginError</code>（「插件 setup 失败」）。</li><li><strong>实例化失败拒启</strong>：工厂构造抛错 ⇒ <code>PluginError</code>（「插件实例化失败」）。</li><li><strong>依赖隔离</strong>：未被选中的实现模块<strong>不被导入</strong>（<code>plugin_probe_used</code> 在 <code>sys.modules</code>、<code>plugin_probe_unused</code> 不在）。</li><li><strong>CI 离线校验脚本</strong>：<code>check_plugins.py</code> 对合法配置退出码 0 且输出「[插件装配] 校验通过」；对非法 provider 退出码 1 且输出含 <code>ghost</code>。</li></ol><p><strong>前置</strong>：平台服务工程依赖就位；离线校验用例以子进程跑脚本（隔离环境变量与 <code>sys.modules</code>）。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; .venv/Scripts/python.exe -m pytest services/platform/tests/crosscut/test_plugin_validation.py -q</code>。</p><p><strong>预期</strong>：7 条用例全通过；四类非法装配均以 <code>PluginError</code> 拒绝启动（不静默降级）、未选中实现不导入、离线校验脚本正反两向判定正确。</p><p><strong>自动化文件</strong>：<code>bms/backend/services/platform/tests/crosscut/test_plugin_validation.py</code> 与 <code>bms/scripts/tools/base-check/check_plugins.py</code>；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
