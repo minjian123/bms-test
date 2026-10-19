@@ -1,0 +1,15 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "13-02 并行执行与重复步骤消除：--jobs 并行开关 / worker 级 SQLite 库隔离 / 自测按需 / 预算标定 / CI 重复面",
+      "text": "<p><strong>覆盖范围</strong>（后端测试执行效能，需求 13-2）：</p><ol><li><strong>并行开关</strong>：预检与选测执行器统一 --jobs auto|N|off（缺省 auto）；auto ⇒ -n auto、N ⇒ -n N、off ⇒ 串行；非法值报错并提示合法取值；全量档聚合与工程级范围调用同口径并行。</li><li><strong>worker 级 SQLite 库隔离</strong>：pytest-xdist 下按 PYTEST_XDIST_WORKER 注入独立 BMS_DATABASE__SQLITE_DIR（&lt;basetemp&gt;/sqlite-&lt;worker&gt;），串行不注入（沿配置原值）；全量 -n auto 与串行结果一致（2939 passed / 57 skipped）。</li><li><strong>自测按需</strong>：7 个 --self-test 步按「脚本自身 + 依赖前缀」映射表判定，未触及则逐条打印跳过；--fast / --full 档全跑；变更基准不可解析时全跑。</li><li><strong>预算护栏</strong>：定向档单步 300s / 总体 420s、全量档 900s / 1800s；零预算即耗尽语义保留。</li><li><strong>CI 重复面</strong>：service-test 依据 --format changed-services 判定本服务是否有直接变更，无（仅共享底座 uv.lock / Dockerfile / libs）则跳过测试（backend-test 兜底），变更基准不可解析时保守执行；backend-test 传 --jobs auto。</li></ol><p><strong>自动化</strong>：<code>backend/libs/bms_core/tests/boundary/test_parallel_guard.py</code>（@pytest.mark.kiwi_id 标注）；设计见 <code>bms文档/项目/02_后端基座与服务化地基/任务/13_测试执行粒度与工程效能/13_测试执行粒度与工程效能_02_并行执行与重复步骤消除/设计/01_详细设计_02_并行执行与重复步骤消除.md</code>。</p><p><strong>预期</strong>：上述断言全通过；并行与串行结果一致；自测/重复面均有显式输出，不静默跳过。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": ["自动化"],
+      "is_automated": true
+    }
+  ]
+}

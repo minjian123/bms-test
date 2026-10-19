@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2318,
+    "summary": "13-02 并行执行与重复步骤消除：--jobs 并行开关 / worker 级 SQLite 库隔离 / 自测按需 / 预算标定 / CI 重复面"
+  }
+]
