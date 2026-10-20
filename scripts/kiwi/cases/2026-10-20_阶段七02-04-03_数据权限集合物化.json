@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "数据权限集合物化（04_03）：规则集合按规则维度共享 + 引用计数与零引用优先淘汰 + 值元素与内存度量 + 大集合 IN 阈值护栏",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>集合去重物化</strong>：规则求值结果里 <code>in</code> 条件的值物化为 <code>ConcurrentStableSet</code>（去重、保插入序），条件表达式其余不变；四策略求值器零改动。</li><li><strong>按规则共享</strong>：层2 键不含用户（<code>{来源}|rule|{字典类型}|{策略}|{config 指纹}</code>），N 个用户命中同一规则只有一份集合，<code>stats()</code> 的条目数 / 元素数 / 估算字节不随用户数增长；用户快照只持规则行（引用），不复制集合内容。</li><li><strong>引用计数</strong>：写层3 快照时由 <code>data_scopes</code> 行推导规则指纹登记引用（<code>_snapshot_rules</code> / <code>_rule_refs</code>），层3 条目在失效 / LRU 淘汰 / TTL 过期 / 闲置注销 / 清空任一路径移除时释放。</li><li><strong>零引用优先淘汰</strong>：层2 超条目上限或超元素预算时先淘汰最久未用的零引用规则；全部被引用时退化为最久未用（后续命中重算，不返回空、不 OOM）。</li><li><strong>元素计量修正</strong>：预算与指标改按<b>值元素总数</b>计（<code>in</code> 集合大小 / <code>between</code> 计 2 / 标量计 1），修掉「一条大 select 只计 1 个元素」的失真；TTL 过期同步回冲账目。</li><li><strong>大集合 SQL 形态</strong>：并集合并后统一校验，任一 <code>in</code> 条件元素数超 <code>[data_scope].options.max_in_values</code>（缺省 1000）即整体退化为永假（<code>id ∈ ∅</code>），<code>warning</code> 引导改用区域 / 匹配 / 扩展策略并累加 <code>oversized_rejections</code>；区域（<code>between</code>）/ 匹配（<code>like</code>）以 SQL 原生算子表达、不参与判定；超阈结果进层2，避免每次重扫巨型值列表。</li><li><strong>写校验一致</strong>：<code>allow_write</code> 遇永假条件（非法 / 未注册策略 / 超阈退化）一律拒绝，读写口径一致。</li><li><strong>内存度量</strong>：<code>stats()</code> 输出集合条数 / 值元素总数 / 估算字节 / 被引用规则数 / 淘汰与超阈计数 / 各层上限；装配期输出一条容量配置日志。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；platform / identity 测试临时租户库可建。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest libs/bms_core/tests services/platform/tests services/identity/tests -q</code>；另跑 <code>python3 scripts/tools/base-check/check-base.py</code> 与 <code>python3 scripts/tools/preflight/check-preflight.py --fast</code>。</p><p><strong>预期</strong>：三套件全绿；变更模块行 + 分支覆盖率 100%；N 个用户共用一条规则时层2 只有一份且内存不随用户数线性增长；引用计数随快照移除回落、零引用规则优先被淘汰；超阈场景 SQL 不出现巨型 <code>IN</code> 列表（退化为永假并引导）；<code>stats()</code> 可读到估算内存与上限；<code>preflight --fast</code> 全绿。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/permission/test_cache.py</code>、<code>bms/backend/libs/bms_core/tests/scope/test_rbac_scope_layer3.py</code>、<code>bms/backend/libs/bms_core/tests/repositories/test_scoped_repository.py</code>、<code>bms/backend/libs/bms_core/tests/repositories/test_db_repository.py</code> 等；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
