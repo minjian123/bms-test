@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "三层缓存与版本对齐（04_02）：基础数据 / 规则物化 / 用户快照进程内单份 + 版本号异步对齐 + 活动用户闲置注销 + 三层容量护栏",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>三层缓存仓</strong>：新增 <code>bms_core/permission/cache.py::PermissionCacheStore</code>——层1 基础数据（<code>PermissionSubjectData</code> 按「来源 + 租户 + 用户 + 权限版本」、<code>PermissionMetadata</code> 按「来源 + locale + 权限版本」）、层2 规则物化（规则求值结果按「字典类型 + 策略 + config 指纹」）、层3 用户快照（按「来源 + 租户 + 用户 + 权限版本」）；模块级单份 + <code>reset_permission_cache_store()</code> 供用例隔离。</li><li><strong>不落 Redis 共享</strong>：三层全部进程内，Redis 只承载权限版本号计数器；用例断言快照不再写入 <code>CacheRegion</code>（仅版本键存在）。</li><li><strong>版本号异步对齐</strong>：读取前查最新版本号，版本 +1 即换键失效；<code>invalidate</code> 同时清理本进程受影响条目（用户维度清层1 + 层3，元数据维度清层1 元数据）。</li><li><strong>元数据变更即时生效</strong>：platform 菜单 / 表单 / 按钮 / 字段写路径在递增菜单版本之外<b>一并递增权限版本</b>并清层1 元数据，消除「元数据已新、快照仍旧」的错位。</li><li><strong>活动用户追踪与注销</strong>：层3 读写刷新最近活动时间；校验器 <code>setup()</code> / <code>aclose()</code> 起停后台轮询任务，注销超过 <code>idle_timeout_seconds</code>（缺省 1800s）不活动的快照与层1 用户条目；再次访问即时重算并回填。</li><li><strong>容量护栏</strong>：层1 用户 2000 / 层1 元数据 16 / 层3 快照 5000 / 层2 规则 1000 条 + 规则元素总量预算 20 万（LRU 淘汰，超预算即淘汰最久未用并上报），均经 <code>[permission].options</code> 可配置。</li><li><strong>层2 求值接入</strong>：<code>RbacDataScope._conditions</code> 按规则指纹惰性求值回填，同一规则被 N 个用户命中共用一份；非法 / 未注册规则仍退化为永假，求值语义零变化。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；platform / identity 测试临时租户库可建。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest libs/bms_core/tests services/platform/tests services/identity/tests -q</code>；另跑 <code>python3 scripts/tools/base-check/check-base.py</code> 与 <code>python3 scripts/tools/preflight/check-preflight.py --fast</code>。</p><p><strong>预期</strong>：三套件全绿；变更模块行 + 分支覆盖率 100%；快照不再写共享缓存；版本变更后下一次使用即取到新版本；闲置快照被注销后再访问即时重算；三层上限与规则元素预算生效；<code>preflight --fast</code> 全绿。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/permission/test_cache.py</code>、<code>test_engine.py</code>、<code>bms/backend/libs/bms_core/tests/scope/test_rbac_scope_layer2.py</code>、<code>bms/backend/services/platform/tests/menu/test_menu_invalidate.py</code> 等；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
