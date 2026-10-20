@@ -1,0 +1,8 @@
+[
+  {
+    "ok": true,
+    "skipped": false,
+    "case_id": 2320,
+    "summary": "权限计算下沉基座（04_01）：元数据/数据来源接缝 + 计算主流程与四策略下沉 bms_core + 插件化登记 + platform/identity 双服务真实校验"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "权限计算下沉基座（04_01）：元数据/数据来源接缝 + 计算主流程与四策略下沉 bms_core + 插件化登记 + platform/identity 双服务真实校验",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>基座接缝（元数据 + 数据来源）</strong>：<code>bms_core/permission/sources.py</code> 定义 <code>BasePermissionDataSource</code>（<code>load_subject</code> / <code>load_metadata</code>）与中性数据契约（<code>PermissionSubjectData</code> / <code>PermissionMetadata</code> / <code>PermissionGrant</code> / <code>DataScopeRule</code>），与既有角色解析器链 / 字段权限 provider / 校验链同构，经进程级注册表登记；<code>reset_permission_data_sources()</code> 供用例隔离。</li><li><strong>计算主流程下沉</strong>：<code>bms_core/permission/engine.py::PermissionEngine</code> 承接「角色收敛 → 授权聚合（两段解析）→ 快照 → 缓存读写 → 失效」，只依赖接缝与 <code>CacheRegion</code>，<strong>不 import 任何服务包、不碰任何 ORM</strong>；快照核心字段与缓存键（<code>bms:{租户}:perm:{用户}:{版本}</code>）语义不变。</li><li><strong>四策略求值器下沉</strong>：<code>select</code> / <code>region</code> / <code>match</code> / <code>extension</code> 逐行迁入 <code>bms_core/scope/policies_rbac.py</code>，非法 / 未注册规则退化为永假条件并上报，行为与下沉前一致；数据范围 provider 迁入 <code>bms_core/scope/rbac.py</code>。</li><li><strong>插件化登记与 fail-closed</strong>：基座内置登记 <code>permission:rbac</code> 与 <code>data_scope:rbac</code>，经 <code>[permission].provider</code> 切换并校验契约版本主版本；<strong>provider=rbac 但服务未登记数据来源即启动拒启</strong>（<code>PluginError</code>），不静默放行 / 不静默全拒。</li><li><strong>双服务真实生效</strong>：platform 注入「直查本库」数据来源、identity 注入「经 platform 内部契约取数」数据来源；identity 5 个已挂码端点（<code>session:query</code> / <code>session:kick</code> / <code>open:manage</code> / <code>idp:manage</code> / <code>sso:bind</code>）由恒放行转为真实判定，无码拒 <code>30001</code>、有码放行；跨服务不可达 fail-closed（<code>10007</code>/503）。</li><li><strong>判定在进程内、单请求一次快照</strong>：<code>aprepare</code> 首次调用计算并落 contextvar，<code>request.state.permission_prepared</code> 保证单请求只算一次，同一请求多次 <code>check</code> 复用。</li><li><strong>边界护栏</strong>：AST 扫描断言 <code>bms_core/permission/**</code> 与 <code>bms_core/scope/**</code> 无服务包 import、无 <code>models</code> / <code>repositories</code> 导入；<code>check-service-boundaries.py</code> 全绿；<code>TABLE_OWNERSHIP</code> 与建表链零变更。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；platform / identity 测试临时租户库可建。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest libs/bms_core/tests services/platform/tests services/identity/tests -q</code>；另跑 <code>python3 scripts/tools/base-check/check-service-boundaries.py</code> 与 <code>uv run python -m ops.check_contracts</code>。</p><p><strong>预期</strong>：三套件全绿；变更模块行 + 分支覆盖率 100%；基座无服务依赖；identity 未授权码被拒、授权码放行、下游不可达 fail-closed；契约快照与前端类型零漂移。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/permission/test_engine.py</code>、<code>test_sources.py</code>、<code>bms/backend/libs/bms_core/tests/scope/test_policies_rbac.py</code>、<code>bms/backend/libs/bms_core/tests/boundary/test_permission_sink.py</code>、<code>bms/backend/services/identity/tests/permission/test_identity_checker.py</code>、<code>bms/backend/services/platform/tests/permission/test_source.py</code> 等；代码内以 <code>kiwi_id</code> 标注本用例编号。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
