@@ -1,0 +1,83 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "06-09 字典领域与缓存按条目 id：取值 / 翻译 / 合并去重 / 子集键 / ids 线参数与回填",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>条目归一</strong>：<code>DictItem.id</code> 必填（缺失剔除），<code>value</code> 缺失回落 <code>id</code>、<code>label</code> 缺失回落 <code>value</code>；条目 <code>value</code> / <code>code</code> 仅展示与外部交换。</li><li><strong>按 id 索引</strong>：查找 / 合并去重 / 标签翻译 / 多值「、」连接均以 <code>id</code> 为键；未命中回退原 <code>id</code>。</li><li><strong>级联树</strong>：树节点 <code>value</code> 为条目 <code>id</code>（孤儿提升顶层、排序保持）。</li><li><strong>线参数</strong>：<code>buildDictTypeQuery</code> 产出 <code>ids=1,2</code>（去重、空值剔除、空数组不传）；子集缓存键为 <code>{locale}:{type}:{id}</code>。</li><li><strong>缓存回填</strong>：<code>resolveIds</code> 缺失 id 一次 <code>ids=</code> 子集请求、二次零请求、未命中不占位；类型缓存与本地二次缓存仍生效。</li></ol><p><strong>前置</strong>：前端依赖已安装（<code>pnpm install --frozen-lockfile</code>）。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/core run test</code>（<code>tests/domain-dict.spec.ts</code> / <code>tests/dict-store.spec.ts</code> / <code>tests/dict-select.spec.ts</code>）。</p><p><strong>预期</strong>：全部用例通过；<code>?ids=</code> 参数与后端 02-14 契约一致；未命中回退原 id。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/core/tests/domain-dict.spec.ts</code>、<code>dict-store.spec.ts</code>、<code>dict-select.spec.ts</code>、<code>bms/frontend/packages/core/testing/dict.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2330
+    },
+    {
+      "summary": "06-09 字典选择族未命中回显：missingIds 记录 / 原 id 占位 / 候选到达清除 / 类型切换与失效清理",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>未命中记录</strong>：回填后仍缺失的 id 记入 <code>missingIds</code>，条目以 <code>{id, value:id, label:id}</code> 占位，回显不丢值。</li><li><strong>二次零请求</strong>：同一缺失 id 重复 <code>resolve</code> 不重复请求。</li><li><strong>候选清除</strong>：接口返回真实条目后该 id 自动移出 <code>missingIds</code>。</li><li><strong>状态清理</strong>：切换字典类型 / <code>invalidate</code> 清空未命中集合。</li><li><strong>件层提示</strong>：<code>DictSelectField</code> 只读态显示原 id 并提示「条目不存在或已停用」（<code>data-test=&quot;dict-missing-hint&quot;</code>）；<code>DictLabel</code> 未命中项带 <code>data-missing</code> 与 <code>title</code>。</li></ol><p><strong>前置</strong>：同上。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/core run test</code> 与 <code>pnpm --filter @bms/ui-ep run test</code>（<code>tests/field-dict.spec.ts</code>）。</p><p><strong>预期</strong>：未命中项按原 id 展示并提示，不阻断渲染；命中项正常显示 label。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/core/tests/dict-select.spec.ts</code>、<code>bms/frontend/packages/ui-ep/tests/field-dict.spec.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2331
+    },
+    {
+      "summary": "06-09 字段类型更名与分发：option→radio、option_multi→checkbox、旧名回退 plain、dropdown 语义键",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>映射表</strong>：<code>FIELD_WIDGET_MAP</code> 中 <code>option → radio</code>、<code>option_multi → checkbox</code>；<code>select</code> / <code>multi_select</code> 不再识别（回退 <code>plain</code>）。</li><li><strong>语义键全量</strong>：<code>FIELD_WIDGETS</code> 增 <code>dropdown</code> / <code>dropdown-multi</code> / <code>button</code> / <code>segmented</code> / <code>tag</code>，删 <code>select</code> / <code>multi-select</code>。</li><li><strong>自建字段白名单</strong>：<code>EXT_FIELD_TYPES</code> 与 <code>EXT_OPTION_TYPES</code> 改名，选项集必填校验仍生效。</li><li><strong>查询区</strong>：<code>FilterFieldType</code> 与 <code>FILTER_WIDGET_BY_TYPE</code> 改名，多选操作符仍取 <code>in</code>。</li><li><strong>控件映射</strong>：<code>BUILTIN_WIDGETS</code> / <code>TYPE_OVERRIDES</code> / <code>MULTIPLE_WIDGETS</code> 同步（<code>dropdown-multi</code> 计入多选）。</li></ol><p><strong>前置</strong>：同上。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/core run test</code>（<code>tests/domain-form-render.spec.ts</code> / <code>domain-form-layout.spec.ts</code> / <code>domain-filter.spec.ts</code>）与 <code>pnpm --filter @bms/ui-ep run test</code>（<code>tests/interaction-form-renderer.spec.ts</code> / <code>data-query-filter.spec.ts</code>）。</p><p><strong>预期</strong>：新名生效、旧名回退纯文本且不报错；查询区条件载荷不变。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/core/tests/domain-form-render.spec.ts</code>、<code>domain-form-layout.spec.ts</code>、<code>domain-filter.spec.ts</code>、<code>bms/frontend/packages/ui-ep/tests/interaction-form-renderer.spec.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2332
+    },
+    {
+      "summary": "06-09 字段属性 widget 覆盖与渲染协同：覆盖生效 / 非法回退 / 枚举形态透传 / 删字典优先分发分支",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>覆盖生效</strong>：字段属性 <code>widget</code> 合法值优先生效（如 <code>dropdown</code> / <code>segmented</code> / <code>tag</code>）。</li><li><strong>非法回退</strong>：未登记值 / <code>plain</code> / 空串回退类型默认（<code>option → radio</code>），不渲染失败。</li><li><strong>形态透传</strong>：<code>option</code> 渲染枚举件并下发 <code>form</code>（<code>dropdown → select</code>、<code>button</code> / <code>segmented</code> 直传）；<code>option_multi</code> 支持 <code>checkbox</code> / <code>tag</code> / <code>dropdown</code>。</li><li><strong>分支删除</strong>：<code>option</code> + <code>dataSourceKey</code> 不再分发字典件（字典件只按 <code>dict</code> / <code>dict_multi</code>）；<code>dict</code> / <code>dict_multi</code> 仍透传 <code>dataSourceKey</code> 且多选语义来自 <code>MULTIPLE_WIDGETS</code> 单一来源。</li></ol><p><strong>前置</strong>：同上。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/core run test</code> 与 <code>pnpm --filter @bms/ui-ep run test</code>。</p><p><strong>预期</strong>：覆盖与回退均符合映射表；枚举字段带字典标识时渲染枚举件。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/core/tests/domain-form-render.spec.ts</code>、<code>bms/frontend/packages/ui-ep/tests/interaction-form-renderer.spec.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2333
+    },
+    {
+      "summary": "06-09 提交序列化豁免：19 位雪花 id 裸数字字面量、明细通配、非法值报错、未命中路径原样",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>精度保持</strong>：<code>stringifyIntegerIds</code> 把指定路径的字符串 id 写成裸数字字面量（<code>\"region_id\":1790000000000000001</code>），不经 <code>Number()</code> 转换。</li><li><strong>路径语法</strong>：<code>data.{key}</code> 与 <code>details.*.{key}</code>（明细数组自动展开）。</li><li><strong>空值</strong>：空串 / <code>null</code> / 数组空项输出 <code>null</code>；安全整数原样输出。</li><li><strong>失败分支</strong>：非纯数字串 / 非安全整数 / 对象值抛错（文案含字段路径），不静默降级为字符串。</li><li><strong>路径收集</strong>：<code>collectDictIdPaths</code> 按渲染计划收集 <code>dict</code> / <code>dict_multi</code> 字段路径（主表 + 明细通配）。</li></ol><p><strong>前置</strong>：同上。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/core run test</code>（<code>tests/domain-serialize.spec.ts</code> / <code>tests/domain-form-render.spec.ts</code>）。</p><p><strong>预期</strong>：19 位 id 原样输出整数；非法值明确报错。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/core/tests/domain-serialize.spec.ts</code>、<code>bms/frontend/packages/core/src/domain/serialize.ts</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2334
+    },
+    {
+      "summary": "06-09 件层与查询区协同：DictLabel / 级联路径 / 高级查询 ids 载荷 / 翻译器按 id",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>标签件</strong>：<code>DictLabel</code> 按条目 id 翻译，未命中回退原 id 并带 <code>data-missing</code>。</li><li><strong>级联件</strong>：<code>DictCascaderField</code> 路径段为条目 id，只读逐级解析 label。</li><li><strong>高级查询</strong>：取项应用载荷为 <code>ids</code>（<code>{ target: 'items', ids: [...] }</code>），不再上抛 <code>values</code>。</li><li><strong>翻译器</strong>：<code>createDictTranslator</code> 按 id 命中缓存、未命中触发一次 id 子集回填。</li><li><strong>字典下拉件</strong>：选项 <code>value</code> 与 <code>data-test</code> 按条目 id，只读标签按 id 取文案。</li></ol><p><strong>前置</strong>：同上。</p><p><strong>步骤</strong>：<code>cd bms &amp;&amp; pnpm --filter @bms/ui-ep run test</code>（<code>tests/field-dict.spec.ts</code> / <code>tests/dict-record-layout.spec.ts</code>）。</p><p><strong>预期</strong>：各件按条目 id 取值与回显，宿主回填载荷为 id 列表。</p><p><strong>自动化文件</strong>：<code>bms/frontend/packages/ui-ep/tests/field-dict.spec.ts</code>、<code>bms/frontend/packages/ui-ep/src/components/field/*</code>。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true,
+      "case_id": 2335
+    }
+  ]
+}
