@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-23",
+  "task": "阶段二 13_05 跨仓工程化工具包（engkit）",
+  "requirement": "13-5",
+  "command": "python -m engkit kiwi register --root bms --cases bms文档/项目/02_后端基座与服务化地基/任务/13_测试执行粒度与工程效能/13_测试执行粒度与工程效能_05_跨仓工程化工具包/测试/01_测试_05_跨仓工程化工具包.cases.toml",
+  "cases": [
+    {
+      "id": 2347,
+      "summary": "跨仓工程化工具包（13_05）：配置化接入 + 五子命令 + 单一来源（触点覆盖 engkit 与 bms / mdm 两侧）",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "tags": ["自动化"],
+      "automation": [
+        "engkit/tests/（14 个用例文件，覆盖率行 + 分支 100%）",
+        "engkit/tests/test_guards.py（包内无仓名字面，@pytest.mark.kiwi_id(2347)）",
+        "engkit/tests/test_docs_links.py（URL 编码路径与锚点，@pytest.mark.kiwi_id(2347)）",
+        "bms/backend/libs/bms_core/tests/boundary/test_*_guard.py（包装契约与配置登记）"
+      ]
+    }
+  ],
+  "related_update": {
+    "id": 2319,
+    "action": "text 更新（编号不变）",
+    "reason": "四项护栏用例随 13_05 迁入 engkit，平台文本的自动化文件路径改指 engkit/tests/test_guards.py；bms 侧原 test_selection_contract_guard.py 已删除",
+    "text_length": { "before": 1046, "after": 1295 }
+  }
+}
