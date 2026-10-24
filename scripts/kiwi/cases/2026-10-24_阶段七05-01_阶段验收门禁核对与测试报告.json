@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "阶段七阶段验收（05_01）：门禁 7 行结论与证据索引 + 计划收口自洽 + 阶段报告归档 + mdm 口径锁定",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>门禁逐条结论</strong>：阶段计划 §5「M7 验收门禁」7 行（主体链任意长度权限计算 / 越权与跨租户访问被拒 / 数据范围读写检查 / 字段权限 / 配额超限拦截 / 三权互斥 / 租户模块开关）均「对应任务」与「达成路径（结论与证据索引）」齐备、非 <code>—</code>；含「门禁对照」表与达成日期；需求总览不承载门禁表（门禁归计划）。</li><li><strong>计划收口自洽</strong>：头部「已完成 N 项，剩余 0 项」中 N 等于 §2 已完成任务表行数（不写死 18）；§3 剩余排期数据行为 0；工时行取「已完成 + 剩余 = 阶段合计」可校验形态；§7 后续阶段待办台账存在并引用阶段报告。</li><li><strong>阶段报告归档</strong>：<code>项目/07_RBAC基础模块/01_测试报告_RBAC基础模块.md</code> 存在且「用例执行统计 / 缺陷统计 / 覆盖率 / 风险与遗留项 / 界面交付 ↔ 原型一致性 / 复盘与经验教训 / 附录 A」节齐备；头部含「17 条需求」阶段范围快照与 <code>check-status</code> 复核口径。</li><li><strong>任务与域总览状态一致</strong>：任务文档不含状态 / 完成日期字段；域总览子任务表不含状态列；进度唯一落点为阶段计划表（登记 <code>05_01</code> 已完成与完成日期）。</li><li><strong>mdm 口径锁定（本轮修复的回归护栏）</strong>：服务标识归并 <code>org</code> → <code>mdm</code> 后，platform 侧权限解析器服务键与只读出口路径、用户 / 角色分配内部写通道与 XA 分支 <code>op</code> 前缀、服务身份白名单、前端产品命名空间组装均取 <code>mdm</code> 口径，旧 <code>org</code> 服务键不出现在上述契约面。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；阶段七全部任务记录与阶段报告已归档。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest libs/bms_core/tests/crosscut/test_m7_closure.py -q</code>；另跑 <code>python3 scripts/tools/check-docs/check-status.py --stage 07_RBAC基础模块</code> 与 <code>python3 scripts/tools/preflight/check-preflight.py --fast</code>。</p><p><strong>预期</strong>：收口断言用例全绿；<code>check-status</code> 硬规则不合规 0 / 软提示 0；<code>preflight --fast</code> 全通过。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/crosscut/test_m7_closure.py</code>（五个断言函数共用本用例编号，代码内以 <code>kiwi_id</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
