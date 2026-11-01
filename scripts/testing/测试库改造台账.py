@@ -53,11 +53,22 @@ _D_KEYWORDS = (
     "init_tenant",
     "provision_tenant",
     "migrate_topology",
+    "topology",
     "url_template",
     "alembic",
     "seed_tenants(",
+    "seed_modules(",
+    "seed_configs(",
+    "seed_rbac",
+    "seed_menu",
+    "seed_sso",
+    "EngineFactory",
+    "build_platform_db_key",
+    "build_tenant_db_key",
+    "resolved_url",
+    "DatabaseTarget",
 )
-"""「建库即被测」的代码特征：建库 / 迁移 / 多库拓扑 / 每租户派生库 / 建库播种。"""
+"""「建库即被测」的代码特征：建库 / 迁移 / 多库拓扑 / 每租户派生库 / 建库播种 / 引擎与库键解析。"""
 
 
 @dataclass
