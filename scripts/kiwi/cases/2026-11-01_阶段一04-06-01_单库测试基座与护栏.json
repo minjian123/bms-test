@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "测试库单库化（04_06_01）：单库夹具 + 命名空间助手 + 三条护栏 + mdm 复用",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>单库夹具（按逻辑数据源）</strong>：<code>platform</code> / <code>tenant</code> 各一个 SQLite 文件（<code>.cache/test/</code>），全 worker 共用；<code>pytest_configure</code> 会话开始清库，首个 worker 经文件锁 <code>O_CREAT|O_EXCL</code> 选主，建 schema 并集 + 完整种子后写 <code>.ready</code>，其余 worker 轮询等待；WAL + <code>busy_timeout=5000</code> + <code>NullPool</code> + 3 次退避重试。</li><li><strong>失败分支</strong>：初始化锁超时（120s）/ 残留锁（mtime &gt; 120s 判过期后重抢一次）/ <code>.ready</code> 缺失或版本戳不一致（重建一次后仍失败即红）/ <code>database is locked</code> 重试耗尽（打印语句摘要与参数）/ Windows 句柄占用（改用新文件名并告警）/ <code>BMS_TEST_ISOLATED_DB=1</code>（走 <code>tmp_path</code> 独立库并打印隔离模式提示）。</li><li><strong>命名空间助手</strong>：<code>namespace.for_test()</code> 生成稳定唯一前缀（worker 位 + nodeid 摘要 8 位十六进制，长度 ≤16、字符集 <code>[a-z0-9]</code>），<code>code()</code> / <code>like()</code> / <code>scoped()</code> / <code>assert_scoped()</code> / <code>assert_delta()</code> 三合一；前缀 → nodeid 映射落 <code>.cache/test/namespace-map.jsonl</code> 供反查；非法前缀直接抛错（不静默截断）。</li><li><strong>三条护栏</strong>：G1 为图省事自建 SQLite（字面量 / <code>create_engine</code> / <code>tmp_path</code> 派生 <code>*.db</code>）、G2 原生 SQL 直绑 int ID、G3 清理非本用例数据；AST 扫描（非正则）避免注释与字符串误判；白名单 <code>@pytest.mark.own_db(\"理由\")</code>（理由必填）放行，<code>--list-own-db</code> 导出「文件 / 用例 / 理由」清单供审计。</li><li><strong>接入面</strong>：判定实现在 engkit <code>base/test_db_isolation.py</code>，bms 仓只留薄包装 <code>scripts/tools/base_check/check_test_db_isolation.py</code>；开发环走增量（<code>--files-from</code>），推送预检 / CI 走全量（全量模式在 04-6-2 收口时启用）。</li><li><strong>产品仓复用</strong>：mdm 仓经 <code>bms_core.testing</code> 接入同一夹具与护栏（至少一个服务套件迁移通过），不复制第二套实现。</li></ol><p><strong>前置</strong>：bms 后端依赖就位（<code>uv</code>）；03_05（雪花 ID 补零口径）与 03_06（WorkerId 注册）已交付；Kiwi 编号先登记后编码。</p><p><strong>步骤</strong>：<code>cd bms/backend &amp;&amp; uv run pytest libs/bms_core/tests/testing/ -q</code>；<code>python3 bms/scripts/tools/base_check/check_test_db_isolation.py bms --self-test</code>；mdm 侧 <code>cd mdm/backend &amp;&amp; uv run pytest &lt;服务&gt;/tests -q</code>。</p><p><strong>预期</strong>：单库夹具与命名空间助手用例全绿；<code>.cache/test/</code> 下只有 <code>platform.db</code> / <code>tenant.db</code> 两个库文件；护栏对违规样例必红、对白名单放行、对注释与字符串不误杀；mdm 套件同口径通过；<code>bms_core/testing/</code> 新增模块覆盖率 100%（行 + 分支）。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/testing/test_shared_db.py</code>、<code>test_namespace.py</code>、<code>test_db_isolation_guard.py</code>、<code>test_transaction.py</code>（四个文件共用本用例编号，代码内以 <code>kiwi_id</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
