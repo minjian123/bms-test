@@ -30,6 +30,8 @@ SQLITE_PREFIXES = ("sqlite+aiosqlite:///", "sqlite:///")
 ENGINE_FACTORIES = ("create_async_engine", "create_engine")
 DB_SUFFIXES = (".db",)
 MARKER = "own_db"
+MEMORY_LITERALS = ("sqlite://", "sqlite+aiosqlite://")
+"""内存库连接串：不落文件、不产生跨用例状态，与护栏口径一致（不算自建库）。"""
 
 CLASS_ORDER = ("E", "D", "C", "B", "A")
 ACTION = {
@@ -142,6 +144,19 @@ def _module_marker_reason(tree: ast.Module) -> str:
     return ""
 
 
+def _is_memory(value: str) -> bool:
+    """连接串是否指向内存库（不落文件、不产生跨用例状态）。"""
+    return ":memory:" in value or value in MEMORY_LITERALS
+
+
+def _engine_on_memory(node: ast.Call) -> bool:
+    """引擎构造是否指向内存库（首个位置参数为内存连接串）。"""
+    if not node.args:
+        return False
+    first = node.args[0]
+    return isinstance(first, ast.Constant) and isinstance(first.value, str) and _is_memory(first.value)
+
+
 def _collect_facts(tree: ast.Module, source: str) -> Facts:
     """收集判定所需事实。"""
     facts = Facts()
@@ -157,10 +172,11 @@ def _collect_facts(tree: ast.Module, source: str) -> Facts:
 
     for node in ast.walk(tree):
         if isinstance(node, ast.Constant) and isinstance(node.value, str):
-            if node.value.startswith(SQLITE_PREFIXES):
+            if node.value.startswith(SQLITE_PREFIXES) and not _is_memory(node.value):
                 facts.db_build.append(f"{node.lineno}: 连接串字面量")
         elif isinstance(node, ast.Call) and _call_name(node) in ENGINE_FACTORIES:
-            facts.db_build.append(f"{node.lineno}: {_call_name(node)}()")
+            if not _engine_on_memory(node):
+                facts.db_build.append(f"{node.lineno}: {_call_name(node)}()")
         elif isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div) and isinstance(node.right, ast.Constant):
             value = node.right.value
             if isinstance(value, str) and value.endswith(DB_SUFFIXES):
@@ -253,7 +269,9 @@ def _classify(facts: Facts, source: str) -> tuple[str, str]:
     if facts.own_db:
         return "D", f"已有 own_db 白名单（{facts.own_db}）"
     candidate = _d_candidate(source)
-    if candidate:
+    # 仅命中关键词还不够（很多用例只是提到库键 / 播种函数的名字，并不建库）：
+    # 必须**同时**有自建库痕迹，才视为「建库即被测」候选。
+    if candidate and facts.db_build:
         return "D", f"建库即被测候选（{candidate}），待人工确认"
     if facts.db_build and facts.exact_count:
         return "C", "自建库 + 整表断言：" + "；".join(facts.exact_count[:2])
