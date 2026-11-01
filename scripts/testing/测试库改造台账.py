@@ -380,9 +380,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.out:
         out = Path(args.out)
         out.mkdir(parents=True, exist_ok=True)
-        (out / "01_实施_01_涉库用例改造台账.md").write_text(render_md(entries), encoding="utf-8")
+        (out / "01_实施_01_涉库用例改造台账.md").write_text(render_md(entries), encoding="utf-8", newline="\n")
         payload = render_json(entries)
-        (out / "01_实施_01_涉库用例改造台账.json").write_text(payload + "\n", encoding="utf-8")
+        (out / "01_实施_01_涉库用例改造台账.json").write_text(payload + "\n", encoding="utf-8", newline="\n")
         print(f"[台账] 已写出：{out / '01_实施_01_涉库用例改造台账.md'}")
     else:
         print(render_md(entries))
