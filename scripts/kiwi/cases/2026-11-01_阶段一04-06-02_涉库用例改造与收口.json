@@ -1,0 +1,17 @@
+{
+  "product": "BMS 基础管理系统",
+  "cases": [
+    {
+      "summary": "测试库单库化（04_06_02）：涉库用例分批改造 + 白名单收口 + mdm 同步 + 全量取数",
+      "text": "<p><strong>覆盖范围</strong></p><ol><li><strong>共享库准备集</strong>：<code>backend/tests_support/shared_db.py</code> 单源实现 <code>prepare_platform</code>（建表并集 → 种子租户 → 主键对齐 <code>demo=1001</code> / <code>acme=2002</code> → 服务目录与产品档案）与 <code>prepare_tenant</code>（域并集建表 → 系统参数种子）；<code>backend/conftest.py</code> 向全工程 rootdir 暴露 <code>platform_db_prepare</code> / <code>tenant_db_prepare</code>；准备内容幂等，<code>.ready</code> 版本戳由准备集源码摘要派生（改内容即自动重建）。</li><li><strong>例外通道</strong>：<code>BMS_TEST_ISOLATED_DB=1</code> 时共享库改落 <code>&lt;basetemp&gt;/test-db-isolated/</code> 并在会话头打印“隔离调试模式”提示；默认关闭，单文件 / 单用例调试与 CI 同口径。</li><li><strong>用例分层改造</strong>：A 类（纯逻辑 / 契约 / 路由 / 静态护栏 / 安全边界）不动；B 类（涉库 CRUD / 查询）自建引擎换共享夹具、固定编码换 <code>ns.code()</code>；C 类（依赖空库 / 精确总数 / 全表集合相等）重写为“命名空间限定 + 相对增量断言”，业务场景与错误码断言保留；D 类（建库 / 迁移 / 多库拓扑 / 每租户派生库即被测）进 <code>@pytest.mark.own_db(\"理由\")</code> 白名单并压到最小；E 类（功能已不存在）删除并核对覆盖率不产生新缺口。</li><li><strong>临时文件审计</strong>：只为“拿干净库 / 拷目录”产生的临时库一律取消；导出 / 上传 / 迁移 / 发布编排等“被测功能本身要写文件”的保留并收敛到 <code>tmp_path</code>（basetemp 之下）。</li><li><strong>护栏与配置收口</strong>：<code>--basetemp=.cache/pytest</code> 全工程补齐；旧 <code>worker_sqlite_dir</code>（按 worker 派生独立库）删除；<code>test-db-isolation</code> 升为预检全量步骤 + <code>self_tests</code> 登记；<code>--list-own-db</code> 导出白名单清单供审计。</li><li><strong>mdm 仓同步</strong>：加载 <code>-p bms_core.testing.plugin</code>，<code>tests_support</code> 每用例 <code>tmp_path</code> 库改共享库，迁移 / 建库 CLI / 种子用例进白名单，<code>engkit.toml</code> 同口径接入护栏。</li></ol><p><strong>前置</strong>：04-6-1 夹具与护栏已落地（Kiwi 2399）；bms 后端依赖就位（<code>uv</code>）；mdm 仓平级克隆。</p><p><strong>步骤</strong>：分批（bms_core → platform → tenant+identity+file → txn/ai/notification/search/report → mdm）逐批 <code>uv run pytest &lt;套件&gt; -q</code> + 护栏增量扫描；收口跑 <code>python3 bms/scripts/tools/base_check/check_test_db_isolation.py bms --list-own-db</code>；全量由 CI 手工触发取数。</p><p><strong>预期</strong>：一次会话内 <code>.cache/test/</code> 只有 <code>platform.db</code> / <code>tenant.db</code> 两个库文件且并行稳定；护栏全量档退出码 0（白名单每条带理由）；A~E 台账逐文件闭合且 <code>--check</code> 无漂移；mdm 套件同口径通过；临时文件数与磁盘占用较改造前下降 ≥ 90%；覆盖率 100%（行 + 分支）。</p><p><strong>自动化文件</strong>：<code>bms/backend/libs/bms_core/tests/testing/</code>（准备集 / 例外通道 / 命名空间断言）、<code>bms/backend/conftest.py</code> 接线、<code>mdm/backend/tests_support/</code>（同一用例编号，代码内以 <code>kiwi_id</code> 标注）。</p>",
+      "category": "平台骨架",
+      "priority": "P2",
+      "status": "CONFIRMED",
+      "author": "admin",
+      "tags": [
+        "自动化"
+      ],
+      "is_automated": true
+    }
+  ]
+}
